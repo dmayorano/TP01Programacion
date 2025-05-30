@@ -69,7 +69,29 @@ def listarClientesActivos(clientela):
     
     return
 
+def modificarCliente(clientela):
+    dni = input("Ingresa tu DNI a Modificar: ")
+    if dni in clientela:
+        
+        activo = input("Activo[True], Baja[False]: ")
+        nombre = input(f"¿Nombre correcto?, {clientela[nombre]}: ")
+        tarjeta1 = input(f"¿Tarjeta 1 correcta?, {clientela[tarjeta1]}: ")
+        tarjeta2 = input(f"¿Tarjeta 2 correcta?, {clientela[tarjeta2]}: ")
+        tarjeta3 = input(f"¿Tarjeta 3 correcta?, {clientela[tarjeta3]}: ")
 
+        clienteModificado = {
+        
+        "activo": activo,
+        "nombre": nombre,
+        "tarjetas": {
+            "tarjeta1": tarjeta1,
+            "tarjeta2": tarjeta2,
+            "tarjeta3": tarjeta3,
+            }
+        }
+        clientela[dni] = clienteModificado
+        print("Cliente modificado con exito.")
+        
 def nuevoCliente(clientela):
     dni= input("Ingresa tu DNI: ")
     if dni in clientela:
@@ -375,12 +397,12 @@ def main():
                 
                 elif opcionSubmenu == "1":   # Opción 1 del submenú
                     nuevoCliente(clientela)
-                    print(clientela)
+                    
                     
                     
                 elif opcionSubmenu == "2":   # Opción 2 del submenú
-                    ...
-                    #clientes = inactivarCliente(clientes)
+                    modificarCliente(clientela)
+                    
                 
                 elif opcionSubmenu == "3":   # Opción 3 del submenú
                     ...
