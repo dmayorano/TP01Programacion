@@ -1,6 +1,6 @@
 """
 -----------------------------------------------------------------------------------------------
-Título: Brayy tirame la goma
+Título: Programacion 1 TP
 Fecha: ...
 Autor: ...
 
@@ -22,9 +22,28 @@ from datetime import date
 #----------------------------------------------------------------------------------------------
 # FUNCIONES
 #----------------------------------------------------------------------------------------------
-def altaCliente(clientes):
-    ...
-    return clientes
+def altaCliente(_clientes):
+    dni = input("Ingresa tu DNI: ")
+    if dni in _clientes:
+        return "El cliente ya existe."
+    
+    nombre = input("Ingresa tu nombre: ")
+    edad = int(input("Ingrese su edad: "))
+    telefono = input("Ingrese su numero de telefono: ")
+    alterno = input("Ingresa un segundo numero de telefono (Opcional): ")
+
+
+    nuevoCliente = {
+        "activo": True,
+        "nombre": nombre,
+        "edad": edad,
+        "télefonos": {
+            "telefono": telefono,
+            "telefono alterno": alterno,
+            }
+        }
+    _clientes[dni] = nuevoCliente
+    return "Cliente agregado con exito"
 
 
 def inactivarCliente(_clientes):
@@ -43,79 +62,134 @@ def inactivarCliente(_clientes):
     
     return _clientes
 
-def listarClientesActivos(clientela):
+def listarClientesActivos(_clientes):
     """
     Lista todos los clientes activos y sus detalles de tarjetas.
     """
     # Se muestran todos los datos del cliente y el detalle de sus tarjetas
-    for dni, otrosDatos in clientela.items():
+    for dni, otrosDatos in _clientes.items():
         if otrosDatos['activo']:  # Filtro para clientes activos
             
             
-            print(f"CLIENTE: {dni}")
+            print(f"DNI: {dni}")
             print(f"NOMBRE: {otrosDatos.get('nombre', 'No disponible')}")
             
             # Verificar si el cliente tiene edad y sexo antes de imprimir
             print(f"EDAD: {otrosDatos.get('edad', 'No disponible')}")
-            print(f"SEXO: {otrosDatos.get('sexo', 'No disponible')}")
 
-            print("TARJETAS:")
-            for tarjeta, nombreTarjeta in otrosDatos.get("tarjetas", {}).items():
-                if nombreTarjeta:  # No imprimir tarjetas vacías
-                    print(f"\t{tarjeta}: {nombreTarjeta}")
-            
-            print()
-            
-    
+            print("TELEFONOS:")
+            for telefono, numeroTelefono in otrosDatos.get("telefonos", {}).items():
+                if numeroTelefono:  # No imprimir tarjetas vacías
+                    print(f"\t{telefono}: {numeroTelefono}")
+            print("========================================")
     return
 
-def modificarCliente(clientela):
+def modificarCliente(_clientes):
     dni = input("Ingresa tu DNI a Modificar: ")
-    if dni in clientela:
+    if dni in _clientes:
         
         activo = input("Activo[True], Baja[False]: ")
-        nombre = input(f"¿Nombre correcto?, {clientela[nombre]}: ")
-        tarjeta1 = input(f"¿Tarjeta 1 correcta?, {clientela[tarjeta1]}: ")
-        tarjeta2 = input(f"¿Tarjeta 2 correcta?, {clientela[tarjeta2]}: ")
-        tarjeta3 = input(f"¿Tarjeta 3 correcta?, {clientela[tarjeta3]}: ")
+        nombre = input(f"¿Nombre correcto?, {_clientes[nombre]}: ")
+        movil = input(f"¿Numero de télefono 1 correcto?, {_clientes[movil]}: ")
+        alterno = input(f"¿Numero de télefono 2 correcto?, {_clientes[alterno]}: ")
 
         clienteModificado = {
         
         "activo": activo,
         "nombre": nombre,
-        "tarjetas": {
-            "tarjeta1": tarjeta1,
-            "tarjeta2": tarjeta2,
-            "tarjeta3": tarjeta3,
+        "télefonos": {
+            "télefono1": movil,
+            "télefono2": alterno
             }
         }
-        clientela[dni] = clienteModificado
+        _clientes[dni] = clienteModificado
         print("Cliente modificado con exito.")
-        
-def nuevoCliente(clientela):
-    dni= input("Ingresa tu DNI: ")
-    if dni in clientela:
-        print("El cliente ya existe.")
-        return
-    
-    nombre = input("Ingresa tu nombre: ")
-    tarjeta1 = input("Ingresa la primera tarjeta(Opcional): ")
-    tarjeta2 = input("Ingresa la segunda tarjeta(Opcional): ")
-    tarjeta3 = input("Ingresa la tercera tarjeta(Opcional): ")
 
-    nuevoCliente = {
-        "activo": True,
-        "nombre": nombre,
-        "tarjetas": {
-            "tarjeta1": tarjeta1,
-            "tarjeta2": tarjeta2,
-            "tarjeta3": tarjeta3,
+def altaHabitacion(_habitaciones):
+    nroHabitacion = input("Ingrese numero de la habitacion: ")
+    if nroHabitacion in _habitaciones:
+        return "La habitacion ya existe."
+    
+    capacidad = input("Ingrese capacidad de personas: ")
+    costoPorDia = int(input("Ingrese su costo por dia: "))
+    aireCondicionado = input("Ingrese True si tiene aire acondicionado o False si no tiene:  ")
+    frigobar = input("Ingrese True si tiene frigobar o False si no tiene: ")
+    balcon= input("Ingrese True si tiene balcon o False si no tiene: ")
+
+
+    nuevaHabitacion = {
+        "disponible": True,
+        "capacidad": capacidad,
+        "costo por dia": costoPorDia,
+        "servicios": {
+            "aire condicionado": aireCondicionado,
+            "frigobar": frigobar,
+            "balcon": balcon
             }
         }
-    clientela[dni] = nuevoCliente
-    print("Cliente agregado con exito.")
+    _habitaciones[nroHabitacion] = nuevaHabitacion
+    return "Habitacion agregada con exito."
+
+
+def inactivarHabitacion(_habitaciones):
+    """
+    doctring
+    """
+    nroHabitacion = input("Numero de habitacion a inhabilitar: ")
+    print("======================================")
+    
+    # Se inactiva el cliente sólo si existe
+    if nroHabitacion in _habitaciones:
+        _habitaciones[nroHabitacion]["disponible"] = False
+        print(f"La habitacion {nroHabitacion} fue inhabilitada.")
+    else:
+        print(f"El numero de habitacion {nroHabitacion} no existe.")
+    
+    return _habitaciones
+
+def listarHabitacionesActivas(_habitaciones):
+    """
+    Lista todos los clientes activos y sus detalles de tarjetas.
+    """
+    # Se muestran todos los datos del cliente y el detalle de sus tarjetas
+    for nroHabitacion, otrosDatos in _habitaciones.items():
+        if otrosDatos['disponible']:  # Filtro para habitaciones activas
+            
+            
+            print(f"Habitacion: {nroHabitacion}")
+            print(f"Capacidad: {otrosDatos.get('capacidad', 'No disponible')}")
+            print(f"Costo por dia: {otrosDatos.get('costo por dia', 'No disponible')}")
+
+            print("Servicios:")
+            for servicios, nombreServicio in otrosDatos.get("servicios", {}).items():
+                print(f"\t{servicios}: {nombreServicio}")
+            print("========================================")
     return
 
+def modificarHabitacion(_habitaciones):
+    nroHabitacion = input("Ingresa numero de habitacion a modificar: ")
+    if nroHabitacion in _habitaciones:
+        
+        disponible = input("Disponible[True], No disponible[False]: ")
+        capacidad = input(f"¿Capacidad correcta?, {_habitaciones[capacidad]}: ")
+        costoPorDia = input(f"¿Costo por dia correcto?, {_habitaciones[costoPorDia]}: ")
+        aire = input(f"¿Servicio aire acondicionado: Si[True] No[False]?, {_habitaciones[aire]}: ")
+        frigo = input(f"¿Servicio frigobar: Si[True] No[False]?, {_habitaciones[frigo]}: ")
+        balcon = input(f"¿Servicio balcon: Si[True] No[False]?, {_habitaciones[balcon]}: ")
+
+        habitacionModificada = {
+        
+        "disponible": disponible,
+        "capacidad": capacidad,
+        "costo por dia": costoPorDia,
+        "servicios": {
+            "aire acondicionado": aire,
+            "frigobar": frigo,
+            "balcon": balcon 
+            }
+        }
+        _habitaciones[nroHabitacion] = habitacionModificada
+        print("Cliente modificado con exito.")
 
 #----------------------------------------------------------------------------------------------
 # CUERPO PRINCIPAL
@@ -129,205 +203,187 @@ def main():
 
     # Diccionario de datos de clientes: KEY=Documento del cliente, VALUE=Otros datos del cliente
     clientela = {
-        "38472910": {
-            "activo": True,
-            "nombre": "Tomás Ibáñez",
-            "tarjetas": {
-                "tarjeta1": "MASTER",
-                "tarjeta2": "",
-                "tarjeta3": ""
-            }
-        },
         "39592834": {
             "activo": True,
             "nombre": "Micaela Robles",
             "edad": 26,
-            "sexo": "F",
-            "tarjetas": {
-                "tarjeta1": "VISA",
-                "tarjeta2": "AMEX",
-                "tarjeta3": ""
+            "télefonos": {
+                "móvil": "11 5002415123",
+                "alterno": ""
             }
         },
-        "41294837": {
+        "431223345": {
             "activo": True,
-            "nombre": "Andrés Quiroga",
-            "edad": 31,
-            "sexo": "M",
-            "tarjetas": {
-                "tarjeta1": "AMEX",
-                "tarjeta2": "MASTER",
-                "tarjeta3": "VISA"
+            "nombre": "Martin Gonzales",
+            "edad": 26,
+            "télefonos": {
+                "móvil": "11 500245621",
+                "alterno": ""
             }
         },
-        "40291736": {
+        "33451678": {
             "activo": True,
-            "nombre": "Florencia Salas",
-            "edad": 25,
-            "sexo": "F",
-            "tarjetas": {
-                "tarjeta1": "MASTER",
-                "tarjeta2": "VISA",
-                "tarjeta3": ""
+            "nombre": "Fito Parrez",
+            "edad": 26,
+            "télefonos": {
+                "móvil": "11 500241234",
+                "alterno": ""
             }
         },
-        "39284730": {
+        "15675431": {
             "activo": True,
-            "nombre": "Rodrigo Cabrera",
-            "edad": 37,
-            "sexo": "M",
-            "tarjetas": {
-                "tarjeta1": "AMEX",
-                "tarjeta2": "",
-                "tarjeta3": ""
+            "nombre": "Gonzalo Robledo",
+            "edad": 26,
+            "télefonos": {
+                "móvil": "11 500241252",
+                "alterno": ""
             }
         },
-        "38817290": {
+        "423411123": {
             "activo": True,
-            "nombre": "Elena Ponce",
-            "edad": 30,
-            "sexo": "F",
-            "tarjetas": {
-                "tarjeta1": "VISA",
-                "tarjeta2": "MASTER",
-                "tarjeta3": "AMEX"
+            "nombre": "Martin Serin",
+            "edad": 26,
+            "télefonos": {
+                "móvil": "11 500241211",
+                "alterno": ""
             }
         },
-        "40671829": {
+        "11234124": {
             "activo": True,
-            "nombre": "Matías Barreto",
-            "edad": 33,
-            "sexo": "M",
-            "tarjetas": {
-                "tarjeta1": "MASTER",
-                "tarjeta2": "",
-                "tarjeta3": ""
+            "nombre": "Gaston Soldati",
+            "edad": 26,
+            "télefonos": {
+                "móvil": "11 695241234",
+                "alterno": ""
             }
         },
-        "37928192": {
+        "41234124": {
             "activo": True,
-            "nombre": "Julieta San Martín",
-            "edad": 28,
-            "sexo": "F",
-            "tarjetas": {
-                "tarjeta1": "VISA",
-                "tarjeta2": "AMEX",
-                "tarjeta3": ""
+            "nombre": "Marcelo Chavez",
+            "edad": 26,
+            "télefonos": {
+                "móvil": "11 531241234",
+                "alterno": ""
             }
         },
-        "40718293": {
+        "45212342": {
             "activo": True,
-            "nombre": "Iván Méndez",
-            "edad": 35,
-            "sexo": "M",
-            "tarjetas": {
-                "tarjeta1": "AMEX",
-                "tarjeta2": "VISA",
-                "tarjeta3": "MASTER"
+            "nombre": "Fernando Alonso",
+            "edad": 26,
+            "télefonos": {
+                "móvil": "11 498241234",
+                "alterno": ""
             }
         },
-        "38571820": {
+        "2142142": {
             "activo": True,
-            "nombre": "Pamela Córdoba",
-            "edad": 34,
-            "sexo": "F",
-            "tarjetas": {
-                "tarjeta1": "MASTER",
-                "tarjeta2": "AMEX",
-                "tarjeta3": ""
+            "nombre": "Martin Gimenez",
+            "edad": 26,
+            "télefonos": {
+                "móvil": "11 233241234",
+                "alterno": ""
+            }
+        },
+        "4042132": {
+            "activo": True,
+            "nombre": "Lionel Messi",
+            "edad": 26,
+            "télefonos": {
+                "móvil": "11 503241234",
+                "alterno": ""
             }
         }
     }
 
         # Diccionario de datos de productos: KEY=Código de producto, VALUE=Otros datos del producto
     habitaciones = {
-        "habitacion 1": {
+        "1": {
             "disponible": True,
             "capacidad": 2,
             "servicios": {
+                "aire condicionado": True,
                 "frigobar": True,
-                "aireAcondicionado": True,
                 "Balcon": True
             }
         },
-        "habitacion 2": {
+        "2": {
             "disponible": True,
             "capacidad": 4,
             "servicios": {
+                "aire condicionado": True,
                 "frigobar": True,
-                "aireAcondicionado": True,
                 "Balcon": True
             }
         },
-        "habitacion 3": {
+        "3": {
             "disponible": True,
             "capacidad": 2,
             "servicios": {
-                "frigobar": True,
+                "aire acondicionado": True,
                 "aireAcondicionado": True,
                 "Balcon": True
             }
         },
-        "habitacion 4": {
+        "4": {
             "disponible": True,
             "capacidad": 6,
             "servicios": {
-                "frigobar": True,
-                "aireAcondicionado": False,
+                "aire acondicionado": True,
+                "frigobar": False,
                 "Balcon": False
             }
         },
-        "habitacion 5": {
+        "5": {
             "disponible": True,
             "capacidad": 4,
             "servicios": {
+                "aire acondicionado": True,
                 "frigobar": True,
-                "aireAcondicionado": True,
                 "Balcon": True
             }
         },
-        "habitacion 6": {
+        "6": {
             "disponible": True,
             "capacidad": 2,
             "servicios": {
+                "aire acondicionado": True,
                 "frigobar": True,
-                "aireAcondicionado": True,
                 "Balcon": True
             }
         },
-        "habitacion 7": {
+        "7": {
             "disponible": True,
             "capacidad": 3,
             "servicios": {
+                "aire acondicionado": True,
                 "frigobar": True,
-                "aireAcondicionado": True,
                 "Balcon": True
             }
         },
-        "habitacion 8": {
+        "8": {
             "disponible": True,
             "capacidad": 4,
             "servicios": {
+                "aire acondicionado": True,
                 "frigobar": True,
-                "aireAcondicionado": True,
                 "Balcon": True
             }
         },
-        "habitacion 9": {
+        "9": {
             "disponible": True,
             "capacidad": 2,
             "servicios": {
-                "frigobar": True,
-                "aireAcondicionado": False,
+                "aire acondicionado": True,
+                "frigobar": False,
                 "Balcon": True
             }
         },
-        "habitacion 10": {
+        "10": {
             "disponible": True,
             "capacidad": 6,
             "servicios": {
+                "aire acondicionado": True,
                 "frigobar": True,
-                "aireAcondicionado": True,
                 "Balcon": False
             }
         }
@@ -378,7 +434,7 @@ def main():
                     print("---------------------------")
                     print("[1] Ingresar Cliente")
                     print("[2] Modificar cliente")
-                    print("[3] Eliminar cliente")
+                    print("[3] Inactivar cliente")
                     print("[4] Listado de clientes")
                     print("---------------------------")
                     print("[0] Volver al menú anterior")
@@ -396,7 +452,7 @@ def main():
                     break # No sale del programa, sino que vuelve al menú anterior
                 
                 elif opcionSubmenu == "1":   # Opción 1 del submenú
-                    nuevoCliente(clientela)
+                    altaCliente(clientela)
                     
                     
                     
@@ -405,7 +461,7 @@ def main():
                     
                 
                 elif opcionSubmenu == "3":   # Opción 3 del submenú
-                    ...
+                    inactivarCliente(clientela)
                 
                 elif opcionSubmenu == "4":   # Opción 4 del submenú
                     
@@ -442,16 +498,16 @@ def main():
                     break # No sale del programa, sino que vuelve al menú anterior
                 
                 elif opcionSubmenu == "1":   # Opción 1 del submenú
-                    ...
+                    altaHabitacion(habitaciones)
                     
                 elif opcionSubmenu == "2":   # Opción 2 del submenú
-                    habitaciones = modificarHabitaciones(habitaciones)
+                    modificarHabitacion(habitaciones)
                 
                 elif opcionSubmenu == "3":   # Opción 3 del submenú
-                    ...
+                    inactivarHabitacion(habitaciones)
                 
                 elif opcionSubmenu == "4":   # Opción 4 del submenú
-                    listarHabitaciones(habitaciones)
+                    listarHabitacionesActivas(habitaciones)
 
                 input("\nPresione ENTER para volver al menú.") # Pausa entre opciones
                 print("\n\n")
