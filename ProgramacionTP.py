@@ -1,6 +1,6 @@
 """
 -----------------------------------------------------------------------------------------------
-Título: Brayy tirame la goma
+Título: Programacion 1 TP
 Fecha: ...
 Autor: ...
 
@@ -22,9 +22,9 @@ from datetime import date
 #----------------------------------------------------------------------------------------------
 # FUNCIONES
 #----------------------------------------------------------------------------------------------
-def altaCliente(clientela):
+def altaCliente(_clientes):
     dni = input("Ingresa tu DNI: ")
-    if dni in clientela:
+    if dni in _clientes:
         return "El cliente ya existe."
     
     nombre = input("Ingresa tu nombre: ")
@@ -42,7 +42,7 @@ def altaCliente(clientela):
             "telefono alterno": alterno,
             }
         }
-    clientela[dni] = nuevoCliente
+    _clientes[dni] = nuevoCliente
     return "Cliente agregado con exito"
 
 
@@ -62,37 +62,36 @@ def inactivarCliente(_clientes):
     
     return _clientes
 
-def listarClientesActivos(clientela):
+def listarClientesActivos(_clientes):
     """
     Lista todos los clientes activos y sus detalles de tarjetas.
     """
     # Se muestran todos los datos del cliente y el detalle de sus tarjetas
-    for dni, otrosDatos in clientela.items():
+    for dni, otrosDatos in _clientes.items():
         if otrosDatos['activo']:  # Filtro para clientes activos
             
             
-            print(f"CLIENTE: {dni}")
+            print(f"DNI: {dni}")
             print(f"NOMBRE: {otrosDatos.get('nombre', 'No disponible')}")
             
             # Verificar si el cliente tiene edad y sexo antes de imprimir
             print(f"EDAD: {otrosDatos.get('edad', 'No disponible')}")
-            print(f"SEXO: {otrosDatos.get('sexo', 'No disponible')}")
 
-            print("TARJETAS:")
-            for tarjeta, nombreTarjeta in otrosDatos.get("tarjetas", {}).items():
-                if nombreTarjeta:  # No imprimir tarjetas vacías
-                    print(f"\t{tarjeta}: {nombreTarjeta}")
+            print("TELEFONOS:")
+            for telefono, numeroTelefono in otrosDatos.get("telefonos", {}).items():
+                if numeroTelefono:  # No imprimir tarjetas vacías
+                    print(f"\t{telefono}: {numeroTelefono}")
             print("========================================")
     return
 
-def modificarCliente(clientela):
+def modificarCliente(_clientes):
     dni = input("Ingresa tu DNI a Modificar: ")
-    if dni in clientela:
+    if dni in _clientes:
         
         activo = input("Activo[True], Baja[False]: ")
-        nombre = input(f"¿Nombre correcto?, {clientela[nombre]}: ")
-        movil = input(f"¿Numero de télefono 1 correcto?, {clientela[movil]}: ")
-        alterno = input(f"¿Numero de télefono 2 correcto?, {clientela[alterno]}: ")
+        nombre = input(f"¿Nombre correcto?, {_clientes[nombre]}: ")
+        movil = input(f"¿Numero de télefono 1 correcto?, {_clientes[movil]}: ")
+        alterno = input(f"¿Numero de télefono 2 correcto?, {_clientes[alterno]}: ")
 
         clienteModificado = {
         
@@ -103,7 +102,93 @@ def modificarCliente(clientela):
             "télefono2": alterno
             }
         }
-        clientela[dni] = clienteModificado
+        _clientes[dni] = clienteModificado
+        print("Cliente modificado con exito.")
+
+def altaHabitacion(_habitaciones):
+    nroHabitacion = input("Ingrese numero de la habitacion: ")
+    if nroHabitacion in _habitaciones:
+        return "La habitacion ya existe."
+    
+    capacidad = input("Ingrese capacidad de personas: ")
+    costoPorDia = int(input("Ingrese su costo por dia: "))
+    aireCondicionado = input("Ingrese True si tiene aire acondicionado o False si no tiene:  ")
+    frigobar = input("Ingrese True si tiene frigobar o False si no tiene: ")
+    balcon= input("Ingrese True si tiene balcon o False si no tiene: ")
+
+
+    nuevaHabitacion = {
+        "disponible": True,
+        "capacidad": capacidad,
+        "costo por dia": costoPorDia,
+        "servicios": {
+            "aire condicionado": aireCondicionado,
+            "frigobar": frigobar,
+            "balcon": balcon
+            }
+        }
+    _habitaciones[nroHabitacion] = nuevaHabitacion
+    return "Habitacion agregada con exito."
+
+
+def inactivarHabitacion(_habitaciones):
+    """
+    doctring
+    """
+    nroHabitacion = input("Numero de habitacion a inhabilitar: ")
+    print("======================================")
+    
+    # Se inactiva el cliente sólo si existe
+    if nroHabitacion in _habitaciones:
+        _habitaciones[nroHabitacion]["disponible"] = False
+        print(f"La habitacion {nroHabitacion} fue inhabilitada.")
+    else:
+        print(f"El numero de habitacion {nroHabitacion} no existe.")
+    
+    return _habitaciones
+
+def listarHabitacionesActivas(_habitaciones):
+    """
+    Lista todos los clientes activos y sus detalles de tarjetas.
+    """
+    # Se muestran todos los datos del cliente y el detalle de sus tarjetas
+    for nroHabitacion, otrosDatos in _habitaciones.items():
+        if otrosDatos['disponible']:  # Filtro para habitaciones activas
+            
+            
+            print(f"Habitacion: {nroHabitacion}")
+            print(f"Capacidad: {otrosDatos.get('capacidad', 'No disponible')}")
+            print(f"Costo por dia: {otrosDatos.get('costo por dia', 'No disponible')}")
+
+            print("Servicios:")
+            for servicios, nombreServicio in otrosDatos.get("servicios", {}).items():
+                print(f"\t{servicios}: {nombreServicio}")
+            print("========================================")
+    return
+
+def modificarHabitacion(_habitaciones):
+    nroHabitacion = input("Ingresa numero de habitacion a modificar: ")
+    if nroHabitacion in _habitaciones:
+        
+        disponible = input("Disponible[True], No disponible[False]: ")
+        capacidad = input(f"¿Capacidad correcta?, {_habitaciones[capacidad]}: ")
+        costoPorDia = input(f"¿Costo por dia correcto?, {_habitaciones[costoPorDia]}: ")
+        aire = input(f"¿Servicio aire acondicionado: Si[True] No[False]?, {_habitaciones[aire]}: ")
+        frigo = input(f"¿Servicio frigobar: Si[True] No[False]?, {_habitaciones[frigo]}: ")
+        balcon = input(f"¿Servicio balcon: Si[True] No[False]?, {_habitaciones[balcon]}: ")
+
+        habitacionModificada = {
+        
+        "disponible": disponible,
+        "capacidad": capacidad,
+        "costo por dia": costoPorDia,
+        "servicios": {
+            "aire acondicionado": aire,
+            "frigobar": frigo,
+            "balcon": balcon 
+            }
+        }
+        _habitaciones[nroHabitacion] = habitacionModificada
         print("Cliente modificado con exito.")
 
 #----------------------------------------------------------------------------------------------
@@ -212,93 +297,93 @@ def main():
 
         # Diccionario de datos de productos: KEY=Código de producto, VALUE=Otros datos del producto
     habitaciones = {
-        "habitacion 1": {
+        "1": {
             "disponible": True,
             "capacidad": 2,
             "servicios": {
+                "aire condicionado": True,
                 "frigobar": True,
-                "aireAcondicionado": True,
                 "Balcon": True
             }
         },
-        "habitacion 2": {
+        "2": {
             "disponible": True,
             "capacidad": 4,
             "servicios": {
+                "aire condicionado": True,
                 "frigobar": True,
-                "aireAcondicionado": True,
                 "Balcon": True
             }
         },
-        "habitacion 3": {
+        "3": {
             "disponible": True,
             "capacidad": 2,
             "servicios": {
-                "frigobar": True,
+                "aire acondicionado": True,
                 "aireAcondicionado": True,
                 "Balcon": True
             }
         },
-        "habitacion 4": {
+        "4": {
             "disponible": True,
             "capacidad": 6,
             "servicios": {
-                "frigobar": True,
-                "aireAcondicionado": False,
+                "aire acondicionado": True,
+                "frigobar": False,
                 "Balcon": False
             }
         },
-        "habitacion 5": {
+        "5": {
             "disponible": True,
             "capacidad": 4,
             "servicios": {
+                "aire acondicionado": True,
                 "frigobar": True,
-                "aireAcondicionado": True,
                 "Balcon": True
             }
         },
-        "habitacion 6": {
+        "6": {
             "disponible": True,
             "capacidad": 2,
             "servicios": {
+                "aire acondicionado": True,
                 "frigobar": True,
-                "aireAcondicionado": True,
                 "Balcon": True
             }
         },
-        "habitacion 7": {
+        "7": {
             "disponible": True,
             "capacidad": 3,
             "servicios": {
+                "aire acondicionado": True,
                 "frigobar": True,
-                "aireAcondicionado": True,
                 "Balcon": True
             }
         },
-        "habitacion 8": {
+        "8": {
             "disponible": True,
             "capacidad": 4,
             "servicios": {
+                "aire acondicionado": True,
                 "frigobar": True,
-                "aireAcondicionado": True,
                 "Balcon": True
             }
         },
-        "habitacion 9": {
+        "9": {
             "disponible": True,
             "capacidad": 2,
             "servicios": {
-                "frigobar": True,
-                "aireAcondicionado": False,
+                "aire acondicionado": True,
+                "frigobar": False,
                 "Balcon": True
             }
         },
-        "habitacion 10": {
+        "10": {
             "disponible": True,
             "capacidad": 6,
             "servicios": {
+                "aire acondicionado": True,
                 "frigobar": True,
-                "aireAcondicionado": True,
                 "Balcon": False
             }
         }
@@ -413,16 +498,16 @@ def main():
                     break # No sale del programa, sino que vuelve al menú anterior
                 
                 elif opcionSubmenu == "1":   # Opción 1 del submenú
-                    ...
+                    altaHabitacion(habitaciones)
                     
                 elif opcionSubmenu == "2":   # Opción 2 del submenú
-                    habitaciones = modificarHabitaciones(habitaciones)
+                    modificarHabitacion(habitaciones)
                 
                 elif opcionSubmenu == "3":   # Opción 3 del submenú
-                    ...
+                    inactivarHabitacion(habitaciones)
                 
                 elif opcionSubmenu == "4":   # Opción 4 del submenú
-                    listarHabitaciones(habitaciones)
+                    listarHabitacionesActivas(habitaciones)
 
                 input("\nPresione ENTER para volver al menú.") # Pausa entre opciones
                 print("\n\n")
