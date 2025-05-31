@@ -22,9 +22,28 @@ from datetime import date
 #----------------------------------------------------------------------------------------------
 # FUNCIONES
 #----------------------------------------------------------------------------------------------
-def altaCliente(clientes):
-    ...
-    return clientes
+def altaCliente(clientela):
+    dni = input("Ingresa tu DNI: ")
+    if dni in clientela:
+        return "El cliente ya existe."
+    
+    nombre = input("Ingresa tu nombre: ")
+    edad = int(input("Ingrese su edad: "))
+    telefono = input("Ingrese su numero de telefono: ")
+    alterno = input("Ingresa un segundo numero de telefono (Opcional): ")
+
+
+    nuevoCliente = {
+        "activo": True,
+        "nombre": nombre,
+        "edad": edad,
+        "télefonos": {
+            "telefono": telefono,
+            "telefono alterno": alterno,
+            }
+        }
+    clientela[dni] = nuevoCliente
+    return "Cliente agregado con exito"
 
 
 def inactivarCliente(_clientes):
@@ -63,10 +82,7 @@ def listarClientesActivos(clientela):
             for tarjeta, nombreTarjeta in otrosDatos.get("tarjetas", {}).items():
                 if nombreTarjeta:  # No imprimir tarjetas vacías
                     print(f"\t{tarjeta}: {nombreTarjeta}")
-            
-            print()
-            
-    
+            print("========================================")
     return
 
 def modificarCliente(clientela):
@@ -75,47 +91,20 @@ def modificarCliente(clientela):
         
         activo = input("Activo[True], Baja[False]: ")
         nombre = input(f"¿Nombre correcto?, {clientela[nombre]}: ")
-        tarjeta1 = input(f"¿Tarjeta 1 correcta?, {clientela[tarjeta1]}: ")
-        tarjeta2 = input(f"¿Tarjeta 2 correcta?, {clientela[tarjeta2]}: ")
-        tarjeta3 = input(f"¿Tarjeta 3 correcta?, {clientela[tarjeta3]}: ")
+        movil = input(f"¿Numero de télefono 1 correcto?, {clientela[movil]}: ")
+        alterno = input(f"¿Numero de télefono 2 correcto?, {clientela[alterno]}: ")
 
         clienteModificado = {
         
         "activo": activo,
         "nombre": nombre,
-        "tarjetas": {
-            "tarjeta1": tarjeta1,
-            "tarjeta2": tarjeta2,
-            "tarjeta3": tarjeta3,
+        "télefonos": {
+            "télefono1": movil,
+            "télefono2": alterno
             }
         }
         clientela[dni] = clienteModificado
         print("Cliente modificado con exito.")
-        
-def nuevoCliente(clientela):
-    dni= input("Ingresa tu DNI: ")
-    if dni in clientela:
-        print("El cliente ya existe.")
-        return
-    
-    nombre = input("Ingresa tu nombre: ")
-    tarjeta1 = input("Ingresa la primera tarjeta(Opcional): ")
-    tarjeta2 = input("Ingresa la segunda tarjeta(Opcional): ")
-    tarjeta3 = input("Ingresa la tercera tarjeta(Opcional): ")
-
-    nuevoCliente = {
-        "activo": True,
-        "nombre": nombre,
-        "tarjetas": {
-            "tarjeta1": tarjeta1,
-            "tarjeta2": tarjeta2,
-            "tarjeta3": tarjeta3,
-            }
-        }
-    clientela[dni] = nuevoCliente
-    print("Cliente agregado con exito.")
-    return
-
 
 #----------------------------------------------------------------------------------------------
 # CUERPO PRINCIPAL
@@ -129,112 +118,94 @@ def main():
 
     # Diccionario de datos de clientes: KEY=Documento del cliente, VALUE=Otros datos del cliente
     clientela = {
-        "38472910": {
-            "activo": True,
-            "nombre": "Tomás Ibáñez",
-            "tarjetas": {
-                "tarjeta1": "MASTER",
-                "tarjeta2": "",
-                "tarjeta3": ""
-            }
-        },
         "39592834": {
             "activo": True,
             "nombre": "Micaela Robles",
             "edad": 26,
-            "sexo": "F",
-            "tarjetas": {
-                "tarjeta1": "VISA",
-                "tarjeta2": "AMEX",
-                "tarjeta3": ""
+            "télefonos": {
+                "móvil": "11 5002415123",
+                "alterno": ""
             }
         },
-        "41294837": {
+        "431223345": {
             "activo": True,
-            "nombre": "Andrés Quiroga",
-            "edad": 31,
-            "sexo": "M",
-            "tarjetas": {
-                "tarjeta1": "AMEX",
-                "tarjeta2": "MASTER",
-                "tarjeta3": "VISA"
+            "nombre": "Martin Gonzales",
+            "edad": 26,
+            "télefonos": {
+                "móvil": "11 500245621",
+                "alterno": ""
             }
         },
-        "40291736": {
+        "33451678": {
             "activo": True,
-            "nombre": "Florencia Salas",
-            "edad": 25,
-            "sexo": "F",
-            "tarjetas": {
-                "tarjeta1": "MASTER",
-                "tarjeta2": "VISA",
-                "tarjeta3": ""
+            "nombre": "Fito Parrez",
+            "edad": 26,
+            "télefonos": {
+                "móvil": "11 500241234",
+                "alterno": ""
             }
         },
-        "39284730": {
+        "15675431": {
             "activo": True,
-            "nombre": "Rodrigo Cabrera",
-            "edad": 37,
-            "sexo": "M",
-            "tarjetas": {
-                "tarjeta1": "AMEX",
-                "tarjeta2": "",
-                "tarjeta3": ""
+            "nombre": "Gonzalo Robledo",
+            "edad": 26,
+            "télefonos": {
+                "móvil": "11 500241252",
+                "alterno": ""
             }
         },
-        "38817290": {
+        "423411123": {
             "activo": True,
-            "nombre": "Elena Ponce",
-            "edad": 30,
-            "sexo": "F",
-            "tarjetas": {
-                "tarjeta1": "VISA",
-                "tarjeta2": "MASTER",
-                "tarjeta3": "AMEX"
+            "nombre": "Martin Serin",
+            "edad": 26,
+            "télefonos": {
+                "móvil": "11 500241211",
+                "alterno": ""
             }
         },
-        "40671829": {
+        "11234124": {
             "activo": True,
-            "nombre": "Matías Barreto",
-            "edad": 33,
-            "sexo": "M",
-            "tarjetas": {
-                "tarjeta1": "MASTER",
-                "tarjeta2": "",
-                "tarjeta3": ""
+            "nombre": "Gaston Soldati",
+            "edad": 26,
+            "télefonos": {
+                "móvil": "11 695241234",
+                "alterno": ""
             }
         },
-        "37928192": {
+        "41234124": {
             "activo": True,
-            "nombre": "Julieta San Martín",
-            "edad": 28,
-            "sexo": "F",
-            "tarjetas": {
-                "tarjeta1": "VISA",
-                "tarjeta2": "AMEX",
-                "tarjeta3": ""
+            "nombre": "Marcelo Chavez",
+            "edad": 26,
+            "télefonos": {
+                "móvil": "11 531241234",
+                "alterno": ""
             }
         },
-        "40718293": {
+        "45212342": {
             "activo": True,
-            "nombre": "Iván Méndez",
-            "edad": 35,
-            "sexo": "M",
-            "tarjetas": {
-                "tarjeta1": "AMEX",
-                "tarjeta2": "VISA",
-                "tarjeta3": "MASTER"
+            "nombre": "Fernando Alonso",
+            "edad": 26,
+            "télefonos": {
+                "móvil": "11 498241234",
+                "alterno": ""
             }
         },
-        "38571820": {
+        "2142142": {
             "activo": True,
-            "nombre": "Pamela Córdoba",
-            "edad": 34,
-            "sexo": "F",
-            "tarjetas": {
-                "tarjeta1": "MASTER",
-                "tarjeta2": "AMEX",
-                "tarjeta3": ""
+            "nombre": "Martin Gimenez",
+            "edad": 26,
+            "télefonos": {
+                "móvil": "11 233241234",
+                "alterno": ""
+            }
+        },
+        "4042132": {
+            "activo": True,
+            "nombre": "Lionel Messi",
+            "edad": 26,
+            "télefonos": {
+                "móvil": "11 503241234",
+                "alterno": ""
             }
         }
     }
@@ -378,7 +349,7 @@ def main():
                     print("---------------------------")
                     print("[1] Ingresar Cliente")
                     print("[2] Modificar cliente")
-                    print("[3] Eliminar cliente")
+                    print("[3] Inactivar cliente")
                     print("[4] Listado de clientes")
                     print("---------------------------")
                     print("[0] Volver al menú anterior")
@@ -396,7 +367,7 @@ def main():
                     break # No sale del programa, sino que vuelve al menú anterior
                 
                 elif opcionSubmenu == "1":   # Opción 1 del submenú
-                    nuevoCliente(clientela)
+                    altaCliente(clientela)
                     
                     
                     
@@ -405,7 +376,7 @@ def main():
                     
                 
                 elif opcionSubmenu == "3":   # Opción 3 del submenú
-                    ...
+                    inactivarCliente(clientela)
                 
                 elif opcionSubmenu == "4":   # Opción 4 del submenú
                     
