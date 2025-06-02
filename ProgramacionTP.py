@@ -25,22 +25,22 @@ from datetime import date
 def altaCliente(_clientes):
     dni = input("Ingresa tu DNI: ")
     if dni in _clientes:
-        return "El cliente ya existe."
+        print("El cliente ya existe.")
     
     nombre = input("Ingresa tu nombre: ")
     edad = int(input("Ingrese su edad: "))
     telefono = input("Ingrese su numero de telefono: ")
-    alterno = input("Ingresa un segundo numero de telefono. Si no tiene otro telefono digite[0]: ")
+    alterno = input("Ingresa un segundo numero de telefono. Si no tiene otro telefono digite [0]: ")
     if alterno == 0:
-        return "----"
+        print("----")
 
     nuevoCliente = {
         "activo": True,
         "nombre": nombre,
         "edad": edad,
-        "télefonos": {
-            "telefono": telefono,
-            "telefono alterno": alterno,
+        "telefonos": {
+            "movil": telefono,
+            "alterno": alterno,
             }
         }
     _clientes[dni] = nuevoCliente
@@ -98,9 +98,9 @@ def modificarCliente(_clientes):
         
         "activo": activo,
         "nombre": nombre,
-        "télefonos": {
-            "télefono1": movil,
-            "télefono2": alterno
+        "telefonos": {
+            "telefono1": movil,
+            "telefono2": alterno
             }
         }
         _clientes[dni] = clienteModificado
@@ -208,7 +208,7 @@ def main():
             "activo": True,
             "nombre": "Micaela Robles",
             "edad": 26,
-            "télefonos": {
+            "telefonos": {
                 "móvil": "11 5002415123",
                 "alterno": ""
             }
@@ -217,7 +217,7 @@ def main():
             "activo": True,
             "nombre": "Martin Gonzales",
             "edad": 26,
-            "télefonos": {
+            "telefonos": {
                 "móvil": "11 500245621",
                 "alterno": "1124070486"
             }
@@ -226,7 +226,7 @@ def main():
             "activo": True,
             "nombre": "Fito Parrez",
             "edad": 26,
-            "télefonos": {
+            "telefonos": {
                 "móvil": "11 500241234",
                 "alterno": ""
             }
@@ -235,7 +235,7 @@ def main():
             "activo": True,
             "nombre": "Gonzalo Robledo",
             "edad": 26,
-            "télefonos": {
+            "telefonos": {
                 "móvil": "11 500241252",
                 "alterno": ""
             }
@@ -244,7 +244,7 @@ def main():
             "activo": True,
             "nombre": "Martin Serin",
             "edad": 26,
-            "télefonos": {
+            "telefonos": {
                 "móvil": "11 500241211",
                 "alterno": ""
             }
@@ -253,7 +253,7 @@ def main():
             "activo": True,
             "nombre": "Gaston Soldati",
             "edad": 26,
-            "télefonos": {
+            "telefonos": {
                 "móvil": "11 695241234",
                 "alterno": ""
             }
@@ -262,7 +262,7 @@ def main():
             "activo": True,
             "nombre": "Marcelo Chavez",
             "edad": 26,
-            "télefonos": {
+            "telefonos": {
                 "móvil": "11 531241234",
                 "alterno": ""
             }
@@ -271,7 +271,7 @@ def main():
             "activo": True,
             "nombre": "Fernando Alonso",
             "edad": 26,
-            "télefonos": {
+            "telefonos": {
                 "móvil": "11 498241234",
                 "alterno": ""
             }
@@ -280,7 +280,7 @@ def main():
             "activo": True,
             "nombre": "Martin Gimenez",
             "edad": 26,
-            "télefonos": {
+            "telefonos": {
                 "móvil": "11 233241234",
                 "alterno": ""
             }
@@ -289,7 +289,7 @@ def main():
             "activo": True,
             "nombre": "Lionel Messi",
             "edad": 26,
-            "télefonos": {
+            "telefonos": {
                 "móvil": "11 503241234",
                 "alterno": ""
             }
