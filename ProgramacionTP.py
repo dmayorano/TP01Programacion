@@ -16,6 +16,7 @@ Pendientes:
 # MÓDULOS
 #----------------------------------------------------------------------------------------------
 from datetime import date
+import time
 
 
 
@@ -190,6 +191,35 @@ def modificarHabitacion(_habitaciones):
         }
         _habitaciones[nroHabitacion] = habitacionModificada
         print("Cliente modificado con exito.")
+
+def agendarReserva(_clientes,_habitaciones):
+    capacidad = int(input("Ingrese cantidad de personas: "))
+
+    aireAcondicionado = input("Busca habitacion con aire acondicionado? (s/n): ").lower()
+    if aireAcondicionado == "s":
+        aireAcondicionado = True
+    else:
+        aireAcondicionado = False
+
+    frigo = input("Busca habitacion con frigobar? (s/n): ").lower()
+    if frigo == "s":
+        frigo = True
+    else:
+        frigo = False
+        
+    balcon = input("busca habitacion con balcon? (s/n): ").lower()
+    if balcon == "s":
+        balcon = True
+    else:
+        balcon = False
+
+    for id, otrosDatos in _habitaciones.items():
+        if (otrosDatos.get('disponible') and capacidad == otrosDatos.get('cantidadPersonas') and aireAcondicionado == otrosDatos.get('servicios', {}).get('aireAcondicionado')):
+            fechaEntrada= input("")
+            idReserva= time.localtime()
+
+
+
 
 #----------------------------------------------------------------------------------------------
 # CUERPO PRINCIPAL
