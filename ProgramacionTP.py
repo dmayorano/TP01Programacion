@@ -15,7 +15,6 @@ Pendientes:
 #----------------------------------------------------------------------------------------------
 # MÓDULOS
 #----------------------------------------------------------------------------------------------
-from datetime import date
 import time
 
 
@@ -26,21 +25,22 @@ import time
 def altaCliente(_clientes):
     dni = input("Ingresa tu DNI: ")
     if dni in _clientes:
-        return "El cliente ya existe."
+        print("El cliente ya existe.")
     
     nombre = input("Ingresa tu nombre: ")
     edad = int(input("Ingrese su edad: "))
     telefono = input("Ingrese su numero de telefono: ")
-    alterno = input("Ingresa un segundo numero de telefono (Opcional): ")
-
+    alterno = input("Ingresa un segundo numero de telefono. Si no tiene otro telefono digite [0]: ")
+    if alterno == 0:
+        print("----")
 
     nuevoCliente = {
         "activo": True,
         "nombre": nombre,
         "edad": edad,
-        "télefonos": {
-            "telefono": telefono,
-            "telefono alterno": alterno,
+        "telefonos": {
+            "movil": telefono,
+            "alterno": alterno,
             }
         }
     _clientes[dni] = nuevoCliente
@@ -67,7 +67,7 @@ def listarClientesActivos(_clientes):
     """
     Lista todos los clientes activos y sus detalles de tarjetas.
     """
-    # Se muestran todos los datos del cliente y el detalle de sus tarjetas
+    # Se muestran todos los datos del cliente y el detalle 
     for dni, otrosDatos in _clientes.items():
         if otrosDatos['activo']:  # Filtro para clientes activos
             
@@ -98,9 +98,9 @@ def modificarCliente(_clientes):
         
         "activo": activo,
         "nombre": nombre,
-        "télefonos": {
-            "télefono1": movil,
-            "télefono2": alterno
+        "telefonos": {
+            "telefono1": movil,
+            "telefono2": alterno
             }
         }
         _clientes[dni] = clienteModificado
@@ -237,7 +237,7 @@ def main():
             "activo": True,
             "nombre": "Micaela Robles",
             "edad": 26,
-            "télefonos": {
+            "telefonos": {
                 "móvil": "11 5002415123",
                 "alterno": ""
             }
@@ -246,16 +246,16 @@ def main():
             "activo": True,
             "nombre": "Martin Gonzales",
             "edad": 26,
-            "télefonos": {
+            "telefonos": {
                 "móvil": "11 500245621",
-                "alterno": ""
+                "alterno": "1124070486"
             }
         },
         "33451678": {
             "activo": True,
             "nombre": "Fito Parrez",
             "edad": 26,
-            "télefonos": {
+            "telefonos": {
                 "móvil": "11 500241234",
                 "alterno": ""
             }
@@ -264,7 +264,7 @@ def main():
             "activo": True,
             "nombre": "Gonzalo Robledo",
             "edad": 26,
-            "télefonos": {
+            "telefonos": {
                 "móvil": "11 500241252",
                 "alterno": ""
             }
@@ -273,7 +273,7 @@ def main():
             "activo": True,
             "nombre": "Martin Serin",
             "edad": 26,
-            "télefonos": {
+            "telefonos": {
                 "móvil": "11 500241211",
                 "alterno": ""
             }
@@ -282,7 +282,7 @@ def main():
             "activo": True,
             "nombre": "Gaston Soldati",
             "edad": 26,
-            "télefonos": {
+            "telefonos": {
                 "móvil": "11 695241234",
                 "alterno": ""
             }
@@ -291,7 +291,7 @@ def main():
             "activo": True,
             "nombre": "Marcelo Chavez",
             "edad": 26,
-            "télefonos": {
+            "telefonos": {
                 "móvil": "11 531241234",
                 "alterno": ""
             }
@@ -300,7 +300,7 @@ def main():
             "activo": True,
             "nombre": "Fernando Alonso",
             "edad": 26,
-            "télefonos": {
+            "telefonos": {
                 "móvil": "11 498241234",
                 "alterno": ""
             }
@@ -309,7 +309,7 @@ def main():
             "activo": True,
             "nombre": "Martin Gimenez",
             "edad": 26,
-            "télefonos": {
+            "telefonos": {
                 "móvil": "11 233241234",
                 "alterno": ""
             }
@@ -318,7 +318,7 @@ def main():
             "activo": True,
             "nombre": "Lionel Messi",
             "edad": 26,
-            "télefonos": {
+            "telefonos": {
                 "móvil": "11 503241234",
                 "alterno": ""
             }
@@ -421,6 +421,120 @@ def main():
         
         
         # Diccionario de datos de ventas: KEY=Código de venta, VALUE=Otros datos de la venta
+
+reserva = {
+    "1": {
+        "idReserva": "1",
+        "fechaHoraRegistro": time.strftime("%Y.%m.%d %H.%M.%S"),  # "AAAA.MM.DD hh.mm.ss"
+        "dni": "39592834",
+        "nrohabitacion": "2",
+        "activo": True,
+        "cantidadPersonas": 2,
+        "fechaEntrada": "2025.06.02 14.00",  # ejemplo, debe ingresarse
+        "fechaSalida": "2025.06.05 10.00",   # ejemplo, debe ingresarse
+        "metodoPago": "Tarjeta"
+    },
+    "2": {
+        "idReserva": "2",
+        "fechaHoraRegistro": time.strftime("%Y.%m.%d %H.%M.%S"),
+        "dni": "431223345",
+        "nrohabitacion": "4",
+        "activo": True,
+        "cantidadPersonas": 4,
+        "fechaEntrada": "2025.06.10 12.00",
+        "fechaSalida": "2025.06.15 10.00",
+        "metodoPago": "Efectivo"
+    },
+    "3": {
+        "idReserva": "3",
+        "fechaHoraRegistro": time.strftime("%Y.%m.%d %H.%M.%S"),  # "AAAA.MM.DD hh.mm.ss"
+        "dni": "39592834",
+        "nrohabitacion": "2",
+        "activo": True,
+        "cantidadPersonas": 2,
+        "fechaEntrada": "2025.06.02 14.00",  # ejemplo, debe ingresarse
+        "fechaSalida": "2025.06.05 10.00",   # ejemplo, debe ingresarse
+        "metodoPago": "Tarjeta"
+    },
+    "4": {
+        "idReserva": "4",
+        "fechaHoraRegistro": time.strftime("%Y.%m.%d %H.%M.%S"),
+        "dni": "431223345",
+        "nrohabitacion": "4",
+        "activo": True,
+        "cantidadPersonas": 4,
+        "fechaEntrada": "2025.06.10 12.00",
+        "fechaSalida": "2025.06.15 10.00",
+        "metodoPago": "Efectivo"
+    },
+    "5": {
+        "idReserva": "5",
+        "fechaHoraRegistro": time.strftime("%Y.%m.%d %H.%M.%S"),
+        "dni": "431223345",
+        "nrohabitacion": "4",
+        "activo": True,
+        "cantidadPersonas": 4,
+        "fechaEntrada": "2025.06.10 12.00",
+        "fechaSalida": "2025.06.15 10.00",
+        "metodoPago": "Efectivo"
+    },    
+    "6": {
+        "idReserva": "6",
+        "fechaHoraRegistro": time.strftime("%Y.%m.%d %H.%M.%S"),  # "AAAA.MM.DD hh.mm.ss"
+        "dni": "39592834",
+        "nrohabitacion": "2",
+        "activo": True,
+        "cantidadPersonas": 2,
+        "fechaEntrada": "2025.06.02 14.00",  # ejemplo, debe ingresarse
+        "fechaSalida": "2025.06.05 10.00",   # ejemplo, debe ingresarse
+        "metodoPago": "Tarjeta"
+    },
+    "7": {
+        "idReserva": "7",
+        "fechaHoraRegistro": time.strftime("%Y.%m.%d %H.%M.%S"),
+        "dni": "431223345",
+        "nrohabitacion": "4",
+        "activo": True,
+        "cantidadPersonas": 4,
+        "fechaEntrada": "2025.06.10 12.00",
+        "fechaSalida": "2025.06.15 10.00",
+        "metodoPago": "Efectivo"
+    },
+    "8": {
+        "idReserva": "8",
+        "fechaHoraRegistro": time.strftime("%Y.%m.%d %H.%M.%S"),  # "AAAA.MM.DD hh.mm.ss"
+        "dni": "39592834",
+        "nrohabitacion": "2",
+        "activo": True,
+        "cantidadPersonas": 2,
+        "fechaEntrada": "2025.06.02 14.00",  # ejemplo, debe ingresarse
+        "fechaSalida": "2025.06.05 10.00",   # ejemplo, debe ingresarse
+        "metodoPago": "Tarjeta"
+    },
+    "9": {
+        "idReserva": "9",
+        "fechaHoraRegistro": time.strftime("%Y.%m.%d %H.%M.%S"),
+        "dni": "431223345",
+        "nrohabitacion": "4",
+        "activo": True,
+        "cantidadPersonas": 4,
+        "fechaEntrada": "2025.06.10 12.00",
+        "fechaSalida": "2025.06.15 10.00",
+        "metodoPago": "Efectivo"
+    },
+    "10": {
+        "idReserva": "10",
+        "fechaHoraRegistro": time.strftime("%Y.%m.%d %H.%M.%S"),
+        "dni": "431223345",
+        "nrohabitacion": "4",
+        "activo": True,
+        "cantidadPersonas": 4,
+        "fechaEntrada": "2025.06.10 12.00",
+        "fechaSalida": "2025.06.15 10.00",
+        "metodoPago": "Efectivo"
+    }
+
+}
 
 
 
@@ -567,6 +681,7 @@ def main():
                     break # No sale del programa, sino que vuelve al menú anterior
                 
                 elif opcionSubmenu == "1":   # Opción 1 del submenú
+                    altaReserva(reserva)
                     input("\nPresione ENTER para volver al menú.") # Pausa entre opciones
                     print("\n\n")
 
