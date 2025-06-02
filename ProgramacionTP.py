@@ -30,8 +30,9 @@ def altaCliente(_clientes):
     nombre = input("Ingresa tu nombre: ")
     edad = int(input("Ingrese su edad: "))
     telefono = input("Ingrese su numero de telefono: ")
-    alterno = input("Ingresa un segundo numero de telefono (Opcional): ")
-
+    alterno = input("Ingresa un segundo numero de telefono. Si no tiene otro telefono digite[0]: ")
+    if alterno == 0:
+        return "----"
 
     nuevoCliente = {
         "activo": True,
@@ -66,7 +67,7 @@ def listarClientesActivos(_clientes):
     """
     Lista todos los clientes activos y sus detalles de tarjetas.
     """
-    # Se muestran todos los datos del cliente y el detalle de sus tarjetas
+    # Se muestran todos los datos del cliente y el detalle 
     for dni, otrosDatos in _clientes.items():
         if otrosDatos['activo']:  # Filtro para clientes activos
             
@@ -218,7 +219,7 @@ def main():
             "edad": 26,
             "télefonos": {
                 "móvil": "11 500245621",
-                "alterno": ""
+                "alterno": "1124070486"
             }
         },
         "33451678": {
