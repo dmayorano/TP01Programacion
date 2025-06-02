@@ -78,7 +78,7 @@ def listarClientesActivos(_clientes):
             print(f"EDAD: {otrosDatos.get('edad', 'No disponible')}")
 
             print("TELEFONOS:")
-            for telefono, numeroTelefono in otrosDatos.get("telefonos", {}).items():
+            for telefono, numeroTelefono in otrosDatos.get("télefonos", {}).items():
                 if numeroTelefono:  # No imprimir tarjetas vacías
                     print(f"\t{telefono}: {numeroTelefono}")
             print("========================================")
