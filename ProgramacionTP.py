@@ -15,7 +15,7 @@ Pendientes:
 #----------------------------------------------------------------------------------------------
 # MÓDULOS
 #----------------------------------------------------------------------------------------------
-from datetime import date
+import time
 
 
 
@@ -191,6 +191,35 @@ def modificarHabitacion(_habitaciones):
         }
         _habitaciones[nroHabitacion] = habitacionModificada
         print("Cliente modificado con exito.")
+
+def altaReserva(_reservas):
+    """
+    Registra una nueva reserva.
+    """
+    idReserva = str(len(_reservas) + 1)
+    fechaHoraActual = time.strftime("%Y.%m.%d %H.%M.%S")
+    dni = input("DNI del cliente: ")
+    nrohabitacion = input("Número de habitación: ")
+    activo = True
+    cantidadPersonas = int(input("Cantidad de personas: "))
+    fechaEntrada = input("Fecha de entrada (AAAA.MM.DD HH.MM): ")
+    fechaSalida = input("Fecha de salida (AAAA.MM.DD HH.MM): ")
+    metodoPago = input("Método de pago: ")
+
+    _reservas[idReserva] = {
+        "idReserva": idReserva,
+        "fechaHoraRegistro": fechaHoraActual,
+        "dni": dni,
+        "nrohabitacion": nrohabitacion,
+        "activo": activo,
+        "cantidadPersonas": cantidadPersonas,
+        "fechaEntrada": fechaEntrada,
+        "fechaSalida": fechaSalida,
+        "metodoPago": metodoPago
+    }
+    print("Reserva registrada con éxito.")
+    return _reservas
+
 
 #----------------------------------------------------------------------------------------------
 # CUERPO PRINCIPAL
@@ -393,6 +422,120 @@ def main():
         
         # Diccionario de datos de ventas: KEY=Código de venta, VALUE=Otros datos de la venta
 
+reserva = {
+    "1": {
+        "idReserva": "1",
+        "fechaHoraRegistro": time.strftime("%Y.%m.%d %H.%M.%S"),  # "AAAA.MM.DD hh.mm.ss"
+        "dni": "39592834",
+        "nrohabitacion": "2",
+        "activo": True,
+        "cantidadPersonas": 2,
+        "fechaEntrada": "2025.06.02 14.00",  # ejemplo, debe ingresarse
+        "fechaSalida": "2025.06.05 10.00",   # ejemplo, debe ingresarse
+        "metodoPago": "Tarjeta"
+    },
+    "2": {
+        "idReserva": "2",
+        "fechaHoraRegistro": time.strftime("%Y.%m.%d %H.%M.%S"),
+        "dni": "431223345",
+        "nrohabitacion": "4",
+        "activo": True,
+        "cantidadPersonas": 4,
+        "fechaEntrada": "2025.06.10 12.00",
+        "fechaSalida": "2025.06.15 10.00",
+        "metodoPago": "Efectivo"
+    },
+    "3": {
+        "idReserva": "3",
+        "fechaHoraRegistro": time.strftime("%Y.%m.%d %H.%M.%S"),  # "AAAA.MM.DD hh.mm.ss"
+        "dni": "39592834",
+        "nrohabitacion": "2",
+        "activo": True,
+        "cantidadPersonas": 2,
+        "fechaEntrada": "2025.06.02 14.00",  # ejemplo, debe ingresarse
+        "fechaSalida": "2025.06.05 10.00",   # ejemplo, debe ingresarse
+        "metodoPago": "Tarjeta"
+    },
+    "4": {
+        "idReserva": "4",
+        "fechaHoraRegistro": time.strftime("%Y.%m.%d %H.%M.%S"),
+        "dni": "431223345",
+        "nrohabitacion": "4",
+        "activo": True,
+        "cantidadPersonas": 4,
+        "fechaEntrada": "2025.06.10 12.00",
+        "fechaSalida": "2025.06.15 10.00",
+        "metodoPago": "Efectivo"
+    },
+    "5": {
+        "idReserva": "5",
+        "fechaHoraRegistro": time.strftime("%Y.%m.%d %H.%M.%S"),
+        "dni": "431223345",
+        "nrohabitacion": "4",
+        "activo": True,
+        "cantidadPersonas": 4,
+        "fechaEntrada": "2025.06.10 12.00",
+        "fechaSalida": "2025.06.15 10.00",
+        "metodoPago": "Efectivo"
+    },    
+    "6": {
+        "idReserva": "6",
+        "fechaHoraRegistro": time.strftime("%Y.%m.%d %H.%M.%S"),  # "AAAA.MM.DD hh.mm.ss"
+        "dni": "39592834",
+        "nrohabitacion": "2",
+        "activo": True,
+        "cantidadPersonas": 2,
+        "fechaEntrada": "2025.06.02 14.00",  # ejemplo, debe ingresarse
+        "fechaSalida": "2025.06.05 10.00",   # ejemplo, debe ingresarse
+        "metodoPago": "Tarjeta"
+    },
+    "7": {
+        "idReserva": "7",
+        "fechaHoraRegistro": time.strftime("%Y.%m.%d %H.%M.%S"),
+        "dni": "431223345",
+        "nrohabitacion": "4",
+        "activo": True,
+        "cantidadPersonas": 4,
+        "fechaEntrada": "2025.06.10 12.00",
+        "fechaSalida": "2025.06.15 10.00",
+        "metodoPago": "Efectivo"
+    },
+    "8": {
+        "idReserva": "8",
+        "fechaHoraRegistro": time.strftime("%Y.%m.%d %H.%M.%S"),  # "AAAA.MM.DD hh.mm.ss"
+        "dni": "39592834",
+        "nrohabitacion": "2",
+        "activo": True,
+        "cantidadPersonas": 2,
+        "fechaEntrada": "2025.06.02 14.00",  # ejemplo, debe ingresarse
+        "fechaSalida": "2025.06.05 10.00",   # ejemplo, debe ingresarse
+        "metodoPago": "Tarjeta"
+    },
+    "9": {
+        "idReserva": "9",
+        "fechaHoraRegistro": time.strftime("%Y.%m.%d %H.%M.%S"),
+        "dni": "431223345",
+        "nrohabitacion": "4",
+        "activo": True,
+        "cantidadPersonas": 4,
+        "fechaEntrada": "2025.06.10 12.00",
+        "fechaSalida": "2025.06.15 10.00",
+        "metodoPago": "Efectivo"
+    },
+    "10": {
+        "idReserva": "10",
+        "fechaHoraRegistro": time.strftime("%Y.%m.%d %H.%M.%S"),
+        "dni": "431223345",
+        "nrohabitacion": "4",
+        "activo": True,
+        "cantidadPersonas": 4,
+        "fechaEntrada": "2025.06.10 12.00",
+        "fechaSalida": "2025.06.15 10.00",
+        "metodoPago": "Efectivo"
+    }
+
+}
+
 
 
 #-------------------------------------------------
@@ -538,6 +681,7 @@ def main():
                     break # No sale del programa, sino que vuelve al menú anterior
                 
                 elif opcionSubmenu == "1":   # Opción 1 del submenú
+                    altaReserva(reserva)
                     input("\nPresione ENTER para volver al menú.") # Pausa entre opciones
                     print("\n\n")
 
