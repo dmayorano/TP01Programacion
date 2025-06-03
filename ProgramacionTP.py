@@ -492,7 +492,8 @@ def main():
             "cantidadPersonas": 2,
             "fechaDeEntrada": "02/06/2001",
             "fechaDeSalida": "06/06/2001",
-            "metodoDePago": "Efectivo"},
+            "metodoDePago": "Efectivo",
+            "totalPagar": 20000},
 
         "15/10/10": {
             "dni": "431223345",
@@ -501,7 +502,8 @@ def main():
             "cantidadPersonas": 2,
             "fechaDeEntrada": "02/06/2001",
             "fechaDeSalida": "06/06/2001",
-            "metodoDePago": "Efectivo"},
+            "metodoDePago": "Efectivo",
+            "totalPagar": 20000},
 
         "12/10/10": {
             "dni": "33451678",
@@ -510,7 +512,8 @@ def main():
             "cantidadPersonas": 2,
             "fechaDeEntrada": "02/06/2001",
             "fechaDeSalida": "06/06/2001",
-            "metodoDePago": "Efectivo"},
+            "metodoDePago": "Efectivo",
+            "totalPagar": 20000},
 
         "15/10/10": {
             "dni": "15675431",
@@ -519,7 +522,8 @@ def main():
             "cantidadPersonas": 2,
             "fechaDeEntrada": "02/06/2001",
             "fechaDeSalida": "06/06/2001",
-            "metodoDePago": "Efectivo"},
+            "metodoDePago": "Efectivo",
+            "totalPagar": 20000},
 
         "15/10/10": {
             "dni": "423411123",
@@ -528,7 +532,8 @@ def main():
             "cantidadPersonas": 2,
             "fechaDeEntrada": "02/06/2001",
             "fechaDeSalida": "06/06/2001",
-            "metodoDePago": "Efectivo"},
+            "metodoDePago": "Efectivo",
+            "totalPagar": 20000},
 
         "15/10/10": {
             "dni": "11234124",
@@ -537,7 +542,8 @@ def main():
             "cantidadPersonas": 2,
             "fechaDeEntrada": "02/06/2001",
             "fechaDeSalida": "06/06/2001",
-            "metodoDePago": "Efectivo"},
+            "metodoDePago": "Efectivo",
+            "totalPagar": 20000},
 
         "15/10/10": {
             "dni": "41234124",
@@ -546,7 +552,8 @@ def main():
             "cantidadPersonas": 2,
             "fechaDeEntrada": "02/06/2001",
             "fechaDeSalida": "06/06/2001",
-            "metodoDePago": "Efectivo"},
+            "metodoDePago": "Efectivo",
+            "totalPagar": 20000},
 
         "15/10/10": {
             "dni": "45212342",
@@ -555,7 +562,8 @@ def main():
             "cantidadPersonas": 2,
             "fechaDeEntrada": "02/06/2001",
             "fechaDeSalida": "06/06/2001",
-            "metodoDePago": "Efectivo"},
+            "metodoDePago": "Efectivo",
+            "totalPagar": 20000},
 
         "15/10/10": {
             "dni": "2142142",
@@ -564,7 +572,8 @@ def main():
             "cantidadPersonas": 2,
             "fechaDeEntrada": "02/06/2001",
             "fechaDeSalida": "06/06/2001",
-            "metodoDePago": "Efectivo"},
+            "metodoDePago": "Efectivo",
+            "totalPagar": 20000},
 
         "15/10/10": {
             "dni": "4042132",
@@ -573,7 +582,8 @@ def main():
             "cantidadPersonas": 2,
             "fechaDeEntrada": "02/06/2001",
             "fechaDeSalida": "06/06/2001",
-            "metodoDePago": "Efectivo"},
+            "metodoDePago": "Efectivo",
+            "totalPagar": 20000},
 
 
         }
