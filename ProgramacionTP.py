@@ -228,6 +228,12 @@ def agendarReserva(_clientes,_habitaciones,_reservas):
                 fechaSalida = input("Ingrese la fecha de salida (DD/MM/AAAA): ")
                 metodoPago = input("Ingrese metodo de pago (Efectivo/Tarjeta): ")
 
+                formato = "%d/%m/%Y"
+                fechaEntradaDt = datetime.strptime(fechaEntrada, formato)
+                fechaSalidaDt = datetime.strptime(fechaSalida, formato)
+                diferencia = fechaSalidaDt - fechaEntradaDt
+                dias = diferencia.days
+                totalPagar = dias * habitacionDatos.get('costoPorDia')
                 nuevaReserva = {
                 "idReserva": idReserva,
                 "dni": dni,
@@ -236,11 +242,12 @@ def agendarReserva(_clientes,_habitaciones,_reservas):
                 "cantidadPersonas": capacidad,
                 "fechaDeEntrada": fechaEntrada,
                 "fechaDeSalida": fechaSalida,
-                "metodoDePago": metodoPago
+                "metodoDePago": metodoPago,
+                "totalPagar": totalPagar
                 }
                 _reservas[idReserva]= nuevaReserva
                 _habitaciones[nroHabitacion]['disponible'] == False
-                print("Reserva realizada con exito.")
+                print("Reserva realizada con exito. Total a pagar: ", totalPagar)
                 return
         print("No hay habitacion para esa cantidad de personas y servicios seleccionados.")
     else:
@@ -260,6 +267,7 @@ def listarReservasActivas(_reservas):
             print(f"fechaDeEntrada: {otrosDatos.get('fechaDeEntrada', 'No disponible')}")
             print(f"fechaDeSalida: {otrosDatos.get('fechaDeSalida', 'No disponible')}")
             print(f"metodoDePago: {otrosDatos.get('metodoDePago', 'No disponible')}")
+            print(f"metodoDePago: {otrosDatos.get('totalPagar', 'No disponible')}")
             print("========================================")
     return
 
