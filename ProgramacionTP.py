@@ -31,7 +31,7 @@ def altaCliente(_clientes):
     nombre = input("Ingresa tu nombre: ")
     edad = int(input("Ingrese su edad: "))
     telefono = input("Ingrese su numero de telefono: ")
-    alterno = input("Ingresa un segundo numero de telefono. Si no tiene otro telefono digite [0]: ")
+    alterno = input("Ingresa un segundo numero de telefono. Si no tiene otro simplemente deje el campo vacio: ")
     if alterno == 0:
         print("----")
 
@@ -45,7 +45,9 @@ def altaCliente(_clientes):
             }
         }
     _clientes[dni] = nuevoCliente
-    return "Cliente agregado con exito"
+    print("==============================")
+    print("Cliente agregado con exito.")
+    return
 
 
 def inactivarCliente(_clientes):
@@ -80,7 +82,7 @@ def listarClientesActivos(_clientes):
             print(f"EDAD: {otrosDatos.get('edad', 'No disponible')}")
 
             print("TELEFONOS:")
-            for telefono, numeroTelefono in otrosDatos.get("télefonos", {}).items():
+            for telefono, numeroTelefono in otrosDatos.get("telefonos", {}).items():
                 if numeroTelefono:  # No imprimir tarjetas vacías
                     print(f"\t{telefono}: {numeroTelefono}")
             print("========================================")
