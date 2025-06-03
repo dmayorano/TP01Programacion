@@ -271,6 +271,65 @@ def listarReservasActivas(_reservas):
             print("========================================")
     return
 
+def resumenReservasPorHabitacion(_reservas, _habitaciones):
+    anio = int(input("Ingrese el año a analizar (AAAA): "))
+
+    # Filtrar habitaciones disponibles para filas
+    habitaciones_activas = {nro: datos for nro, datos in _habitaciones.items() if datos['disponible']}
+
+    # Inicializar dict con habitaciones y contador 0
+    resumen = {nro: 0 for nro in habitaciones_activas}
+
+    for reserva in _reservas.values():
+        if reserva['activo']:
+            nroHabitacion = reserva['nroHabitacion']
+            if nroHabitacion in habitaciones_activas:
+                # Convertir fecha de entrada a datetime
+                fecha_entrada = datetime.strptime(reserva['fechaDeEntrada'], "%d/%m/%Y")
+                if fecha_entrada.year == anio:
+                    resumen[nroHabitacion] += 1
+
+    # Imprimir resultado
+    print(f"\nResumen anual de reservas por habitación para el año {anio}:\n")
+    print(f"{'Habitación':15} {'Cantidad Reservas':>20}")
+    print("="*35)
+    for nro, cantidad in resumen.items():
+        print(f"{nro:15} {cantidad:20}")
+
+    return resumen
+
+
+
+def resumenRecaudacionPorHabitacion(_reservas, _habitaciones):
+    anio = input("Ingrese el año que desea consultar (AAAA): ")
+
+    resumen = {}
+
+    # Inicializa resumen solo con habitaciones activas
+    for nroHabitacion, datosHabitacion in _habitaciones.items():
+        if datosHabitacion['disponible']:
+            resumen[nroHabitacion] = 0
+
+    for idReserva, datosReserva in _reservas.items():
+        if datosReserva['activo']:
+            nroHabitacion = datosReserva['nroHabitacion']
+            if nroHabitacion in resumen:
+                fechaEntrada = datosReserva['fechaDeEntrada']
+                fechaEntradaObj = datetime.strptime(fechaEntrada, "%d/%m/%Y")
+
+                if str(fechaEntradaObj.year) == anio:
+                    total = datosReserva['totalPagar']
+                    resumen[nroHabitacion] += total
+
+    print("=======================================")
+    print("Resumen de recaudación por habitación")
+    print(f"Año: {anio}")
+    print("=======================================")
+    print(f"{'Habitación':15} {'Total Recaudado ($)':>20}")
+    print("---------------------------------------")
+    for nroHabitacion, total in resumen.items():
+        print(f"{nroHabitacion:15} {total:20.2f}")
+
 
 
 
@@ -772,10 +831,10 @@ def main():
                     ...
                     
                 elif opcionSubmenu == "2":   # Opción 2 del submenú
-                    ...
+                    resumenReservasPorHabitacion(reservas,habitaciones)
                 
                 elif opcionSubmenu == "3":   # Opción 3 del submenú
-                    ...
+                    resumenRecaudacionPorHabitacion(reservas,habitaciones)
 
                 input("\nPresione ENTER para volver al menú.") # Pausa entre opciones
                 print("\n\n")
