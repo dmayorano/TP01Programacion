@@ -466,7 +466,7 @@ def main():
 
 
         "10/10/10": {
-            "dni": "3488291",
+            "dni": "39592834",
             "nroHabitacion": 1,
             "activo": True,
             "cantidadPersonas": 2,
@@ -475,7 +475,7 @@ def main():
             "metodoDePago": "Efectivo"},
 
         "15/10/10": {
-            "dni": "3488291",
+            "dni": "431223345",
             "nroHabitacion": 1,
             "activo": True,
             "cantidadPersonas": 2,
@@ -484,13 +484,77 @@ def main():
             "metodoDePago": "Efectivo"},
 
         "12/10/10": {
-            "dni": "3488291",
+            "dni": "33451678",
             "nroHabitacion": 1,
             "activo": True,
             "cantidadPersonas": 2,
             "fechaDeEntrada": "02/06/2001",
             "fechaDeSalida": "06/06/2001",
-            "metodoDePago": "Efectivo"}
+            "metodoDePago": "Efectivo"},
+
+        "15/10/10": {
+            "dni": "15675431",
+            "nroHabitacion": 1,
+            "activo": True,
+            "cantidadPersonas": 2,
+            "fechaDeEntrada": "02/06/2001",
+            "fechaDeSalida": "06/06/2001",
+            "metodoDePago": "Efectivo"},
+
+        "15/10/10": {
+            "dni": "423411123",
+            "nroHabitacion": 1,
+            "activo": True,
+            "cantidadPersonas": 2,
+            "fechaDeEntrada": "02/06/2001",
+            "fechaDeSalida": "06/06/2001",
+            "metodoDePago": "Efectivo"},
+
+        "15/10/10": {
+            "dni": "11234124",
+            "nroHabitacion": 1,
+            "activo": True,
+            "cantidadPersonas": 2,
+            "fechaDeEntrada": "02/06/2001",
+            "fechaDeSalida": "06/06/2001",
+            "metodoDePago": "Efectivo"},
+
+        "15/10/10": {
+            "dni": "41234124",
+            "nroHabitacion": 1,
+            "activo": True,
+            "cantidadPersonas": 2,
+            "fechaDeEntrada": "02/06/2001",
+            "fechaDeSalida": "06/06/2001",
+            "metodoDePago": "Efectivo"},
+
+        "15/10/10": {
+            "dni": "45212342",
+            "nroHabitacion": 1,
+            "activo": True,
+            "cantidadPersonas": 2,
+            "fechaDeEntrada": "02/06/2001",
+            "fechaDeSalida": "06/06/2001",
+            "metodoDePago": "Efectivo"},
+
+        "15/10/10": {
+            "dni": "2142142",
+            "nroHabitacion": 1,
+            "activo": True,
+            "cantidadPersonas": 2,
+            "fechaDeEntrada": "02/06/2001",
+            "fechaDeSalida": "06/06/2001",
+            "metodoDePago": "Efectivo"},
+
+        "15/10/10": {
+            "dni": "4042132",
+            "nroHabitacion": 1,
+            "activo": True,
+            "cantidadPersonas": 2,
+            "fechaDeEntrada": "02/06/2001",
+            "fechaDeSalida": "06/06/2001",
+            "metodoDePago": "Efectivo"},
+
 
         }
     
