@@ -267,7 +267,7 @@ def listarReservasActivas(_reservas):
             print(f"fechaDeEntrada: {otrosDatos.get('fechaDeEntrada', 'No disponible')}")
             print(f"fechaDeSalida: {otrosDatos.get('fechaDeSalida', 'No disponible')}")
             print(f"metodoDePago: {otrosDatos.get('metodoDePago', 'No disponible')}")
-            print(f"metodoDePago: {otrosDatos.get('totalPagar', 'No disponible')}")
+            print(f"Total a pagar: $ {otrosDatos.get('totalPagar', 'No disponible')}")
             print("========================================")
     return
 
