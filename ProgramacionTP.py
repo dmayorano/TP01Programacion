@@ -373,6 +373,7 @@ def main():
         "1": {
             "disponible": True,
             "capacidad": 2,
+            "costoPorDia": 10000,
             "servicios": {
                 "aireAcondicionado": True,
                 "frigobar": True,
@@ -382,6 +383,7 @@ def main():
         "2": {
             "disponible": True,
             "capacidad": 4,
+            "costoPorDia": 10000,
             "servicios": {
                 "aire condicionado": True,
                 "frigobar": True,
@@ -391,6 +393,7 @@ def main():
         "3": {
             "disponible": True,
             "capacidad": 2,
+            "costoPorDia": 10000,
             "servicios": {
                 "aire acondicionado": True,
                 "aireAcondicionado": True,
@@ -400,6 +403,7 @@ def main():
         "4": {
             "disponible": True,
             "capacidad": 6,
+            "costoPorDia": 10000,
             "servicios": {
                 "aire acondicionado": True,
                 "frigobar": False,
@@ -409,6 +413,7 @@ def main():
         "5": {
             "disponible": True,
             "capacidad": 4,
+            "costoPorDia": 10000,
             "servicios": {
                 "aire acondicionado": True,
                 "frigobar": True,
@@ -418,6 +423,7 @@ def main():
         "6": {
             "disponible": True,
             "capacidad": 2,
+            "costoPorDia": 10000,
             "servicios": {
                 "aire acondicionado": True,
                 "frigobar": True,
@@ -427,6 +433,7 @@ def main():
         "7": {
             "disponible": True,
             "capacidad": 3,
+            "costoPorDia": 10000,
             "servicios": {
                 "aire acondicionado": True,
                 "frigobar": True,
@@ -436,6 +443,7 @@ def main():
         "8": {
             "disponible": True,
             "capacidad": 4,
+            "costoPorDia": 10000,
             "servicios": {
                 "aire acondicionado": True,
                 "frigobar": True,
@@ -445,6 +453,7 @@ def main():
         "9": {
             "disponible": True,
             "capacidad": 2,
+            "costoPorDia": 10000,
             "servicios": {
                 "aire acondicionado": True,
                 "frigobar": False,
@@ -454,6 +463,7 @@ def main():
         "10": {
             "disponible": True,
             "capacidad": 6,
+            "costoPorDia": 10000,
             "servicios": {
                 "aire acondicionado": True,
                 "frigobar": True,
