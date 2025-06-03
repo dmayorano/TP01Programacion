@@ -247,7 +247,7 @@ def agendarReserva(_clientes,_habitaciones,_reservas):
                 }
                 _reservas[idReserva]= nuevaReserva
                 _habitaciones[nroHabitacion]['disponible'] == False
-                print("Reserva realizada con exito. Total a pagar: ", totalPagar)
+                print("Reserva realizada con exito. Total a pagar: $", totalPagar)
                 return
         print("No hay habitacion para esa cantidad de personas y servicios seleccionados.")
     else:
