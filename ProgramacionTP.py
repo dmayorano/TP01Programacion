@@ -1,14 +1,29 @@
 """
 -----------------------------------------------------------------------------------------------
 Título: Programacion 1 TP
-Fecha: ...
-Autor: ...
+Fecha: 03/06/2025
+Autor: Agustin Avella, Bryan Charra, Damian Mayorano, Nahuel Ganduglia
 
-Descripción: ...
+Descripción: 
+Este es un proyecto desarrollado para la materia Programación I (3.4.071) de la Universidad Argentina de la Empresa (UADE).
+El objetivo es crear un sistema simple de gestión hotelera que permita informatizar y organizar las reservas, habitaciones y clientes del hotel Hotel Transilvania.
+
+📌 Descripción
+El sistema permite llevar el control de:
+
+Clientes: registro de información personal y estado (activo/inactivo).
+Habitaciones: control de disponibilidad, capacidad, costo por día y servicios disponibles.
+Reservas: alta y cancelación de reservas, incluyendo fechas, cantidad de personas, habitación asignada y método de pago.
+⚙️ Características principales
+Informes: para poder estar al tanto a los datos/rendimiento del negocio.
+Implementación de baja lógica para clientes y reservas (no se eliminan registros, solo se actualiza su estado).
+Sistema basado en menús por consola, orientado a prácticas básicas de programación estructurada.
+Diseño de datos basado en entidades maestras (Cliente y Habitación) y una entidad de transacción (Reserva).
+Proyecto orientado al aprendizaje de conceptos fundamentales de desarrollo de software.
 
 Pendientes:
-- LISTADO DE CLIENTES ACTIVOS: FALTA FILTRAR PARA SÓLO LISTAR LOS CLIENTES ACTIVOS
-...
+- Funcion informes por año (cantidad)
+- Funcion informes por año (pesos)
 -----------------------------------------------------------------------------------------------
 """
 
@@ -227,7 +242,6 @@ def agendarReserva(_clientes,_habitaciones,_reservas):
                 fechaEntrada = input("Ingrese la fecha de ingreso (DD/MM/AAAA): ")
                 fechaSalida = input("Ingrese la fecha de salida (DD/MM/AAAA): ")
                 metodoPago = input("Ingrese metodo de pago (Efectivo/Tarjeta): ")
-
                 formato = "%d/%m/%Y"
                 fechaEntradaDt = datetime.strptime(fechaEntrada, formato)
                 fechaSalidaDt = datetime.strptime(fechaSalida, formato)
@@ -235,7 +249,6 @@ def agendarReserva(_clientes,_habitaciones,_reservas):
                 dias = diferencia.days
                 totalPagar = dias * habitacionDatos.get('costoPorDia')
                 nuevaReserva = {
-                "idReserva": idReserva,
                 "dni": dni,
                 "nroHabitacion": nroHabitacion,
                 "activo": True,
@@ -260,7 +273,6 @@ def listarReservasActivas(_reservas):
     # Se muestran todos los datos del cliente y el detalle de sus tarjetas
     for idReserva, otrosDatos in _reservas.items():
         if otrosDatos['activo']:
-            print(f"idReserva: {idReserva}")
             print(f"dni: {otrosDatos.get('dni', 'No disponible')}")
             print(f"nroHabitacion: {otrosDatos.get('nroHabitacion', 'No disponible')}")
             print(f"cantidadPersonas: {otrosDatos.get('cantidadPersonas', 'No disponible')}")
@@ -271,102 +283,28 @@ def listarReservasActivas(_reservas):
             print("========================================")
     return
 
-def resumenReservasAnualPorHabitacion(_reservas, _habitaciones):
-    anio = input("Ingrese el año que desea consultar (AAAA): ")
 
-    # Lista de meses para el encabezado
-    meses = ["Ene", "Feb", "Mar", "Abr", "May", "Jun",
-             "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
+def reporteReservasPorAño(reservas):
+    año = int(input("Ingrese año: "))
+    resumen = {i: [0]*12 for i in range(1, 11)}  # Habitaciones 1 a 10
 
-    # Inicializar resumen: {habitacion: [0]*12}
-    resumen = {}
-    for nroHabitacion, datos in _habitaciones.items():
-        if datos['disponible']:
-            resumen[nroHabitacion] = [0] * 12
+    for datos in reservas.values():
+        if datos["activo"]:
+            fecha_str = datos["fechaDeEntrada"] 
+            fecha = datetime.strptime(fecha_str, "%d/%m/%Y")
+            if fecha.year == año:
+                mes = fecha.month
+                habitacion = int(datos["nroHabitacion"])
+                resumen[habitacion][mes - 1] += 1
 
-    # Recorremos reservas activas y sumamos por mes
-    for idReserva, datosReserva in _reservas.items():
-        if datosReserva['activo']:
-            fechaEntrada = datosReserva['fechaDeEntrada']
-            fechaObj = datetime.strptime(fechaEntrada, "%d/%m/%Y")
-            if str(fechaObj.year) == anio:
-                habitacion = datosReserva['nroHabitacion']
-                mes = fechaObj.month
-                if habitacion in resumen:
-                    resumen[habitacion][mes - 1] += 1
-
-    # Imprimir tabla
-    print("\n===============================================================")
-    print(f"Resumen de cantidad de reservas por habitación - Año {anio}")
-    print("===============================================================")
-    print(f"{'Habitación':12}", end="")
-    for m in meses:
-        print(f"{m:>5}", end="")
-    print()
-
-    for habitacion, valores in resumen.items():
-        print(f"{habitacion:12}", end="")
-        for cantidad in valores:
-            print(f"{cantidad:5}", end="")
-        print()
-
-def resumenRecaudacionAnualPorHabitacion(_reservas, _habitaciones):
-    anio = input("Ingrese el año que desea consultar (AAAA): ")
-
-    meses = ["Ene", "Feb", "Mar", "Abr", "May", "Jun",
-             "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
-
-    # Inicializar resumen: {habitacion: [0]*12}
-    resumen = {}
-    for nroHabitacion, datos in _habitaciones.items():
-        if datos['disponible']:
-            resumen[nroHabitacion] = [0] * 12
-
-    # Recorremos reservas activas y sumamos total recaudado por mes
-    for idReserva, datosReserva in _reservas.items():
-        if datosReserva['activo']:
-            fechaEntrada = datosReserva['fechaDeEntrada']
-            fechaObj = datetime.strptime(fechaEntrada, "%d/%m/%Y")
-            if str(fechaObj.year) == anio:
-                habitacion = datosReserva['nroHabitacion']
-                mes = fechaObj.month
-                total = datosReserva.get('totalPagar', 0)
-                if habitacion in resumen:
-                    resumen[habitacion][mes - 1] += int(total)
-
-    # Imprimir tabla
-    print("\n====================================================================")
-    print(f"Resumen de recaudación por habitación - Año {anio}")
-    print("====================================================================")
-    print(f"{'Habitación':12}", end="")
-    for m in meses:
-        print(f"{m:>8}", end="")
-    print()
-
-    for habitacion, valores in resumen.items():
-        print(f"{habitacion:12}", end="")
-        for monto in valores:
-            print(f"{monto:8}", end="")
-        print()
-           
-def listarReservasPorMes(_reservas):
-    mes = input("Ingrese el mes a consultar (1-12): ")
-    anio = input("Ingrese el año (AAAA): ")
-
-    print("==========================================================================")
-    print(f"Listado de reservas del mes {mes}/{anio}")
-    print("==========================================================================")
-    print(f"{'ID Reserva':25} {'DNI':10} {'Habitación':12} {'Ingreso':12} {'Salida':12} {'Total ($)':>10}")
-    print("--------------------------------------------------------------------------")
-
-    for idReserva, datos in _reservas.items():
-        if datos['activo']:
-            fechaEntrada = datos['fechaDeEntrada']
-            fechaObj = datetime.strptime(fechaEntrada, "%d/%m/%Y")
-
-            if str(fechaObj.month) == mes and str(fechaObj.year) == anio:
-                print(f"{idReserva:25} {datos['dni']:10} {datos['nroHabitacion']:12} {datos['fechaDeEntrada']:12} {datos['fechaDeSalida']:12} {datos['totalPagar']:10.2f}")
-
+    # Mostrar reporte
+    print(f"{'='*70}")
+    print(f"Resumen de cantidad de reservas por habitación - Año {año}")
+    print(f"{'='*70}")
+    print("Habitación | Ene Feb Mar Abr May Jun Jul Ago Sep Oct Nov Dic")
+    for hab, meses in resumen.items():
+        linea = f"{hab:<10} | " + " ".join(f"{m:<3}" for m in meses)
+        print(linea)
 
 #----------------------------------------------------------------------------------------------
 # CUERPO PRINCIPAL
@@ -579,106 +517,35 @@ def main():
     reservas = {
 
 
-        "10/10/2010": {
+        "20/12/2010": {
             "dni": "39592834",
             "nroHabitacion": 1,
             "activo": True,
             "cantidadPersonas": 2,
-            "fechaDeEntrada": "02/06/2001",
-            "fechaDeSalida": "06/06/2001",
+            "fechaDeEntrada": '02/06/2025',
+            "fechaDeSalida": "06/06/2025",
             "metodoDePago": "Efectivo",
             "totalPagar": 20000},
 
-        "15/10/10": {
+        "15/10/2010": {
             "dni": "431223345",
-            "nroHabitacion": 1,
+            "nroHabitacion": 2,
             "activo": True,
             "cantidadPersonas": 2,
-            "fechaDeEntrada": "02/06/2001",
+            "fechaDeEntrada": '02/05/2001',
             "fechaDeSalida": "06/06/2001",
             "metodoDePago": "Efectivo",
             "totalPagar": 20000},
 
-        "12/10/10": {
-            "dni": "33451678",
+        "20/12/2015": {
+            "dni": "39592834",
             "nroHabitacion": 1,
             "activo": True,
             "cantidadPersonas": 2,
-            "fechaDeEntrada": "02/06/2001",
-            "fechaDeSalida": "06/06/2001",
+            "fechaDeEntrada": '10/06/2025',
+            "fechaDeSalida": "06/06/2025",
             "metodoDePago": "Efectivo",
             "totalPagar": 20000},
-
-        "15/10/10": {
-            "dni": "15675431",
-            "nroHabitacion": 1,
-            "activo": True,
-            "cantidadPersonas": 2,
-            "fechaDeEntrada": "02/06/2001",
-            "fechaDeSalida": "06/06/2001",
-            "metodoDePago": "Efectivo",
-            "totalPagar": 20000},
-
-        "15/10/10": {
-            "dni": "423411123",
-            "nroHabitacion": 1,
-            "activo": True,
-            "cantidadPersonas": 2,
-            "fechaDeEntrada": "02/06/2001",
-            "fechaDeSalida": "06/06/2001",
-            "metodoDePago": "Efectivo",
-            "totalPagar": 20000},
-
-        "15/10/10": {
-            "dni": "11234124",
-            "nroHabitacion": 1,
-            "activo": True,
-            "cantidadPersonas": 2,
-            "fechaDeEntrada": "02/06/2001",
-            "fechaDeSalida": "06/06/2001",
-            "metodoDePago": "Efectivo",
-            "totalPagar": 20000},
-
-        "15/10/10": {
-            "dni": "41234124",
-            "nroHabitacion": 1,
-            "activo": True,
-            "cantidadPersonas": 2,
-            "fechaDeEntrada": "02/06/2001",
-            "fechaDeSalida": "06/06/2001",
-            "metodoDePago": "Efectivo",
-            "totalPagar": 20000},
-
-        "15/10/10": {
-            "dni": "45212342",
-            "nroHabitacion": 1,
-            "activo": True,
-            "cantidadPersonas": 2,
-            "fechaDeEntrada": "02/06/2001",
-            "fechaDeSalida": "06/06/2001",
-            "metodoDePago": "Efectivo",
-            "totalPagar": 20000},
-
-        "15/10/10": {
-            "dni": "2142142",
-            "nroHabitacion": 1,
-            "activo": True,
-            "cantidadPersonas": 2,
-            "fechaDeEntrada": "02/06/2001",
-            "fechaDeSalida": "06/06/2001",
-            "metodoDePago": "Efectivo",
-            "totalPagar": 20000},
-
-        "15/10/10": {
-            "dni": "4042132",
-            "nroHabitacion": 1,
-            "activo": True,
-            "cantidadPersonas": 2,
-            "fechaDeEntrada": "02/06/2001",
-            "fechaDeSalida": "06/06/2001",
-            "metodoDePago": "Efectivo",
-            "totalPagar": 20000},
-
 
         }
     
@@ -839,14 +706,12 @@ def main():
         elif opcionMenuPrincipal == "4":   # Opción 4 del menú principal
             while True:
                 while True:
-                    opciones = 3
+                    opciones = 1
                     print()
                     print("---------------------------")
                     print("MENÚ PRINCIPAL > MENÚ DE INFORMES")
                     print("---------------------------")
-                    print("[1] Reservas del Mes")
-                    print("[2] Resumen Anual de reservas por habitación (Cantidades)")
-                    print("[3] Resumen Anual de reservas por habitación (Pesos)")
+                    print("[1] Resumen Anual de reservas por habitación")
                     print("---------------------------")
                     print("[0] Volver al menú anterior")
                     print("---------------------------")
@@ -863,13 +728,13 @@ def main():
                     break # No sale del programa, sino que vuelve al menú anterior
                 
                 elif opcionSubmenu == "1":   # Opción 1 del submenú
-                    listarReservasPorMes(reservas)
+                    reporteReservasPorAño(reservas)
                     
                 elif opcionSubmenu == "2":   # Opción 2 del submenú
-                    resumenReservasAnualPorHabitacion(reservas,habitaciones)
+                    ...
                 
                 elif opcionSubmenu == "3":   # Opción 3 del submenú
-                    resumenRecaudacionAnualPorHabitacion(reservas,habitaciones)
+                    ...
 
                 input("\nPresione ENTER para volver al menú.") # Pausa entre opciones
                 print("\n\n")
