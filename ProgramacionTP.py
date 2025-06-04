@@ -271,65 +271,84 @@ def listarReservasActivas(_reservas):
             print("========================================")
     return
 
-def resumenCantidadPorHabitacion(_reservas, _habitaciones):
+def resumenReservasAnualPorHabitacion(_reservas, _habitaciones):
     anio = input("Ingrese el año que desea consultar (AAAA): ")
 
+    # Lista de meses para el encabezado
+    meses = ["Ene", "Feb", "Mar", "Abr", "May", "Jun",
+             "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
+
+    # Inicializar resumen: {habitacion: [0]*12}
     resumen = {}
+    for nroHabitacion, datos in _habitaciones.items():
+        if datos['disponible']:
+            resumen[nroHabitacion] = [0] * 12
 
-    # Inicializa el resumen solo con habitaciones activas
-    for nroHabitacion, datosHabitacion in _habitaciones.items():
-        if datosHabitacion['disponible']:
-            resumen[nroHabitacion] = 0
-
-    # Recorre todas las reservas activas
+    # Recorremos reservas activas y sumamos por mes
     for idReserva, datosReserva in _reservas.items():
         if datosReserva['activo']:
-            nroHabitacion = datosReserva['nroHabitacion']
-            if nroHabitacion in resumen:
-                fechaEntrada = datosReserva['fechaDeEntrada']
-                fechaEntradaObj = datetime.strptime(fechaEntrada, "%d/%m/%Y")
-                if str(fechaEntradaObj.year) == anio:
-                    resumen[nroHabitacion] += 1
+            fechaEntrada = datosReserva['fechaDeEntrada']
+            fechaObj = datetime.strptime(fechaEntrada, "%d/%m/%Y")
+            if str(fechaObj.year) == anio:
+                habitacion = datosReserva['nroHabitacion']
+                mes = fechaObj.month
+                if habitacion in resumen:
+                    resumen[habitacion][mes - 1] += 1
 
-    print("=======================================")
-    print("Resumen de cantidad de reservas por habitación")
-    print(f"Año: {anio}")
-    print("=======================================")
-    print(f"{'Habitación':15} {'Cantidad de Reservas':>22}")
-    print("-----------------------------------------------")
-    for nroHabitacion, cantidad in resumen.items():
-        print(f"{nroHabitacion:15} {cantidad:22}")
+    # Imprimir tabla
+    print("\n===============================================================")
+    print(f"Resumen de cantidad de reservas por habitación - Año {anio}")
+    print("===============================================================")
+    print(f"{'Habitación':12}", end="")
+    for m in meses:
+        print(f"{m:>5}", end="")
+    print()
 
-def resumenRecaudacionPorHabitacion(_reservas, _habitaciones):
+    for habitacion, valores in resumen.items():
+        print(f"{habitacion:12}", end="")
+        for cantidad in valores:
+            print(f"{cantidad:5}", end="")
+        print()
+
+def resumenRecaudacionAnualPorHabitacion(_reservas, _habitaciones):
     anio = input("Ingrese el año que desea consultar (AAAA): ")
 
+    meses = ["Ene", "Feb", "Mar", "Abr", "May", "Jun",
+             "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]
+
+    # Inicializar resumen: {habitacion: [0]*12}
     resumen = {}
+    for nroHabitacion, datos in _habitaciones.items():
+        if datos['disponible']:
+            resumen[nroHabitacion] = [0] * 12
 
-    # Inicializa resumen solo con habitaciones activas
-    for nroHabitacion, datosHabitacion in _habitaciones.items():
-        if datosHabitacion['disponible']:
-            resumen[nroHabitacion] = 0
-
+    # Recorremos reservas activas y sumamos total recaudado por mes
     for idReserva, datosReserva in _reservas.items():
         if datosReserva['activo']:
-            nroHabitacion = datosReserva['nroHabitacion']
-            if nroHabitacion in resumen:
-                fechaEntrada = datosReserva['fechaDeEntrada']
-                fechaEntradaObj = datetime.strptime(fechaEntrada, "%d/%m/%Y")
+            fechaEntrada = datosReserva['fechaDeEntrada']
+            fechaObj = datetime.strptime(fechaEntrada, "%d/%m/%Y")
+            if str(fechaObj.year) == anio:
+                habitacion = datosReserva['nroHabitacion']
+                mes = fechaObj.month
+                total = datosReserva.get('totalPagar', 0)
+                if habitacion in resumen:
+                    resumen[habitacion][mes - 1] += int(total)
 
-                if str(fechaEntradaObj.year) == anio:
-                    total = datosReserva['totalPagar']
-                    resumen[nroHabitacion] += total
+    # Imprimir tabla
+    print("\n====================================================================")
+    print(f"Resumen de recaudación por habitación - Año {anio}")
+    print("====================================================================")
+    print(f"{'Habitación':12}", end="")
+    for m in meses:
+        print(f"{m:>8}", end="")
+    print()
 
-    print("=======================================")
-    print("Resumen de recaudación por habitación")
-    print(f"Año: {anio}")
-    print("=======================================")
-    print(f"{'Habitación':15} {'Total Recaudado ($)':>20}")
-    print("---------------------------------------")
-    for nroHabitacion, total in resumen.items():
-        print(f"{nroHabitacion:15} {total:20.2f}")
-
+    for habitacion, valores in resumen.items():
+        print(f"{habitacion:12}", end="")
+        for monto in valores:
+            print(f"{monto:8}", end="")
+        print()
+           
 def listarReservasPorMes(_reservas):
     mes = input("Ingrese el mes a consultar (1-12): ")
     anio = input("Ingrese el año (AAAA): ")
@@ -847,10 +866,10 @@ def main():
                     listarReservasPorMes(reservas)
                     
                 elif opcionSubmenu == "2":   # Opción 2 del submenú
-                    resumenCantidadPorHabitacion(reservas,habitaciones)
+                    resumenReservasAnualPorHabitacion(reservas,habitaciones)
                 
                 elif opcionSubmenu == "3":   # Opción 3 del submenú
-                    resumenRecaudacionPorHabitacion(reservas,habitaciones)
+                    resumenRecaudacionAnualPorHabitacion(reservas,habitaciones)
 
                 input("\nPresione ENTER para volver al menú.") # Pausa entre opciones
                 print("\n\n")
