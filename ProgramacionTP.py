@@ -271,34 +271,34 @@ def listarReservasActivas(_reservas):
             print("========================================")
     return
 
-def resumenReservasPorHabitacion(_reservas, _habitaciones):
-    anio = int(input("Ingrese el año a analizar (AAAA): "))
+def resumenCantidadPorHabitacion(_reservas, _habitaciones):
+    anio = input("Ingrese el año que desea consultar (AAAA): ")
 
-    # Filtrar habitaciones disponibles para filas
-    habitaciones_activas = {nro: datos for nro, datos in _habitaciones.items() if datos['disponible']}
+    resumen = {}
 
-    # Inicializar dict con habitaciones y contador 0
-    resumen = {nro: 0 for nro in habitaciones_activas}
+    # Inicializa el resumen solo con habitaciones activas
+    for nroHabitacion, datosHabitacion in _habitaciones.items():
+        if datosHabitacion['disponible']:
+            resumen[nroHabitacion] = 0
 
-    for reserva in _reservas.values():
-        if reserva['activo']:
-            nroHabitacion = reserva['nroHabitacion']
-            if nroHabitacion in habitaciones_activas:
-                # Convertir fecha de entrada a datetime
-                fecha_entrada = datetime.strptime(reserva['fechaDeEntrada'], "%d/%m/%Y")
-                if fecha_entrada.year == anio:
+    # Recorre todas las reservas activas
+    for idReserva, datosReserva in _reservas.items():
+        if datosReserva['activo']:
+            nroHabitacion = datosReserva['nroHabitacion']
+            if nroHabitacion in resumen:
+                fechaEntrada = datosReserva['fechaDeEntrada']
+                fechaEntradaObj = datetime.strptime(fechaEntrada, "%d/%m/%Y")
+                if str(fechaEntradaObj.year) == anio:
                     resumen[nroHabitacion] += 1
 
-    # Imprimir resultado
-    print(f"\nResumen anual de reservas por habitación para el año {anio}:\n")
-    print(f"{'Habitación':15} {'Cantidad Reservas':>20}")
-    print("="*35)
-    for nro, cantidad in resumen.items():
-        print(f"{nro:15} {cantidad:20}")
-
-    return resumen
-
-
+    print("=======================================")
+    print("Resumen de cantidad de reservas por habitación")
+    print(f"Año: {anio}")
+    print("=======================================")
+    print(f"{'Habitación':15} {'Cantidad de Reservas':>22}")
+    print("-----------------------------------------------")
+    for nroHabitacion, cantidad in resumen.items():
+        print(f"{nroHabitacion:15} {cantidad:22}")
 
 def resumenRecaudacionPorHabitacion(_reservas, _habitaciones):
     anio = input("Ingrese el año que desea consultar (AAAA): ")
@@ -330,7 +330,23 @@ def resumenRecaudacionPorHabitacion(_reservas, _habitaciones):
     for nroHabitacion, total in resumen.items():
         print(f"{nroHabitacion:15} {total:20.2f}")
 
+def listarReservasPorMes(_reservas):
+    mes = input("Ingrese el mes a consultar (1-12): ")
+    anio = input("Ingrese el año (AAAA): ")
 
+    print("==========================================================================")
+    print(f"Listado de reservas del mes {mes}/{anio}")
+    print("==========================================================================")
+    print(f"{'ID Reserva':25} {'DNI':10} {'Habitación':12} {'Ingreso':12} {'Salida':12} {'Total ($)':>10}")
+    print("--------------------------------------------------------------------------")
+
+    for idReserva, datos in _reservas.items():
+        if datos['activo']:
+            fechaEntrada = datos['fechaDeEntrada']
+            fechaObj = datetime.strptime(fechaEntrada, "%d/%m/%Y")
+
+            if str(fechaObj.month) == mes and str(fechaObj.year) == anio:
+                print(f"{idReserva:25} {datos['dni']:10} {datos['nroHabitacion']:12} {datos['fechaDeEntrada']:12} {datos['fechaDeSalida']:12} {datos['totalPagar']:10.2f}")
 
 
 #----------------------------------------------------------------------------------------------
@@ -544,7 +560,7 @@ def main():
     reservas = {
 
 
-        "10/10/10": {
+        "10/10/2010": {
             "dni": "39592834",
             "nroHabitacion": 1,
             "activo": True,
@@ -828,10 +844,10 @@ def main():
                     break # No sale del programa, sino que vuelve al menú anterior
                 
                 elif opcionSubmenu == "1":   # Opción 1 del submenú
-                    ...
+                    listarReservasPorMes(reservas)
                     
                 elif opcionSubmenu == "2":   # Opción 2 del submenú
-                    resumenReservasPorHabitacion(reservas,habitaciones)
+                    resumenCantidadPorHabitacion(reservas,habitaciones)
                 
                 elif opcionSubmenu == "3":   # Opción 3 del submenú
                     resumenRecaudacionPorHabitacion(reservas,habitaciones)
