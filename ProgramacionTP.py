@@ -1,6 +1,6 @@
 """
 -----------------------------------------------------------------------------------------------
-Título: Programacion 1 TP
+Título: TP Programacion 1 primer entrega
 Fecha: 03/06/2025
 Autor: Agustin Avella, Bryan Charra, Damian Mayorano, Nahuel Ganduglia
 
