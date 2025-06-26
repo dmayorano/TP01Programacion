@@ -2,7 +2,7 @@
 -----------------------------------------------------------------------------------------------
 Título: TP Programacion 1 primer entrega
 Fecha: 03/06/2025
-Autor: Agustin Avella, Bryan Charra, Damian Mayorano, Nahuel Ganduglia
+Autor: Agustin Avella, Bryan Charra, Damian Mayorano, 
 
 Descripción: 
 Este es un proyecto desarrollado para la materia Programación I (3.4.071) de la Universidad Argentina de la Empresa (UADE).
@@ -202,9 +202,9 @@ def modificarHabitacion(_habitaciones):
         "capacidad": capacidad,
         "costo por dia": costoPorDia,
         "servicios": {
-            "aire acondicionado": aire,
+            "aireAcondicionado": aire,
             "frigobar": frigo,
-            "balcon": balcon 
+            "balcon": balcon
             }
         }
         _habitaciones[nroHabitacion] = habitacionModificada
@@ -222,11 +222,11 @@ def agendarReserva(_clientes,_habitaciones,_reservas):
         else:
             aireAcondicionado = False
 
-        frigo = input("Busca habitacion con frigobar? (s/n): ").lower()
-        if frigo == "s":
-            frigo = True
+        frigobar = input("Busca habitacion con frigobar? (s/n): ").lower()
+        if frigobar == "s":
+            frigobar = True
         else:
-            frigo = False
+            frigobar = False
         
         balcon = input("busca habitacion con balcon? (s/n): ").lower()
         if balcon == "s":
@@ -236,9 +236,9 @@ def agendarReserva(_clientes,_habitaciones,_reservas):
 
         for nroHabitacion, habitacionDatos in _habitaciones.items():
             if (habitacionDatos.get('disponible') and capacidad == habitacionDatos.get('capacidad') and aireAcondicionado == habitacionDatos.get('servicios', {}).get('aireAcondicionado') and
-                frigo == habitacionDatos.get('servicios', {}).get('frigobar') and balcon == habitacionDatos.get('servicios', {}).get('balcon')):
-                obj= time.localtime()
-                idReserva = time.asctime(obj)
+                frigobar == habitacionDatos.get('servicios', {}).get('frigobar') and balcon == habitacionDatos.get('servicios', {}).get('balcon')):
+                
+                idReserva = datetime.now().strftime("%Y.%m.%d %H:%M:%S")
                 fechaEntrada = input("Ingrese la fecha de ingreso (DD/MM/AAAA): ")
                 fechaSalida = input("Ingrese la fecha de salida (DD/MM/AAAA): ")
                 metodoPago = input("Ingrese metodo de pago (Efectivo/Tarjeta): ")
@@ -259,7 +259,7 @@ def agendarReserva(_clientes,_habitaciones,_reservas):
                 "totalPagar": totalPagar
                 }
                 _reservas[idReserva]= nuevaReserva
-                _habitaciones[nroHabitacion]['disponible'] == False
+                _habitaciones[nroHabitacion]['disponible'] = False
                 print("Reserva realizada con exito. Total a pagar: $", totalPagar)
                 return
         print("No hay habitacion para esa cantidad de personas y servicios seleccionados.")
@@ -419,7 +419,7 @@ def main():
             "servicios": {
                 "aireAcondicionado": True,
                 "frigobar": True,
-                "balcon": True
+                "balcon": False
             }
         },
         "2": {
@@ -427,9 +427,9 @@ def main():
             "capacidad": 4,
             "costoPorDia": 10000,
             "servicios": {
-                "aire condicionado": True,
-                "frigobar": True,
-                "Balcon": True
+                "aireAondicionado": True,
+                "frigobar": False,
+                "balcon": False
             }
         },
         "3": {
@@ -437,9 +437,9 @@ def main():
             "capacidad": 2,
             "costoPorDia": 10000,
             "servicios": {
-                "aire acondicionado": True,
-                "aireAcondicionado": True,
-                "Balcon": True
+                "aire acondicionado": False,
+                "frigobar": True,
+                "balcon": True
             }
         },
         "4": {
@@ -447,9 +447,9 @@ def main():
             "capacidad": 6,
             "costoPorDia": 10000,
             "servicios": {
-                "aire acondicionado": True,
+                "aireAcondicionado": True,
                 "frigobar": False,
-                "Balcon": False
+                "balcon": False
             }
         },
         "5": {
@@ -457,9 +457,9 @@ def main():
             "capacidad": 4,
             "costoPorDia": 10000,
             "servicios": {
-                "aire acondicionado": True,
+                "aireAcondicionado": True,
                 "frigobar": True,
-                "Balcon": True
+                "balcon": True
             }
         },
         "6": {
@@ -467,9 +467,9 @@ def main():
             "capacidad": 2,
             "costoPorDia": 10000,
             "servicios": {
-                "aire acondicionado": True,
+                "aireAcondicionado": True,
                 "frigobar": True,
-                "Balcon": True
+                "balcon": False
             }
         },
         "7": {
@@ -477,9 +477,9 @@ def main():
             "capacidad": 3,
             "costoPorDia": 10000,
             "servicios": {
-                "aire acondicionado": True,
-                "frigobar": True,
-                "Balcon": True
+                "aireAcondicionado": False,
+                "frigobar": False,
+                "balcon": False
             }
         },
         "8": {
@@ -487,9 +487,9 @@ def main():
             "capacidad": 4,
             "costoPorDia": 10000,
             "servicios": {
-                "aire acondicionado": True,
+                "aireAcondicionado": True,
                 "frigobar": True,
-                "Balcon": True
+                "balcon": True
             }
         },
         "9": {
@@ -497,9 +497,9 @@ def main():
             "capacidad": 2,
             "costoPorDia": 10000,
             "servicios": {
-                "aire acondicionado": True,
+                "aireAcondicionado": True,
                 "frigobar": False,
-                "Balcon": True
+                "balcon": True
             }
         },
         "10": {
@@ -507,9 +507,9 @@ def main():
             "capacidad": 6,
             "costoPorDia": 10000,
             "servicios": {
-                "aire acondicionado": True,
-                "frigobar": True,
-                "Balcon": False
+                "aireAcondicionado": True,
+                "frigobar": False,
+                "balcon": False
             }
         }
     }
