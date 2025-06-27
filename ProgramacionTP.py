@@ -2,7 +2,7 @@
 -----------------------------------------------------------------------------------------------
 Título: TP Programacion 1 primer entrega
 Fecha: 03/06/2025
-Autor: Agustin Avella, Bryan Charra, Damian Mayorano, 
+Autor: Agustin Avella, Bryan Charra, Damian Mayorano, Nahuel Ganduglia
 
 Descripción: 
 Este es un proyecto desarrollado para la materia Programación I (3.4.071) de la Universidad Argentina de la Empresa (UADE).
@@ -39,226 +39,264 @@ from datetime import datetime
 # FUNCIONES
 #----------------------------------------------------------------------------------------------
 def altaCliente(_clientes):
+    """
+    Solicita los datos de un nuevo cliente y lo registra si el DNI no existe.
+    """
     dni = input("Ingresa tu DNI: ")
+    while not (dni.isdigit() and len(dni) == 8):
+        dni = input("DNI inválido. Ingrese un DNI de 8 dígitos: ")
     if dni in _clientes:
         print("El cliente ya existe.")
-    
-    nombre = input("Ingresa tu nombre: ")
-    edad = int(input("Ingrese su edad: "))
-    telefono = input("Ingrese su numero de telefono: ")
-    alterno = input("Ingresa un segundo numero de telefono. Si no tiene otro simplemente deje el campo vacio: ")
-    if alterno == 0:
-        print("----")
+    else:
+        nombre = input("Ingresa tu nombre: ")
+        while nombre.isdigit():
+            nombre = input("El nombre no puede ser un numero: ")
+        while True:
+            edad_input = input("Ingrese su edad: ")
+            try:
+                edad = int(edad_input)
+                if edad < 0:
+                    print("La edad no puede ser negativa.")
+                else:
+                    break
+            except ValueError:
+                print("Edad inválida. Ingrese un número entero.")
 
-    nuevoCliente = {
-        "activo": True,
-        "nombre": nombre,
-        "edad": edad,
-        "telefonos": {
-            "movil": telefono,
-            "alterno": alterno,
+
+        telefono = input("Ingrese su numero de telefono: ")
+        while (len(telefono) < 10 or telefono.isdigit()==False):
+            telefono = input("Ingrese un numero de telefono válido (por lo menos 10 digitos): ")
+
+        alterno = input("Ingresa un segundo numero de telefono. Si no tiene otro simplemente deje el campo vacio: ")
+        if alterno == None:
+            print("-----")
+        else:
+            while (len(alterno) < 10 or alterno.isdigit()==False):
+                alterno = input("Ingresa un segundo numero de telefono válido (por lo menos 10 digitos): ")
+
+        nuevoCliente = {
+            "activo": True,
+            "nombre": nombre,
+            "edad": edad,
+            "telefonos": {
+                "movil": telefono,
+                "alterno": alterno,
             }
         }
-    _clientes[dni] = nuevoCliente
-    print("==============================")
-    print("Cliente agregado con exito.")
-    return
+        _clientes[dni] = nuevoCliente
+        print("==============================")
+        print("Cliente agregado con exito.")
+        return
 
 
 def inactivarCliente(_clientes):
     """
-    doctring
+    Inactiva un cliente existente dado su DNI. Si no existe, muestra mensaje de que no existe tal dni.
     """
     dni = input("DNI del cliente a inactivar: ")
+    while not (dni.isdigit() and len(dni) == 8):
+        dni = input("DNI inválido. Ingrese un DNI de 8 dígitos: ")
+
     print()
-    
-    # Se inactiva el cliente sólo si existe
+
     if dni in _clientes:
         _clientes[dni]["activo"] = False
-        print(f"El clientes {dni} fue dado de baja.")
+        print(f"El cliente {dni} fue dado de baja.")
     else:
         print(f"El DNI {dni} es inexistente.")
-    
+
     return _clientes
+
 
 def listarClientesActivos(_clientes):
     """
-    Lista todos los clientes activos y sus detalles de tarjetas.
+    Muestra en pantalla los datos de todos los clientes activos del sistema.
     """
-    # Se muestran todos los datos del cliente y el detalle 
     for dni, otrosDatos in _clientes.items():
-        if otrosDatos['activo']:  # Filtro para clientes activos
-            
-            
+        if otrosDatos['activo']:
             print(f"DNI: {dni}")
             print(f"NOMBRE: {otrosDatos.get('nombre', 'No disponible')}")
-            
-            # Verificar si el cliente tiene edad y sexo antes de imprimir
             print(f"EDAD: {otrosDatos.get('edad', 'No disponible')}")
-
             print("TELEFONOS:")
             for telefono, numeroTelefono in otrosDatos.get("telefonos", {}).items():
-                if numeroTelefono:  # No imprimir tarjetas vacías
+                if numeroTelefono:
                     print(f"\t{telefono}: {numeroTelefono}")
             print("========================================")
     return
 
+
 def modificarCliente(_clientes):
+    """
+    Permite modificar los datos de un cliente existente, incluyendo nombre, teléfonos y estado.
+    """
     dni = input("Ingresa tu DNI a Modificar: ")
+    while not (dni.isdigit() and len(dni) == 8):
+        dni = input("DNI inválido. Ingrese un DNI de 8 dígitos: ")
     if dni in _clientes:
-        
         activo = input("Activo[True], Baja[False]: ")
-        nombre = input(f"¿Nombre correcto?, {_clientes[nombre]}: ")
-        movil = input(f"¿Numero de télefono 1 correcto?, {_clientes[movil]}: ")
-        alterno = input(f"¿Numero de télefono 2 correcto?, {_clientes[alterno]}: ")
+        nombre = input(f"¿Nombre correcto?, {_clientes[dni]['nombre']}: ")
+        movil = input(f"¿Numero de télefono 1 correcto?, {_clientes[dni]['telefonos']['movil']}: ")
+        alterno = input(f"¿Numero de télefono 2 correcto?, {_clientes[dni]['telefonos']['alterno']}: ")
 
         clienteModificado = {
-        
-        "activo": activo,
-        "nombre": nombre,
-        "telefonos": {
-            "telefono1": movil,
-            "telefono2": alterno
+            "activo": activo == "True",
+            "nombre": nombre,
+            "telefonos": {
+                "movil": movil,
+                "alterno": alterno
             }
         }
         _clientes[dni] = clienteModificado
         print("Cliente modificado con exito.")
 
+
 def altaHabitacion(_habitaciones):
+    """
+    Registra una nueva habitación con sus características si no existe previamente.
+    """
     nroHabitacion = input("Ingrese numero de la habitacion: ")
+    while not (nroHabitacion.isdigit()):
+        nroHabitacion = input("DNI inválido. Ingrese un DNI de 8 dígitos: ")
     if nroHabitacion in _habitaciones:
         return "La habitacion ya existe."
-    
+
     capacidad = input("Ingrese capacidad de personas: ")
     costoPorDia = int(input("Ingrese su costo por dia: "))
     aireCondicionado = input("Ingrese True si tiene aire acondicionado o False si no tiene:  ")
     frigobar = input("Ingrese True si tiene frigobar o False si no tiene: ")
-    balcon= input("Ingrese True si tiene balcon o False si no tiene: ")
-
+    balcon = input("Ingrese True si tiene balcon o False si no tiene: ")
 
     nuevaHabitacion = {
         "disponible": True,
-        "capacidad": capacidad,
-        "costo por dia": costoPorDia,
+        "capacidad": int(capacidad),
+        "costoPorDia": costoPorDia,
         "servicios": {
-            "aire condicionado": aireCondicionado,
-            "frigobar": frigobar,
-            "balcon": balcon
-            }
+            "aire acondicionado": aireCondicionado == "True",
+            "frigobar": frigobar == "True",
+            "balcon": balcon == "True"
         }
+    }
     _habitaciones[nroHabitacion] = nuevaHabitacion
     return "Habitacion agregada con exito."
 
 
 def inactivarHabitacion(_habitaciones):
     """
-    doctring
+    Marca una habitación como no disponible (inhabilitada) si existe en el sistema.
     """
     nroHabitacion = input("Numero de habitacion a inhabilitar: ")
     print("======================================")
-    
-    # Se inactiva el cliente sólo si existe
+
     if nroHabitacion in _habitaciones:
         _habitaciones[nroHabitacion]["disponible"] = False
         print(f"La habitacion {nroHabitacion} fue inhabilitada.")
     else:
         print(f"El numero de habitacion {nroHabitacion} no existe.")
-    
+
     return _habitaciones
+
 
 def listarHabitacionesActivas(_habitaciones):
     """
-    Lista todos los clientes activos y sus detalles de tarjetas.
+    Muestra en pantalla todas las habitaciones disponibles y sus servicios asociados.
     """
-    # Se muestran todos los datos del cliente y el detalle de sus tarjetas
     for nroHabitacion, otrosDatos in _habitaciones.items():
-        if otrosDatos['disponible']:  # Filtro para habitaciones activas
-            
-            
+        if otrosDatos['disponible']:
             print(f"Habitacion: {nroHabitacion}")
             print(f"Capacidad: {otrosDatos.get('capacidad', 'No disponible')}")
-            print(f"Costo por dia: {otrosDatos.get('costo por dia', 'No disponible')}")
-
+            print(f"Costo por dia: {otrosDatos.get('costoPorDia', 'No disponible')}")
             print("Servicios:")
             for servicios, nombreServicio in otrosDatos.get("servicios", {}).items():
                 print(f"\t{servicios}: {nombreServicio}")
             print("========================================")
     return
 
+
 def modificarHabitacion(_habitaciones):
+    """
+    Permite modificar los atributos de una habitación existente, incluyendo servicios y costo.
+    """
     nroHabitacion = input("Ingresa numero de habitacion a modificar: ")
     if nroHabitacion in _habitaciones:
-        
         disponible = input("Disponible[True], No disponible[False]: ")
-        capacidad = input(f"¿Capacidad correcta?, {_habitaciones[capacidad]}: ")
-        costoPorDia = input(f"¿Costo por dia correcto?, {_habitaciones[costoPorDia]}: ")
-        aire = input(f"¿Servicio aire acondicionado: Si[True] No[False]?, {_habitaciones[aire]}: ")
-        frigo = input(f"¿Servicio frigobar: Si[True] No[False]?, {_habitaciones[frigo]}: ")
-        balcon = input(f"¿Servicio balcon: Si[True] No[False]?, {_habitaciones[balcon]}: ")
+        capacidad = input("Nueva capacidad: ")
+        costoPorDia = input("Nuevo costo por día: ")
+        aire = input("¿Servicio aire acondicionado: Si[True] No[False]?: ")
+        frigo = input("¿Servicio frigobar: Si[True] No[False]?: ")
+        balcon = input("¿Servicio balcón: Si[True] No[False]?: ")
 
         habitacionModificada = {
-        
-        "disponible": disponible,
-        "capacidad": capacidad,
-        "costo por dia": costoPorDia,
-        "servicios": {
-            "aireAcondicionado": aire,
-            "frigobar": frigo,
-            "balcon": balcon
+            "disponible": disponible == "True",
+            "capacidad": int(capacidad),
+            "costoPorDia": int(costoPorDia),
+            "servicios": {
+                "aire acondicionado": aire == "True",
+                "frigobar": frigo == "True",
+                "balcon": balcon == "True"
             }
         }
         _habitaciones[nroHabitacion] = habitacionModificada
-        print("Cliente modificado con exito.")
+        print("Habitación modificada con éxito.")
 
-def agendarReserva(_clientes,_habitaciones,_reservas):
+
+def agendarReserva(_clientes, _habitaciones, _reservas):
+    """
+    Agenda una reserva para un cliente activo si hay una habitación que cumple con los requisitos.
+    Calcula el total a pagar y guarda los datos en el sistema.
+    """
     dni = input("Ingrese su dni: ")
     if dni in _clientes and _clientes[dni]['activo']:
-
         capacidad = int(input("Ingrese cantidad de personas: "))
-
-        aireAcondicionado = input("Busca habitacion con aire acondicionado? (s/n): ").lower()
-        if aireAcondicionado == "s":
-            aireAcondicionado = True
-        else:
-            aireAcondicionado = False
-
-        frigobar = input("Busca habitacion con frigobar? (s/n): ").lower()
-        if frigobar == "s":
-            frigobar = True
-        else:
-            frigobar = False
-        
-        balcon = input("busca habitacion con balcon? (s/n): ").lower()
-        if balcon == "s":
-            balcon = True
-        else:
-            balcon = False
+        aireAcondicionado = input("Busca habitacion con aire acondicionado? (s/n): ").lower() == "s"
+        frigo = input("Busca habitacion con frigobar? (s/n): ").lower() == "s"
+        balcon = input("busca habitacion con balcon? (s/n): ").lower() == "s"
 
         for nroHabitacion, habitacionDatos in _habitaciones.items():
-            if (habitacionDatos.get('disponible') and capacidad == habitacionDatos.get('capacidad') and aireAcondicionado == habitacionDatos.get('servicios', {}).get('aireAcondicionado') and
-                frigobar == habitacionDatos.get('servicios', {}).get('frigobar') and balcon == habitacionDatos.get('servicios', {}).get('balcon')):
-                
-                idReserva = datetime.now().strftime("%Y.%m.%d %H:%M:%S")
-                fechaEntrada = input("Ingrese la fecha de ingreso (DD/MM/AAAA): ")
-                fechaSalida = input("Ingrese la fecha de salida (DD/MM/AAAA): ")
-                metodoPago = input("Ingrese metodo de pago (Efectivo/Tarjeta): ")
+            if (
+                habitacionDatos.get('disponible') and
+                capacidad == habitacionDatos.get('capacidad') and
+                aireAcondicionado == habitacionDatos.get('servicios', {}).get('aire acondicionado') and
+                frigo == habitacionDatos.get('servicios', {}).get('frigobar') and
+                balcon == habitacionDatos.get('servicios', {}).get('balcon')
+            ):
+                obj = time.localtime()
+                idReserva = time.asctime(obj)
+
+                while True:
+                    fechaEntrada = input("Fecha de ingreso (DD/MM/AAAA): ")
+                    try:
+                        fechaEntrada_valida = datetime.strptime(fechaEntrada, "%d/%m/%Y")
+                        break
+                    except ValueError:
+                        print("Fecha inválida. Intente nuevamente.")
+
+                while True:
+                    fechaSalida = input("Fecha de salida (DD/MM/AAAA): ")
+                    try:
+                        fechaSalida_valida = datetime.strptime(fechaEntrada, "%d/%m/%Y")
+                        break
+                    except ValueError:
+                        print("Fecha inválida. Intente nuevamente.")
+                metodoPago = input("Ingrese metodo de pago: [1] Efectivo / [2] Tarjeta: ")
+                while (metodoPago != "1" and metodoPago != "2"):
+                    metodoPago = input("Ingrese metodo de pago: [1] Efectivo / [2] Tarjeta: ")
                 formato = "%d/%m/%Y"
                 fechaEntradaDt = datetime.strptime(fechaEntrada, formato)
                 fechaSalidaDt = datetime.strptime(fechaSalida, formato)
-                diferencia = fechaSalidaDt - fechaEntradaDt
-                dias = diferencia.days
+                dias = (fechaSalidaDt - fechaEntradaDt).days
                 totalPagar = dias * habitacionDatos.get('costoPorDia')
+
                 nuevaReserva = {
-                "dni": dni,
-                "nroHabitacion": nroHabitacion,
-                "activo": True,
-                "cantidadPersonas": capacidad,
-                "fechaDeEntrada": fechaEntrada,
-                "fechaDeSalida": fechaSalida,
-                "metodoDePago": metodoPago,
-                "totalPagar": totalPagar
+                    "dni": dni,
+                    "nroHabitacion": nroHabitacion,
+                    "activo": True,
+                    "cantidadPersonas": capacidad,
+                    "fechaDeEntrada": fechaEntrada,
+                    "fechaDeSalida": fechaSalida,
+                    "metodoDePago": metodoPago,
+                    "totalPagar": totalPagar
                 }
-                _reservas[idReserva]= nuevaReserva
+                _reservas[idReserva] = nuevaReserva
                 _habitaciones[nroHabitacion]['disponible'] = False
                 print("Reserva realizada con exito. Total a pagar: $", totalPagar)
                 return
@@ -266,11 +304,11 @@ def agendarReserva(_clientes,_habitaciones,_reservas):
     else:
         print("Usted es un cliente inactivo o no registrado por lo tanto no puede realizar reservas.")
 
+
 def listarReservasActivas(_reservas):
     """
-    Lista todos los clientes activos y sus detalles de tarjetas.
+    Muestra todas las reservas que están activas en el sistema con sus detalles.
     """
-    # Se muestran todos los datos del cliente y el detalle de sus tarjetas
     for idReserva, otrosDatos in _reservas.items():
         if otrosDatos['activo']:
             print(f"dni: {otrosDatos.get('dni', 'No disponible')}")
@@ -285,19 +323,21 @@ def listarReservasActivas(_reservas):
 
 
 def reporteReservasPorAño(reservas):
+    """
+    Genera un reporte resumen de la cantidad de reservas por habitación para un año dado.
+    """
     año = int(input("Ingrese año: "))
-    resumen = {i: [0]*12 for i in range(1, 11)}  # Habitaciones 1 a 10
+    resumen = {i: [0]*12 for i in range(1, 11)}
 
     for datos in reservas.values():
         if datos["activo"]:
-            fecha_str = datos["fechaDeEntrada"] 
+            fecha_str = datos["fechaDeEntrada"]
             fecha = datetime.strptime(fecha_str, "%d/%m/%Y")
             if fecha.year == año:
                 mes = fecha.month
                 habitacion = int(datos["nroHabitacion"])
                 resumen[habitacion][mes - 1] += 1
 
-    # Mostrar reporte
     print(f"{'='*70}")
     print(f"Resumen de cantidad de reservas por habitación - Año {año}")
     print(f"{'='*70}")
@@ -407,6 +447,15 @@ def main():
                 "móvil": "11 503241234",
                 "alterno": ""
             }
+        },
+        "43404740": {
+            "activo": True,
+            "nombre": "Agustin Avella",
+            "edad": 23,
+            "telefonos": {
+                "móvil": "11 503241234",
+                "alterno": "11 41231233"
+            }
         }
     }
 
@@ -417,9 +466,9 @@ def main():
             "capacidad": 2,
             "costoPorDia": 10000,
             "servicios": {
-                "aireAcondicionado": True,
+                "aire acondicionado": True,
                 "frigobar": True,
-                "balcon": False
+                "balcon": True
             }
         },
         "2": {
@@ -427,9 +476,9 @@ def main():
             "capacidad": 4,
             "costoPorDia": 10000,
             "servicios": {
-                "aireAondicionado": True,
-                "frigobar": False,
-                "balcon": False
+                "aire acondicionado": True,
+                "frigobar": True,
+                "balcon": True
             }
         },
         "3": {
@@ -437,7 +486,7 @@ def main():
             "capacidad": 2,
             "costoPorDia": 10000,
             "servicios": {
-                "aire acondicionado": False,
+                "aire acondicionado": True,
                 "frigobar": True,
                 "balcon": True
             }
@@ -447,7 +496,7 @@ def main():
             "capacidad": 6,
             "costoPorDia": 10000,
             "servicios": {
-                "aireAcondicionado": True,
+                "aire acondicionado": True,
                 "frigobar": False,
                 "balcon": False
             }
@@ -457,7 +506,7 @@ def main():
             "capacidad": 4,
             "costoPorDia": 10000,
             "servicios": {
-                "aireAcondicionado": True,
+                "aire acondicionado": True,
                 "frigobar": True,
                 "balcon": True
             }
@@ -467,9 +516,9 @@ def main():
             "capacidad": 2,
             "costoPorDia": 10000,
             "servicios": {
-                "aireAcondicionado": True,
+                "aire acondicionado": True,
                 "frigobar": True,
-                "balcon": False
+                "balcon": True
             }
         },
         "7": {
@@ -477,9 +526,9 @@ def main():
             "capacidad": 3,
             "costoPorDia": 10000,
             "servicios": {
-                "aireAcondicionado": False,
-                "frigobar": False,
-                "balcon": False
+                "aire acondicionado": True,
+                "frigobar": True,
+                "balcon": True
             }
         },
         "8": {
@@ -487,7 +536,7 @@ def main():
             "capacidad": 4,
             "costoPorDia": 10000,
             "servicios": {
-                "aireAcondicionado": True,
+                "aire acondicionado": True,
                 "frigobar": True,
                 "balcon": True
             }
@@ -497,7 +546,7 @@ def main():
             "capacidad": 2,
             "costoPorDia": 10000,
             "servicios": {
-                "aireAcondicionado": True,
+                "aire acondicionado": True,
                 "frigobar": False,
                 "balcon": True
             }
@@ -507,8 +556,8 @@ def main():
             "capacidad": 6,
             "costoPorDia": 10000,
             "servicios": {
-                "aireAcondicionado": True,
-                "frigobar": False,
+                "aire acondicionado": True,
+                "frigobar": True,
                 "balcon": False
             }
         }
@@ -520,7 +569,7 @@ def main():
         "20/12/2010": {
             "dni": "39592834",
             "nroHabitacion": 1,
-            "activo": True,
+            "activo": False,
             "cantidadPersonas": 2,
             "fechaDeEntrada": '02/06/2025',
             "fechaDeSalida": "06/06/2025",
@@ -530,7 +579,7 @@ def main():
         "15/10/2010": {
             "dni": "431223345",
             "nroHabitacion": 2,
-            "activo": True,
+            "activo": False,
             "cantidadPersonas": 2,
             "fechaDeEntrada": '02/05/2001',
             "fechaDeSalida": "06/06/2001",
@@ -540,7 +589,7 @@ def main():
         "20/12/2015": {
             "dni": "39592834",
             "nroHabitacion": 1,
-            "activo": True,
+            "activo": False,
             "cantidadPersonas": 2,
             "fechaDeEntrada": '10/06/2025',
             "fechaDeSalida": "06/06/2025",
