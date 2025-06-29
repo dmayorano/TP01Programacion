@@ -2,7 +2,7 @@
 -----------------------------------------------------------------------------------------------
 Título: TP Programacion 1 primer entrega
 Fecha: 03/06/2025
-Autor: Agustin Avella, Bryan Charra, Damian Mayorano, Nahuel Ganduglia
+Autor: Agustin Avella, Bryan Charra, Damian Mayorano
 
 Descripción: 
 Este es un proyecto desarrollado para la materia Programación I (3.4.071) de la Universidad Argentina de la Empresa (UADE).
@@ -38,6 +38,118 @@ from datetime import datetime
 #----------------------------------------------------------------------------------------------
 # FUNCIONES
 #----------------------------------------------------------------------------------------------
+def habitacionesMasRentables(reservas):
+    """
+    Muestra las habitaciones más rentables del hotel, ordenadas por ingresos.
+
+    Args:
+        reservas (dict): Diccionario de reservas del hotel.
+
+    Returns:
+        None
+    """
+    habitaciones = {}
+
+    for datos in reservas.values():
+        if datos["activo"]:
+            nroHabitacion = datos["nroHabitacion"]
+            totalPagar = datos["totalPagar"]
+
+            if nroHabitacion not in habitaciones:
+                habitaciones[nroHabitacion] = 0
+
+            habitaciones[nroHabitacion] += totalPagar
+
+    # Ordenar las habitaciones por ingresos
+    habitacionesOrdenadas = []
+    while habitaciones:
+        maxHabitacion = max(habitaciones, key=habitaciones.get)
+        habitacionesOrdenadas.append((maxHabitacion, habitaciones[maxHabitacion]))
+        del habitaciones[maxHabitacion]
+
+    print(f"{'='*50}")
+    print(f"Habitaciones Más Rentables")
+    print(f"{'='*50}")
+    print("Nro. Habitación | Ingresos")
+    for habitacion, ingresos in habitacionesOrdenadas:
+        print(f"{habitacion:<15} | {ingresos:,.2f}")
+
+
+def resumenMontoPorAñoYMes(reservas):
+    """
+    Muestra un resumen de los montos en pesos por año y mes.
+
+    Args:
+        reservas (dict): Diccionario de reservas del hotel.
+
+    Returns:
+        None
+    """
+    resumen = {}
+
+    for datos in reservas.values():
+        if datos["activo"]:
+            fechaStr = datos["fechaDeEntrada"]
+            fecha = datetime.strptime(fechaStr, "%d/%m/%Y")
+            año = fecha.year
+            mes = fecha.month
+            totalPagar = datos["totalPagar"]
+
+            if año not in resumen:
+                resumen[año] = [0] * 12
+
+            resumen[año][mes - 1] += totalPagar
+
+    print(f"{'='*70}")
+    print(f"Resumen de monto en pesos por año y mes")
+    print(f"{'='*70}")
+    for año, meses in resumen.items():
+        print(f"Año {año}")
+        print("Mes | Monto")
+        for i, monto in enumerate(meses):
+            if monto > 0:
+                print(f"{['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'][i]} | {monto:,.2f}")
+        print()
+
+    # Formato de matriz
+    print(f"{'='*70}")
+    print(f"Resumen de monto en pesos por año y mes (matriz)")
+    print(f"{'='*70}")
+    print("Año | Ene       Feb       Mar       Abr       May       Jun       Jul       Ago       Sep       Oct       Nov       Dic")
+    for año, meses in resumen.items():
+        linea = f"{año:<4} | "
+        for monto in meses:
+            linea += f"{monto:>10,.2f} "
+        print(linea)
+
+
+def informeOperacionesMes(reservas, clientes):
+    """
+    Muestra un informe de las operaciones del mes actual.
+
+    Args:
+        reservas (dict): Diccionario de reservas del hotel.
+        clientes (dict): Diccionario de clientes del hotel.
+
+    Returns:
+        None
+    """
+    # Obtener la fecha actual
+    fechaActual = datetime.now()
+    mesActual = fechaActual.month
+    añoActual = fechaActual.year
+
+    # Imprimir encabezado
+    print(f"{'Fecha/Hora':<20} {'Cliente':<20} {'Nro. Habitación':<15} {'Cant. Personas':<15} {'Método de Pago':<15} {'Total':<10}")
+    print("-" * 100)
+
+    # Recorrer reservas y filtrar aquellas del mes actual
+    for idReserva, reserva in reservas.items():
+        fechaEntrada = datetime.strptime(reserva["fechaDeEntrada"], "%d/%m/%Y")
+        if fechaEntrada.month == mesActual and fechaEntrada.year == añoActual:
+            cliente = clientes.get(reserva["dni"], {}).get("nombre", "No disponible")
+            print(f"{reserva['fechaDeEntrada']:<20} {cliente:<20} {reserva['nroHabitacion']:<15} {reserva['cantidadPersonas']:<15} {reserva['metodoDePago']:<15} ${reserva['totalPagar']:<10,.2f}")
+
 def altaCliente(_clientes):
     """
     Solicita los datos de un nuevo cliente y lo registra si el DNI no existe.
@@ -52,9 +164,9 @@ def altaCliente(_clientes):
         while nombre.isdigit():
             nombre = input("El nombre no puede ser un numero: ")
         while True:
-            edad_input = input("Ingrese su edad: ")
+            edadInput = input("Ingrese su edad: ")
             try:
-                edad = int(edad_input)
+                edad = int(edadInput)
                 if edad < 0:
                     print("La edad no puede ser negativa.")
                 else:
@@ -287,7 +399,9 @@ def agendarReserva(_clientes, _habitaciones, _reservas):
                 totalPagar = dias * habitacionDatos.get('costoPorDia')
 
                 nuevaReserva = {
+                    
                     "dni": dni,
+                    "nombre": _clientes[dni].get('nombre', 'No disponible'),
                     "nroHabitacion": nroHabitacion,
                     "activo": True,
                     "cantidadPersonas": capacidad,
@@ -311,6 +425,7 @@ def listarReservasActivas(_reservas):
     """
     for idReserva, otrosDatos in _reservas.items():
         if otrosDatos['activo']:
+            print(f"nombre: {otrosDatos.get('nombre', 'No disponible')}")
             print(f"dni: {otrosDatos.get('dni', 'No disponible')}")
             print(f"nroHabitacion: {otrosDatos.get('nroHabitacion', 'No disponible')}")
             print(f"cantidadPersonas: {otrosDatos.get('cantidadPersonas', 'No disponible')}")
@@ -349,262 +464,325 @@ def reporteReservasPorAño(reservas):
 #----------------------------------------------------------------------------------------------
 # CUERPO PRINCIPAL
 #----------------------------------------------------------------------------------------------
-def main():
-    
-    #-------------------------------------------------
-    # Inicialización de variables
-    #----------------------------------------------------------------------------------------------
+#-------------------------------------------------
+# Inicialización de variables
+#----------------------------------------------------------------------------------------------
 
 
-    # Diccionario de datos de clientes: KEY=Documento del cliente, VALUE=Otros datos del cliente
-    clientela = {
-        "39592834": {
-            "activo": True,
-            "nombre": "Micaela Robles",
-            "edad": 26,
-            "telefonos": {
-                "móvil": "11 5002415123",
-                "alterno": ""
-            }
-        },
-        "431223345": {
-            "activo": True,
-            "nombre": "Martin Gonzales",
-            "edad": 26,
-            "telefonos": {
-                "móvil": "11 500245621",
-                "alterno": "1124070486"
-            }
-        },
-        "33451678": {
-            "activo": True,
-            "nombre": "Fito Parrez",
-            "edad": 26,
-            "telefonos": {
-                "móvil": "11 500241234",
-                "alterno": ""
-            }
-        },
-        "15675431": {
-            "activo": True,
-            "nombre": "Gonzalo Robledo",
-            "edad": 26,
-            "telefonos": {
-                "móvil": "11 500241252",
-                "alterno": ""
-            }
-        },
-        "423411123": {
-            "activo": True,
-            "nombre": "Martin Serin",
-            "edad": 26,
-            "telefonos": {
-                "móvil": "11 500241211",
-                "alterno": ""
-            }
-        },
-        "11234124": {
-            "activo": True,
-            "nombre": "Gaston Soldati",
-            "edad": 26,
-            "telefonos": {
-                "móvil": "11 695241234",
-                "alterno": ""
-            }
-        },
-        "41234124": {
-            "activo": True,
-            "nombre": "Marcelo Chavez",
-            "edad": 26,
-            "telefonos": {
-                "móvil": "11 531241234",
-                "alterno": ""
-            }
-        },
-        "45212342": {
-            "activo": True,
-            "nombre": "Fernando Alonso",
-            "edad": 26,
-            "telefonos": {
-                "móvil": "11 498241234",
-                "alterno": ""
-            }
-        },
-        "2142142": {
-            "activo": True,
-            "nombre": "Martin Gimenez",
-            "edad": 26,
-            "telefonos": {
-                "móvil": "11 233241234",
-                "alterno": ""
-            }
-        },
-        "4042132": {
-            "activo": True,
-            "nombre": "Lionel Messi",
-            "edad": 26,
-            "telefonos": {
-                "móvil": "11 503241234",
-                "alterno": ""
-            }
-        },
-        "43404740": {
-            "activo": True,
-            "nombre": "Agustin Avella",
-            "edad": 23,
-            "telefonos": {
-                "móvil": "11 503241234",
-                "alterno": "11 41231233"
-            }
+# Diccionario de datos de clientes: KEY=Documento del cliente, VALUE=Otros datos del cliente
+clientela = {
+    "39592834": {
+        "activo": True,
+        "nombre": "Micaela Robles",
+        "edad": 26,
+        "telefonos": {
+            "móvil": "11 5002415123",
+            "alterno": ""
+        }
+    },
+    "431223345": {
+        "activo": True,
+        "nombre": "Martin Gonzales",
+        "edad": 26,
+        "telefonos": {
+            "móvil": "11 500245621",
+            "alterno": "1124070486"
+        }
+    },
+    "33451678": {
+        "activo": True,
+        "nombre": "Fito Parrez",
+        "edad": 26,
+        "telefonos": {
+            "móvil": "11 500241234",
+            "alterno": ""
+        }
+    },
+    "15675431": {
+        "activo": True,
+        "nombre": "Gonzalo Robledo",
+        "edad": 26,
+        "telefonos": {
+            "móvil": "11 500241252",
+            "alterno": ""
+        }
+    },
+    "423411123": {
+        "activo": True,
+        "nombre": "Martin Serin",
+        "edad": 26,
+        "telefonos": {
+            "móvil": "11 500241211",
+            "alterno": ""
+        }
+    },
+    "11234124": {
+        "activo": True,
+        "nombre": "Gaston Soldati",
+        "edad": 26,
+        "telefonos": {
+            "móvil": "11 695241234",
+            "alterno": ""
+        }
+    },
+    "41234124": {
+        "activo": True,
+        "nombre": "Marcelo Chavez",
+        "edad": 26,
+        "telefonos": {
+            "móvil": "11 531241234",
+            "alterno": ""
+        }
+    },
+    "45212342": {
+        "activo": True,
+        "nombre": "Fernando Alonso",
+        "edad": 26,
+        "telefonos": {
+            "móvil": "11 498241234",
+            "alterno": ""
+        }
+    },
+    "2142142": {
+        "activo": True,
+        "nombre": "Martin Gimenez",
+        "edad": 26,
+        "telefonos": {
+            "móvil": "11 233241234",
+            "alterno": ""
+        }
+    },
+    "4042132": {
+        "activo": True,
+        "nombre": "Lionel Messi",
+        "edad": 26,
+        "telefonos": {
+            "móvil": "11 503241234",
+            "alterno": ""
+        }
+    },
+    "43404740": {
+        "activo": True,
+        "nombre": "Agustin Avella",
+        "edad": 23,
+        "telefonos": {
+            "móvil": "11 503241234",
+            "alterno": "11 41231233"
         }
     }
+}
 
-        # Diccionario de datos de productos: KEY=Código de producto, VALUE=Otros datos del producto
-    habitaciones = {
-        "1": {
-            "disponible": True,
-            "capacidad": 2,
-            "costoPorDia": 10000,
-            "servicios": {
-                "aire acondicionado": True,
-                "frigobar": True,
-                "balcon": True
-            }
-        },
-        "2": {
-            "disponible": True,
-            "capacidad": 4,
-            "costoPorDia": 10000,
-            "servicios": {
-                "aire acondicionado": True,
-                "frigobar": True,
-                "balcon": True
-            }
-        },
-        "3": {
-            "disponible": True,
-            "capacidad": 2,
-            "costoPorDia": 10000,
-            "servicios": {
-                "aire acondicionado": True,
-                "frigobar": True,
-                "balcon": True
-            }
-        },
-        "4": {
-            "disponible": True,
-            "capacidad": 6,
-            "costoPorDia": 10000,
-            "servicios": {
-                "aire acondicionado": True,
-                "frigobar": False,
-                "balcon": False
-            }
-        },
-        "5": {
-            "disponible": True,
-            "capacidad": 4,
-            "costoPorDia": 10000,
-            "servicios": {
-                "aire acondicionado": True,
-                "frigobar": True,
-                "balcon": True
-            }
-        },
-        "6": {
-            "disponible": True,
-            "capacidad": 2,
-            "costoPorDia": 10000,
-            "servicios": {
-                "aire acondicionado": True,
-                "frigobar": True,
-                "balcon": True
-            }
-        },
-        "7": {
-            "disponible": True,
-            "capacidad": 3,
-            "costoPorDia": 10000,
-            "servicios": {
-                "aire acondicionado": True,
-                "frigobar": True,
-                "balcon": True
-            }
-        },
-        "8": {
-            "disponible": True,
-            "capacidad": 4,
-            "costoPorDia": 10000,
-            "servicios": {
-                "aire acondicionado": True,
-                "frigobar": True,
-                "balcon": True
-            }
-        },
-        "9": {
-            "disponible": True,
-            "capacidad": 2,
-            "costoPorDia": 10000,
-            "servicios": {
-                "aire acondicionado": True,
-                "frigobar": False,
-                "balcon": True
-            }
-        },
-        "10": {
-            "disponible": True,
-            "capacidad": 6,
-            "costoPorDia": 10000,
-            "servicios": {
-                "aire acondicionado": True,
-                "frigobar": True,
-                "balcon": False
-            }
+# Diccionario de datos de productos: KEY=Código de producto, VALUE=Otros datos del producto
+habitaciones = {
+    "1": {
+        "disponible": True,
+        "capacidad": 2,
+        "costoPorDia": 10000,
+        "servicios": {
+            "aire acondicionado": True,
+            "frigobar": True,
+            "balcon": True
+        }
+    },
+    "2": {
+        "disponible": True,
+        "capacidad": 4,
+        "costoPorDia": 10000,
+        "servicios": {
+            "aire acondicionado": True,
+            "frigobar": True,
+            "balcon": True
+        }
+    },
+    "3": {
+        "disponible": True,
+        "capacidad": 2,
+        "costoPorDia": 10000,
+        "servicios": {
+            "aire acondicionado": True,
+            "frigobar": True,
+            "balcon": True
+        }
+    },
+    "4": {
+        "disponible": True,
+        "capacidad": 6,
+        "costoPorDia": 10000,
+        "servicios": {
+            "aire acondicionado": True,
+            "frigobar": False,
+            "balcon": False
+        }
+    },
+    "5": {
+        "disponible": True,
+        "capacidad": 4,
+        "costoPorDia": 10000,
+        "servicios": {
+            "aire acondicionado": True,
+            "frigobar": True,
+            "balcon": True
+        }
+    },
+    "6": {
+        "disponible": True,
+        "capacidad": 2,
+        "costoPorDia": 10000,
+        "servicios": {
+            "aire acondicionado": True,
+            "frigobar": True,
+            "balcon": True
+        }
+    },
+    "7": {
+        "disponible": True,
+        "capacidad": 3,
+        "costoPorDia": 10000,
+        "servicios": {
+            "aire acondicionado": True,
+            "frigobar": True,
+            "balcon": True
+        }
+    },
+    "8": {
+        "disponible": True,
+        "capacidad": 4,
+        "costoPorDia": 10000,
+        "servicios": {
+            "aire acondicionado": True,
+            "frigobar": True,
+            "balcon": True
+        }
+    },
+    "9": {
+        "disponible": True,
+        "capacidad": 2,
+        "costoPorDia": 10000,
+        "servicios": {
+            "aire acondicionado": True,
+            "frigobar": False,
+            "balcon": True
+        }
+    },
+    "10": {
+        "disponible": True,
+        "capacidad": 6,
+        "costoPorDia": 10000,
+        "servicios": {
+            "aire acondicionado": True,
+            "frigobar": True,
+            "balcon": False
         }
     }
-
-    reservas = {
-
-
-        "20/12/2010": {
-            "dni": "39592834",
-            "nroHabitacion": 1,
-            "activo": False,
-            "cantidadPersonas": 2,
-            "fechaDeEntrada": '02/06/2025',
-            "fechaDeSalida": "06/06/2025",
-            "metodoDePago": "Efectivo",
-            "totalPagar": 20000},
-
-        "15/10/2010": {
-            "dni": "431223345",
-            "nroHabitacion": 2,
-            "activo": False,
-            "cantidadPersonas": 2,
-            "fechaDeEntrada": '02/05/2001',
-            "fechaDeSalida": "06/06/2001",
-            "metodoDePago": "Efectivo",
-            "totalPagar": 20000},
-
-        "20/12/2015": {
-            "dni": "39592834",
-            "nroHabitacion": 1,
-            "activo": False,
-            "cantidadPersonas": 2,
-            "fechaDeEntrada": '10/06/2025',
-            "fechaDeSalida": "06/06/2025",
-            "metodoDePago": "Efectivo",
-            "totalPagar": 20000},
-
-        }
-    
-
-        # Diccionario de datos de ventas: KEY=Código de venta, VALUE=Otros datos de la venta
+}
+reservas = {
+    "20/12/2025-1": {
+        "dni": "39592834",
+        "nroHabitacion": 1,
+        "activo": True,
+        "cantidadPersonas": 2,
+        "fechaDeEntrada": '02/06/2025',
+        "fechaDeSalida": "06/06/2025",
+        "metodoDePago": "Efectivo",
+        "totalPagar": 20000
+    },
+    "15/10/2025-2": {
+        "dni": "431223345",
+        "nroHabitacion": 2,
+        "activo": True,
+        "cantidadPersonas": 2,
+        "fechaDeEntrada": '02/05/2025',
+        "fechaDeSalida": "06/05/2025",
+        "metodoDePago": "Efectivo",
+        "totalPagar": 20000
+    },
+    "20/12/2025-3": {
+        "dni": "33451678",
+        "nroHabitacion": 3,
+        "activo": True,
+        "cantidadPersonas": 2,
+        "fechaDeEntrada": '10/06/2025',
+        "fechaDeSalida": "16/06/2025",
+        "metodoDePago": "Efectivo",
+        "totalPagar": 60000
+    },
+    "25/12/2025-4": {
+        "dni": "15675431",
+        "nroHabitacion": 4,
+        "activo": True,
+        "cantidadPersonas": 4,
+        "fechaDeEntrada": '20/06/2025',
+        "fechaDeSalida": "25/06/2025",
+        "metodoDePago": "Tarjeta",
+        "totalPagar": 50000
+    },
+    "01/01/2026-5": {
+        "dni": "423411123",
+        "nroHabitacion": 5,
+        "activo": True,
+        "cantidadPersonas": 3,
+        "fechaDeEntrada": '01/07/2025',
+        "fechaDeSalida": "05/07/2025",
+        "metodoDePago": "Efectivo",
+        "totalPagar": 40000
+    },
+    "15/06/2026-6": {
+        "dni": "11234124",
+        "nroHabitacion": 6,
+        "activo": True,
+        "cantidadPersonas": 2,
+        "fechaDeEntrada": '15/07/2025',
+        "fechaDeSalida": "20/07/2025",
+        "metodoDePago": "Tarjeta",
+        "totalPagar": 50000
+    },
+    "20/08/2026-7": {
+        "dni": "41234124",
+        "nroHabitacion": 7,
+        "activo": True,
+        "cantidadPersonas": 4,
+        "fechaDeEntrada": '20/08/2025',
+        "fechaDeSalida": "25/08/2025",
+        "metodoDePago": "Efectivo",
+        "totalPagar": 50000
+    },
+    "10/09/2026-8": {
+        "dni": "45212342",
+        "nroHabitacion": 8,
+        "activo": True,
+        "cantidadPersonas": 3,
+        "fechaDeEntrada": '10/09/2025',
+        "fechaDeSalida": "15/09/2025",
+        "metodoDePago": "Tarjeta",
+        "totalPagar": 50000
+    },
+    "05/10/2026-9": {
+        "dni": "2142142",
+        "nroHabitacion": 9,
+        "activo": True,
+        "cantidadPersonas": 2,
+        "fechaDeEntrada": '05/10/2025',
+        "fechaDeSalida": "10/10/2025",
+        "metodoDePago": "Efectivo",
+        "totalPagar": 50000
+    },
+    "15/11/2026-10": {
+        "dni": "4042132",
+        "nroHabitacion": 10,
+        "activo": True,
+        "cantidadPersonas": 6,
+        "fechaDeEntrada": '15/11/2025',
+        "fechaDeSalida": "20/11/2025",
+        "metodoDePago": "Tarjeta",
+        "totalPagar": 50000
+    }
+}
+# Diccionario de datos de ventas: KEY=Código de venta, VALUE=Otros datos de la venta
         
 #-------------------------------------------------
 # Bloque de menú
 #----------------------------------------------------------------------------------------------
-    while True:
+while True:
         while True:
             opciones = 5
             print()
@@ -745,7 +923,7 @@ def main():
                     break # No sale del programa, sino que vuelve al menú anterior
                 
                 elif opcionSubmenu == "1":   # Opción 1 del submenú
-                    agendarReserva(clientela,habitaciones,reservas)
+                    agendarReserva(clientela, habitaciones, reservas)
                 elif opcionSubmenu == "2":
                     listarReservasActivas(reservas)
 
@@ -755,12 +933,15 @@ def main():
         elif opcionMenuPrincipal == "4":   # Opción 4 del menú principal
             while True:
                 while True:
-                    opciones = 1
+                    opciones = 4
                     print()
                     print("---------------------------")
                     print("MENÚ PRINCIPAL > MENÚ DE INFORMES")
                     print("---------------------------")
                     print("[1] Resumen Anual de reservas por habitación")
+                    print("[2] Informe de operaciones del mes en curso")
+                    print("[3] Resumen de monto en pesos por año y mes")
+                    print("[4] Habitaciones más rentables")
                     print("---------------------------")
                     print("[0] Volver al menú anterior")
                     print("---------------------------")
@@ -780,10 +961,13 @@ def main():
                     reporteReservasPorAño(reservas)
                     
                 elif opcionSubmenu == "2":   # Opción 2 del submenú
-                    ...
+                    informeOperacionesMes(reservas, clientela)
                 
                 elif opcionSubmenu == "3":   # Opción 3 del submenú
-                    ...
+                    resumenMontoPorAñoYMes(reservas)
+
+                elif opcionSubmenu == "4":   # Opción 4 del submenú
+                    habitacionesMasRentables(reservas)
 
                 input("\nPresione ENTER para volver al menú.") # Pausa entre opciones
                 print("\n\n")
@@ -793,4 +977,5 @@ def main():
             print("\n\n")
 
 # Punto de entrada al programa
-main()
+main()# Punto de entrada al programa
+# main()
