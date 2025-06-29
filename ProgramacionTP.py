@@ -377,7 +377,7 @@ def agendarReserva(_clientes, _habitaciones, _reservas):
                 while True:
                     fechaEntrada = input("Fecha de ingreso (DD/MM/AAAA): ")
                     try:
-                        fechaEntrada_valida = datetime.strptime(fechaEntrada, "%d/%m/%Y")
+                        fechaEntrada = datetime.strptime(fechaEntrada, "%d/%m/%Y")
                         break
                     except ValueError:
                         print("Fecha inválida. Intente nuevamente.")
@@ -385,7 +385,7 @@ def agendarReserva(_clientes, _habitaciones, _reservas):
                 while True:
                     fechaSalida = input("Fecha de salida (DD/MM/AAAA): ")
                     try:
-                        fechaSalida_valida = datetime.strptime(fechaEntrada, "%d/%m/%Y")
+                        fechaSalidaValida = datetime.strptime(fechaSalida, "%d/%m/%Y")
                         break
                     except ValueError:
                         print("Fecha inválida. Intente nuevamente.")
@@ -393,8 +393,9 @@ def agendarReserva(_clientes, _habitaciones, _reservas):
                 while (metodoPago != "1" and metodoPago != "2"):
                     metodoPago = input("Ingrese metodo de pago: [1] Efectivo / [2] Tarjeta: ")
                 formato = "%d/%m/%Y"
-                fechaEntradaDt = datetime.strptime(fechaEntrada, formato)
-                fechaSalidaDt = datetime.strptime(fechaSalida, formato)
+                
+                fechaEntradaDt = fechaEntrada
+                fechaSalidaDt = fechaSalidaValida
                 dias = (fechaSalidaDt - fechaEntradaDt).days
                 totalPagar = dias * habitacionDatos.get('costoPorDia')
 
@@ -405,8 +406,8 @@ def agendarReserva(_clientes, _habitaciones, _reservas):
                     "nroHabitacion": nroHabitacion,
                     "activo": True,
                     "cantidadPersonas": capacidad,
-                    "fechaDeEntrada": fechaEntrada,
-                    "fechaDeSalida": fechaSalida,
+                    "fechaDeEntrada": fechaEntrada.strftime("%d/%m/%Y"),
+                    "fechaDeSalida": fechaSalidaValida.strftime("%d/%m/%Y"),
                     "metodoDePago": metodoPago,
                     "totalPagar": totalPagar
                 }
