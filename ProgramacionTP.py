@@ -180,7 +180,7 @@ def altaCliente(_clientes):
             telefono = input("Ingrese un numero de telefono válido (por lo menos 10 digitos): ")
 
         alterno = input("Ingresa un segundo numero de telefono. Si no tiene otro simplemente deje el campo vacio: ")
-        if alterno == None:
+        if alterno == "":
             print("-----")
         else:
             while (len(alterno) < 10 or alterno.isdigit()==False):
@@ -245,14 +245,44 @@ def modificarCliente(_clientes):
     while not (dni.isdigit() and len(dni) == 8):
         dni = input("DNI inválido. Ingrese un DNI de 8 dígitos: ")
     if dni in _clientes:
-        activo = input("Activo[True], Baja[False]: ")
-        nombre = input(f"¿Nombre correcto?, {_clientes[dni]['nombre']}: ")
-        movil = input(f"¿Numero de télefono 1 correcto?, {_clientes[dni]['telefonos']['movil']}: ")
-        alterno = input(f"¿Numero de télefono 2 correcto?, {_clientes[dni]['telefonos']['alterno']}: ")
+        activo = input("Activo[1], Baja[2]: ")
+        while activo != "1" and activo != "2":
+            activo = input("Error. Introduzca 1 para verdadero o 2 para falso: ")
+        if activo == "1":
+            activo = True
+        else:
+            activo = False
+
+        print("Si no desea cambiar un valor solo oprima enter para saltear al siguiente dato.")
+
+        cambionombre = input(f"¿Nombre correcto?, {_clientes[dni]['nombre']}: ")
+        if cambionombre == "":
+            nombre = _clientes[dni]['nombre']
+        else:
+            nombre = cambionombre
+        
+        cambioedad = input(f"¿Edad correcta?, {_clientes[dni]['edad']}: ")
+        if cambioedad == "":
+            edad = _clientes[dni]['edad']
+        else:
+            edad = cambioedad        
+
+        cambiomovil = input(f"¿Numero de télefono 1 correcto?, {_clientes[dni]['telefonos']['movil']}: ")
+        if cambiomovil == "":
+            movil = _clientes[dni]['telefonos']['movil']
+        else:
+            movil = cambiomovil
+
+        cambioalterno = input(f"¿Numero de télefono 2 correcto?, {_clientes[dni]['telefonos']['alterno']}: ")
+        if cambioalterno == "":
+            alterno = _clientes[dni]['telefonos']['alterno']
+        else:
+            alterno = cambioalterno
 
         clienteModificado = {
-            "activo": activo == "True",
+            "activo": activo,
             "nombre": nombre,
+            "edad": edad,
             "telefonos": {
                 "movil": movil,
                 "alterno": alterno
@@ -267,10 +297,13 @@ def altaHabitacion(_habitaciones):
     Registra una nueva habitación con sus características si no existe previamente.
     """
     nroHabitacion = input("Ingrese numero de la habitacion: ")
-    while not (nroHabitacion.isdigit()):
-        nroHabitacion = input("DNI inválido. Ingrese un DNI de 8 dígitos: ")
+    while not (nroHabitacion.isdigit() and int(nroHabitacion) >= 0):
+        nroHabitacion = input("Numero inválido. Ingrese un numero de habitacion que no sea negativo o letras: ")
+    
     if nroHabitacion in _habitaciones:
-        return "La habitacion ya existe."
+        print()
+        print("La habitacion ya existe.")
+        return
 
     capacidad = input("Ingrese capacidad de personas: ")
     costoPorDia = int(input("Ingrese su costo por dia: "))
@@ -289,7 +322,9 @@ def altaHabitacion(_habitaciones):
         }
     }
     _habitaciones[nroHabitacion] = nuevaHabitacion
-    return "Habitacion agregada con exito."
+    print()
+    print("Habitacion agregada con exito.")
+    return
 
 
 def inactivarHabitacion(_habitaciones):
@@ -297,6 +332,8 @@ def inactivarHabitacion(_habitaciones):
     Marca una habitación como no disponible (inhabilitada) si existe en el sistema.
     """
     nroHabitacion = input("Numero de habitacion a inhabilitar: ")
+    while not (nroHabitacion.isdigit() and int(nroHabitacion) >= 0):
+        nroHabitacion = input("Numero inválido. Ingrese un numero de habitacion que no sea negativo o letras: ")
     print("======================================")
 
     if nroHabitacion in _habitaciones:
@@ -329,22 +366,59 @@ def modificarHabitacion(_habitaciones):
     Permite modificar los atributos de una habitación existente, incluyendo servicios y costo.
     """
     nroHabitacion = input("Ingresa numero de habitacion a modificar: ")
-    if nroHabitacion in _habitaciones:
+
+    while not (nroHabitacion.isdigit() and int(nroHabitacion) >= 0):
+        nroHabitacion = input("Numero inválido. Ingrese un numero de habitacion que no sea negativo o letras: ")
+
+    if nroHabitacion not in _habitaciones:
+        print("La habitación no existe.")
+        return
+    else:
         disponible = input("Disponible[True], No disponible[False]: ")
-        capacidad = input("Nueva capacidad: ")
-        costoPorDia = input("Nuevo costo por día: ")
-        aire = input("¿Servicio aire acondicionado: Si[True] No[False]?: ")
-        frigo = input("¿Servicio frigobar: Si[True] No[False]?: ")
-        balcon = input("¿Servicio balcón: Si[True] No[False]?: ")
+        while disponible not in ("True", "False"):
+            disponible = input("Entrada inválida. Ingrese 'True' o 'False' para disponibilidad: ")
+
+        print("==============")
+        print("Si no desea cambiar un valor solo oprima enter para saltear al siguiente dato.")
+        print("==============")
+
+        cambiocapacidad = input(f"¿Capacidad correcta?, {_habitaciones[nroHabitacion]['capacidad']}: ")
+        if cambiocapacidad == "":
+            capacidad = _habitaciones[nroHabitacion]['capacidad']
+        else:
+            while not capacidad.isdigit() and int(capacidad) >0:
+                capacidad = input("Capacidad inválida. Ingrese un numero entero positivo.")
+            capacidad = cambiocapacidad
+
+        cambiocostoPorDia = input(f"¿Costo por dia correcto?, {_habitaciones[nroHabitacion]['costoPorDia']}: ")
+        if cambiocostoPorDia == "":
+            costoPorDia = _habitaciones[nroHabitacion]['costoPorDia']
+        else:
+            while not costoPorDia.isdigit() and int(costoPorDia) >0:
+                costoPorDia = input("Costo inválido. Ingrese un numero entero positivo.")
+            costoPorDia = cambiocostoPorDia
+
+        def validar_servicio(texto):
+            opcion = input(f"{texto} [True/False]: ")
+            while opcion != "True" and opcion != "False":
+                opcion = input(f"Entrada inválida. Ingresa True o False para {texto}: ")
+            if opcion == "True":
+                return True
+            else:
+                return False
+        
+        aire = validar_servicio("Aire acondicionado")
+        frigo = validar_servicio("Frigobar")
+        balcon = validar_servicio("Balcón")
 
         habitacionModificada = {
-            "disponible": disponible == "True",
+            "disponible": disponible,
             "capacidad": int(capacidad),
             "costoPorDia": int(costoPorDia),
             "servicios": {
-                "aire acondicionado": aire == "True",
-                "frigobar": frigo == "True",
-                "balcon": balcon == "True"
+                "aire acondicionado": aire,
+                "frigobar": frigo,
+                "balcon": balcon
             }
         }
         _habitaciones[nroHabitacion] = habitacionModificada
@@ -357,6 +431,10 @@ def agendarReserva(_clientes, _habitaciones, _reservas):
     Calcula el total a pagar y guarda los datos en el sistema.
     """
     dni = input("Ingrese su dni: ")
+
+    while not (dni.isdigit() and len(dni) == 8):
+        dni = input("DNI inválido. Ingrese un DNI de 8 dígitos: ")
+
     if dni in _clientes and _clientes[dni]['activo']:
         capacidad = int(input("Ingrese cantidad de personas: "))
         aireAcondicionado = input("Busca habitacion con aire acondicionado? (s/n): ").lower() == "s"
@@ -392,10 +470,12 @@ def agendarReserva(_clientes, _habitaciones, _reservas):
                 metodoPago = input("Ingrese metodo de pago: [1] Efectivo / [2] Tarjeta: ")
                 while (metodoPago != "1" and metodoPago != "2"):
                     metodoPago = input("Ingrese metodo de pago: [1] Efectivo / [2] Tarjeta: ")
-                formato = "%d/%m/%Y"
                 
                 fechaEntradaDt = fechaEntrada
                 fechaSalidaDt = fechaSalidaValida
+                if fechaSalidaDt <= fechaEntradaDt:
+                    print("La fecha de salida debe ser posterior a la de entrada.")
+                    return
                 dias = (fechaSalidaDt - fechaEntradaDt).days
                 totalPagar = dias * habitacionDatos.get('costoPorDia')
 
@@ -452,7 +532,10 @@ def reporteReservasPorAño(reservas):
             if fecha.year == año:
                 mes = fecha.month
                 habitacion = int(datos["nroHabitacion"])
-                resumen[habitacion][mes - 1] += 1
+                if habitacion not in resumen:
+                    resumen[habitacion] = [0]*12
+                    resumen[habitacion][mes - 1] += 1
+
 
     print(f"{'='*70}")
     print(f"Resumen de cantidad de reservas por habitación - Año {año}")
@@ -477,7 +560,7 @@ clientela = {
         "nombre": "Micaela Robles",
         "edad": 26,
         "telefonos": {
-            "móvil": "11 5002415123",
+            "movil": "11 5002415123",
             "alterno": ""
         }
     },
@@ -486,7 +569,7 @@ clientela = {
         "nombre": "Martin Gonzales",
         "edad": 26,
         "telefonos": {
-            "móvil": "11 500245621",
+            "movil": "11 500245621",
             "alterno": "1124070486"
         }
     },
@@ -495,7 +578,7 @@ clientela = {
         "nombre": "Fito Parrez",
         "edad": 26,
         "telefonos": {
-            "móvil": "11 500241234",
+            "movil": "11 500241234",
             "alterno": ""
         }
     },
@@ -504,7 +587,7 @@ clientela = {
         "nombre": "Gonzalo Robledo",
         "edad": 26,
         "telefonos": {
-            "móvil": "11 500241252",
+            "movil": "11 500241252",
             "alterno": ""
         }
     },
@@ -513,7 +596,7 @@ clientela = {
         "nombre": "Martin Serin",
         "edad": 26,
         "telefonos": {
-            "móvil": "11 500241211",
+            "movil": "11 500241211",
             "alterno": ""
         }
     },
@@ -522,7 +605,7 @@ clientela = {
         "nombre": "Gaston Soldati",
         "edad": 26,
         "telefonos": {
-            "móvil": "11 695241234",
+            "movil": "11 695241234",
             "alterno": ""
         }
     },
@@ -531,7 +614,7 @@ clientela = {
         "nombre": "Marcelo Chavez",
         "edad": 26,
         "telefonos": {
-            "móvil": "11 531241234",
+            "movil": "11 531241234",
             "alterno": ""
         }
     },
@@ -540,7 +623,7 @@ clientela = {
         "nombre": "Fernando Alonso",
         "edad": 26,
         "telefonos": {
-            "móvil": "11 498241234",
+            "movil": "11 498241234",
             "alterno": ""
         }
     },
@@ -549,7 +632,7 @@ clientela = {
         "nombre": "Martin Gimenez",
         "edad": 26,
         "telefonos": {
-            "móvil": "11 233241234",
+            "movil": "11 233241234",
             "alterno": ""
         }
     },
@@ -558,7 +641,7 @@ clientela = {
         "nombre": "Lionel Messi",
         "edad": 26,
         "telefonos": {
-            "móvil": "11 503241234",
+            "movil": "11 503241234",
             "alterno": ""
         }
     },
@@ -567,7 +650,7 @@ clientela = {
         "nombre": "Agustin Avella",
         "edad": 23,
         "telefonos": {
-            "móvil": "11 503241234",
+            "movil": "11 503241234",
             "alterno": "11 41231233"
         }
     }
