@@ -822,6 +822,7 @@ habitaciones = {
 }
 reservas = {
     "20/12/2025-1": {
+        "nombre":"Chango",
         "dni": "39592834",
         "nroHabitacion": 1,
         "activo": True,
@@ -832,6 +833,7 @@ reservas = {
         "totalPagar": 20000
     },
     "15/10/2025-2": {
+        "nombre":"Guerrero",
         "dni": "431223345",
         "nroHabitacion": 2,
         "activo": True,
@@ -842,6 +844,7 @@ reservas = {
         "totalPagar": 20000
     },
     "20/12/2025-3": {
+        "nombre":"Sarmiento",
         "dni": "33451678",
         "nroHabitacion": 3,
         "activo": True,
@@ -852,6 +855,7 @@ reservas = {
         "totalPagar": 60000
     },
     "25/12/2025-4": {
+        "nombre":"Brian",
         "dni": "15675431",
         "nroHabitacion": 4,
         "activo": True,
@@ -862,6 +866,7 @@ reservas = {
         "totalPagar": 50000
     },
     "01/01/2026-5": {
+        "nombre":"Javito",
         "dni": "423411123",
         "nroHabitacion": 5,
         "activo": True,
@@ -872,6 +877,7 @@ reservas = {
         "totalPagar": 40000
     },
     "15/06/2026-6": {
+        "nombre":"Cristian",
         "dni": "11234124",
         "nroHabitacion": 6,
         "activo": True,
@@ -882,6 +888,7 @@ reservas = {
         "totalPagar": 50000
     },
     "20/08/2026-7": {
+        "nombre":"Pepe",
         "dni": "41234124",
         "nroHabitacion": 7,
         "activo": True,
@@ -892,6 +899,7 @@ reservas = {
         "totalPagar": 50000
     },
     "10/09/2026-8": {
+        "nombre":"Marcelo",
         "dni": "45212342",
         "nroHabitacion": 8,
         "activo": True,
@@ -902,6 +910,7 @@ reservas = {
         "totalPagar": 50000
     },
     "05/10/2026-9": {
+        "nombre":"Juan",
         "dni": "2142142",
         "nroHabitacion": 9,
         "activo": True,
@@ -912,6 +921,7 @@ reservas = {
         "totalPagar": 50000
     },
     "15/11/2026-10": {
+        "nombre":"Pepsi",
         "dni": "4042132",
         "nroHabitacion": 10,
         "activo": True,
