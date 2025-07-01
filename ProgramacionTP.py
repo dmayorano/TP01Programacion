@@ -60,7 +60,6 @@ def habitacionesMasRentables(reservas):
 
             habitaciones[nroHabitacion] += totalPagar
 
-    # Ordenar las habitaciones por ingresos
     habitacionesOrdenadas = []
     while habitaciones:
         maxHabitacion = max(habitaciones, key=habitaciones.get)
@@ -111,7 +110,6 @@ def resumenMontoPorAñoYMes(reservas):
                 print(f"{['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'][i]} | {monto:,.2f}")
         print()
 
-    # Formato de matriz
     print(f"{'='*70}")
     print(f"Resumen de monto en pesos por año y mes (matriz)")
     print(f"{'='*70}")
@@ -134,16 +132,16 @@ def informeOperacionesMes(reservas, clientes):
     Returns:
         None
     """
-    # Obtener la fecha actual
+    
     fechaActual = datetime.now()
     mesActual = fechaActual.month
     añoActual = fechaActual.year
 
-    # Imprimir encabezado
+    
     print(f"{'Fecha/Hora':<20} {'Cliente':<20} {'Nro. Habitación':<15} {'Cant. Personas':<15} {'Método de Pago':<15} {'Total':<10}")
     print("-" * 100)
 
-    # Recorrer reservas y filtrar aquellas del mes actual
+    
     for idReserva, reserva in reservas.items():
         fechaEntrada = datetime.strptime(reserva["fechaDeEntrada"], "%d/%m/%Y")
         if fechaEntrada.month == mesActual and fechaEntrada.year == añoActual:
