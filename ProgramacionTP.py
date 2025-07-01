@@ -410,21 +410,34 @@ def modificarHabitacion(_habitaciones):
         print("Si no desea cambiar un valor solo oprima enter para saltear al siguiente dato.")
         print("==============")
 
-        cambiocapacidad = input(f"¿Capacidad correcta?, {_habitaciones[nroHabitacion]['capacidad']}: ")
-        if cambiocapacidad == "":
-            capacidad = _habitaciones[nroHabitacion]['capacidad']
-        else:
-            while not capacidad.isdigit() and int(capacidad) >0:
-                capacidad = input("Capacidad inválida. Ingrese un numero entero positivo.")
-            capacidad = cambiocapacidad
+        while True:
+            try:
+                cambiocapacidad = input(f"¿Capacidad correcta?, {_habitaciones[nroHabitacion]['capacidad']}: ")
+                if cambiocapacidad == "":
+                    capacidad = _habitaciones[nroHabitacion]['capacidad']
+                    break
+                if not cambiocapacidad.isdigit() and int(cambiocapacidad) > 0:
+                    cambiocapacidad = input("Capacidad inválida. Ingrese un numero entero positivo.")
+                else:
+                    capacidad = cambiocapacidad
+                    break
+            except ValueError:
+                print("Entrada inválida. Ingrese numeros.")
 
-        cambiocostoPorDia = input(f"¿Costo por dia correcto?, {_habitaciones[nroHabitacion]['costoPorDia']}: ")
-        if cambiocostoPorDia == "":
-            costoPorDia = _habitaciones[nroHabitacion]['costoPorDia']
-        else:
-            while not costoPorDia.isdigit() and int(costoPorDia) >0:
-                costoPorDia = input("Costo inválido. Ingrese un numero entero positivo.")
-            costoPorDia = cambiocostoPorDia
+        while True:
+            try:
+                cambiocostoPorDia = input(f"¿Costo por dia correcto?, {_habitaciones[nroHabitacion]['costoPorDia']}: ")
+                if cambiocostoPorDia == "":
+                    costoPorDia = _habitaciones[nroHabitacion]['costoPorDia']
+                    break
+                else:
+                    if not cambiocostoPorDia.isdigit() and int(cambiocostoPorDia) > 0:
+                        cambiocostoPorDia = input("Costo inválido. Ingrese un numero entero positivo.")
+                    else:
+                        costoPorDia = cambiocostoPorDia
+                        break
+            except ValueError:
+                print("Entrada invalida. Ingrese numeros.")
 
         def validar_servicio(texto):
             opcion = input(f"{texto} [True/False]: ")
@@ -464,10 +477,30 @@ def agendarReserva(_clientes, _habitaciones, _reservas):
         dni = input("DNI inválido. Ingrese un DNI de 8 dígitos: ")
 
     if dni in _clientes and _clientes[dni]['activo']:
-        capacidad = int(input("Ingrese cantidad de personas: "))
-        aireAcondicionado = input("Busca habitacion con aire acondicionado? (s/n): ").lower() == "s"
-        frigo = input("Busca habitacion con frigobar? (s/n): ").lower() == "s"
-        balcon = input("busca habitacion con balcon? (s/n): ").lower() == "s"
+
+        while True:
+            capacidad_input = input("Ingrese cantidad de personas: ")
+            if capacidad_input.isdigit() and int(capacidad_input) > 0:
+                capacidad = int(capacidad_input)
+                break
+            else:
+                print("Por favor, ingrese un número válido mayor que cero.")
+        
+        def pedir_confirmacion(texto):
+            """
+            Funcion para simplificar un paso dentro de otra funcion, lo que realiza es la validacion de los servicios.
+            """
+            opcion = input(f"{texto} [True/False]: ")
+            while opcion != "True" and opcion != "False":
+                opcion = input(f"Entrada inválida. Ingresa True o False para {texto}: ")
+            if opcion == "True":
+                return True
+            else:
+                return False
+
+        aireAcondicionado = pedir_confirmacion("Aire acondicionado")
+        frigo = pedir_confirmacion("Frigobar")
+        balcon = pedir_confirmacion("Balcon")
 
         for nroHabitacion, habitacionDatos in _habitaciones.items():
             if (
