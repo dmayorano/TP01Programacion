@@ -305,20 +305,48 @@ def altaHabitacion(_habitaciones):
         print("La habitacion ya existe.")
         return
 
-    capacidad = input("Ingrese capacidad de personas: ")
-    costoPorDia = int(input("Ingrese su costo por dia: "))
-    aireCondicionado = input("Ingrese True si tiene aire acondicionado o False si no tiene:  ")
-    frigobar = input("Ingrese True si tiene frigobar o False si no tiene: ")
-    balcon = input("Ingrese True si tiene balcon o False si no tiene: ")
+    def validar_servicio(texto):
+        opcion = input(f"{texto} [True/False]: ")
+        while opcion != "True" and opcion != "False":
+            opcion = input(f"Entrada inválida. Ingresa True o False para {texto}: ")
+        if opcion == "True":
+            return True
+        else:
+            return False
+    while True:
+        try:
+            capacidad = int(input("Ingrese capacidad de personas: "))
+            if capacidad <= 0:
+                capacidad = input("La capacidad de la habitacion debe ser mayor a 0: ")
+            else:
+                break
+        except ValueError:
+            print("Error. Ingrese digitos númericos, no letras ni simbolos.")
+        except TypeError:
+            print("Error. Ingrese digitos númericos, no letras ni simbolos. ")
+
+    while True:
+        try:
+            costoPorDia = int(input("Ingrese su costo por dia: "))
+            if costoPorDia <= 0:
+                costoPorDia = input("El costo por dia debe ser mayor a 0: ")
+            else:
+                break
+        except ValueError:
+            print("Error. Ingrese digitos númericos, no letras ni simbolos.")
+
+    aireCondicionado = validar_servicio("Aire acondicionado")
+    frigobar = validar_servicio("Frigobar")
+    balcon = validar_servicio("Balcon")
 
     nuevaHabitacion = {
         "disponible": True,
         "capacidad": int(capacidad),
         "costoPorDia": costoPorDia,
         "servicios": {
-            "aire acondicionado": aireCondicionado == "True",
-            "frigobar": frigobar == "True",
-            "balcon": balcon == "True"
+            "aire acondicionado": aireCondicionado,
+            "frigobar": frigobar,
+            "balcon": balcon
         }
     }
     _habitaciones[nroHabitacion] = nuevaHabitacion
