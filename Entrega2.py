@@ -47,6 +47,39 @@ def guardar_datos(nombre_archivo, datos):
     with open(nombre_archivo, "w", encoding="utf-8") as archivo:
         json.dump(datos, archivo, indent=4, ensure_ascii=False)
 
+def validar_email(email):
+    """
+    Valida un correo electrónico.
+    Criterios:
+    - Debe contener exactamente un '@'
+    - Debe tener al menos un '.' después del '@'
+    - No puede comenzar ni terminar con '@' o '.'
+    - La parte final (después del último punto) debe tener al menos 2 letras
+    """
+    if not isinstance(email, str):
+        return False
+
+    if email.count("@") != 1:
+        return False
+
+    parte_local, parte_dominio = email.split("@")
+
+    if not parte_local or not parte_dominio:
+        return False
+
+    if "." not in parte_dominio:
+        return False
+
+    if parte_dominio.startswith(".") or parte_dominio.endswith("."):
+        return False
+
+    partes = parte_dominio.split(".")
+    if len(partes[-1]) < 2:
+        return False
+
+    return True
+
+
 def habitacionesMasRentables():
     """
     Muestra las habitaciones más rentables del hotel, ordenadas por ingresos.
@@ -181,11 +214,6 @@ def altaCliente():
     Solicita los datos de un nuevo cliente y lo registra si el DNI no existe.
     Usa archivo JSON, validaciones y control de excepciones.
     """
-    import re
-
-    def validar_email(email):
-        patron = r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
-        return re.match(patron, email) is not None
 
     clientes = cargar_datos("clientes.json")
 
@@ -317,11 +345,6 @@ def modificarCliente():
     Permite modificar los datos de un cliente existente (nombre, edad, email, teléfonos, estado).
     Lee y guarda en clientes.json. Aplica validaciones y control de errores.
     """
-    import re
-
-    def validar_email(email):
-        patron = r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
-        return re.match(patron, email) is not None
 
     clientes = cargar_datos("clientes.json")
 
