@@ -1,6 +1,5 @@
 import json
 
-# Copiá acá tus 3 diccionarios exactamente como están:
 clientela = {
     "39592834": {
         "activo": True,
@@ -305,7 +304,7 @@ reservas = {
             "balcon": False
         }
     }
-}  # Pegá habitaciones completas
+}  
 reservas = {
     "20/12/2025-1": {
         "nombre":"Micaela Robles",
@@ -417,9 +416,9 @@ reservas = {
         "metodoDePago": "Tarjeta",
         "totalPagar": 50000
     }
-}  # Pegá reservas completas
+} 
 
-# Guardar como JSON
+
 with open("clientes.json", "w", encoding="utf-8") as archivo:
     json.dump(clientela, archivo, indent=4, ensure_ascii=False)
 
@@ -429,4 +428,4 @@ with open("habitaciones.json", "w", encoding="utf-8") as archivo:
 with open("reservas.json", "w", encoding="utf-8") as archivo:
     json.dump(reservas, archivo, indent=4, ensure_ascii=False)
 
-print("¡Datos convertidos y guardados en archivos JSON con éxito!")
+print("Datos convertidos y guardados como JSON.")
