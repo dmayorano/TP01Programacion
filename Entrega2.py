@@ -47,37 +47,41 @@ def guardar_datos(nombre_archivo, datos):
     with open(nombre_archivo, "w", encoding="utf-8") as archivo:
         json.dump(datos, archivo, indent=4, ensure_ascii=False)
 
-def habitacionesMasRentables(reservas):
+def habitacionesMasRentables():
     """
     Muestra las habitaciones más rentables del hotel, ordenadas por ingresos.
-
-    Args:
-        reservas (dict): Diccionario de reservas del hotel.
+    Lee los datos desde reservas.json.
     """
-    habitaciones = {}
+    reservas = cargar_datos("reservas.json")
+
+    if not reservas:
+        print("No hay reservas registradas.")
+        return
+
+    ingresos_por_habitacion = {}
 
     for datos in reservas.values():
-        if datos["activo"]:
-            nroHabitacion = datos["nroHabitacion"]
-            totalPagar = datos["totalPagar"]
+        if datos.get("activo"):
+            nro = datos.get("nroHabitacion")
+            total = datos.get("totalPagar", 0)
 
-            if nroHabitacion not in habitaciones:
-                habitaciones[nroHabitacion] = 0
+            if nro not in ingresos_por_habitacion:
+                ingresos_por_habitacion[nro] = 0
 
-            habitaciones[nroHabitacion] += totalPagar
+            ingresos_por_habitacion[nro] += total
 
-    habitacionesOrdenadas = []
-    while habitaciones:
-        maxHabitacion = max(habitaciones, key=habitaciones.get)
-        habitacionesOrdenadas.append((maxHabitacion, habitaciones[maxHabitacion]))
-        del habitaciones[maxHabitacion]
+    if not ingresos_por_habitacion:
+        print("No hay ingresos activos para mostrar.")
+        return
 
-    print(f"{'='*50}")
-    print(f"Habitaciones Más Rentables")
-    print(f"{'='*50}")
+    ordenadas = sorted(ingresos_por_habitacion.items(), key=lambda x: x[1], reverse=True)
+
+    print("=" * 50)
+    print("Habitaciones Más Rentables")
+    print("=" * 50)
     print("Nro. Habitación | Ingresos")
-    for habitacion, ingresos in habitacionesOrdenadas:
-        print(f"{habitacion:<15} | {ingresos:,.2f}")
+    for nro, ingreso in ordenadas:
+        print(f"{str(nro):<15} | ${ingreso:,.2f}")
 
 
 def resumenMontoPorAñoYMes():
