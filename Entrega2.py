@@ -279,21 +279,33 @@ def inactivarCliente():
 
 
 
-def listarClientesActivos(_clientes):
+def listarClientesActivos():
     """
-    Muestra en pantalla los datos de todos los clientes activos del sistema.
+    Muestra en pantalla los datos de todos los clientes activos registrados en clientes.json.
     """
-    for dni, otrosDatos in _clientes.items():
-        if otrosDatos['activo']:
+    clientes = cargar_datos("clientes.json")
+
+    if not clientes:
+        print("No hay clientes registrados.")
+        return
+
+    encontrados = False
+
+    for dni, datos in clientes.items():
+        if datos.get('activo'):
+            encontrados = True
             print(f"DNI: {dni}")
-            print(f"NOMBRE: {otrosDatos.get('nombre', 'No disponible')}")
-            print(f"EDAD: {otrosDatos.get('edad', 'No disponible')}")
+            print(f"NOMBRE: {datos.get('nombre', 'No disponible')}")
+            print(f"EDAD: {datos.get('edad', 'No disponible')}")
             print("TELEFONOS:")
-            for telefono, numeroTelefono in otrosDatos.get("telefonos", {}).items():
-                if numeroTelefono:
-                    print(f"\t{telefono}: {numeroTelefono}")
+            for tipo, numero in datos.get("telefonos", {}).items():
+                if numero:
+                    print(f"\t{tipo}: {numero}")
             print("========================================")
-    return
+
+    if not encontrados:
+        print("No hay clientes activos para mostrar.")
+
 
 
 def modificarCliente():
@@ -1126,20 +1138,20 @@ while True:
                     break # No sale del programa, sino que vuelve al menú anterior
                 
                 elif opcionSubmenu == "1":   # Opción 1 del submenú
-                    altaCliente(clientela)
+                    altaCliente()
                     
                     
                     
                 elif opcionSubmenu == "2":   # Opción 2 del submenú
-                    modificarCliente(clientela)
+                    modificarCliente()
                     
                 
                 elif opcionSubmenu == "3":   # Opción 3 del submenú
-                    inactivarCliente(clientela)
+                    inactivarCliente()
                 
                 elif opcionSubmenu == "4":   # Opción 4 del submenú
                     
-                    listarClientesActivos(clientela)
+                    listarClientesActivos()
 
                 input("\nPresione ENTER para volver al menú.") # Pausa entre opciones
                 print("\n\n")
@@ -1172,16 +1184,16 @@ while True:
                     break # No sale del programa, sino que vuelve al menú anterior
                 
                 elif opcionSubmenu == "1":   # Opción 1 del submenú
-                    altaHabitacion(habitaciones)
+                    altaHabitacion()
                     
                 elif opcionSubmenu == "2":   # Opción 2 del submenú
-                    modificarHabitacion(habitaciones)
+                    modificarHabitacion()
                 
                 elif opcionSubmenu == "3":   # Opción 3 del submenú
-                    inactivarHabitacion(habitaciones)
+                    inactivarHabitacion()
                 
                 elif opcionSubmenu == "4":   # Opción 4 del submenú
-                    listarHabitacionesActivas(habitaciones)
+                    listarHabitacionesActivas()
 
                 input("\nPresione ENTER para volver al menú.") # Pausa entre opciones
                 print("\n\n")
