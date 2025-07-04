@@ -336,7 +336,6 @@ def modificarCliente():
     cliente = clientes[dni]
     print("Si desea mantener un dato actual, presione ENTER.\n")
 
-    # Estado
     estado = input(f"¿Activo? Actual: {cliente['activo']} (1=Sí / 2=No): ")
     if estado == "1":
         activo = True
@@ -345,7 +344,6 @@ def modificarCliente():
     else:
         activo = cliente['activo']
 
-    # Nombre
     nombre = input(f"Nombre actual: {cliente['nombre']}: ")
     if nombre.strip() == "":
         nombre = cliente['nombre']
@@ -353,7 +351,6 @@ def modificarCliente():
         while not nombre.replace(" ", "").isalpha():
             nombre = input("Nombre inválido. Ingrese solo letras y espacios: ")
 
-    # Edad
     edad_input = input(f"Edad actual: {cliente['edad']}: ")
     if edad_input.strip() == "":
         edad = cliente['edad']
@@ -362,7 +359,6 @@ def modificarCliente():
             edad_input = input("Edad inválida. Ingrese un número positivo: ")
         edad = int(edad_input)
 
-    # Email
     email = input(f"Email actual: {cliente.get('email', 'No registrado')}: ")
     if email.strip() == "":
         email = cliente.get('email', '')
@@ -370,7 +366,6 @@ def modificarCliente():
         while not validar_email(email):
             email = input("Email inválido. Ingrese nuevamente: ")
 
-    # Teléfono móvil
     movil = input(f"Teléfono actual: {cliente['telefonos']['movil']}: ")
     if movil.strip() == "":
         movil = cliente['telefonos']['movil']
@@ -378,7 +373,6 @@ def modificarCliente():
         while not (movil.isdigit() and 10 <= len(movil) <= 15):
             movil = input("Número inválido. Ingrese entre 10 y 15 dígitos: ")
 
-    # Teléfono alterno
     alterno = input(f"Tel. alternativo actual: {cliente['telefonos']['alterno']}: ")
     if alterno.strip() == "":
         alterno = cliente['telefonos']['alterno']
@@ -423,7 +417,6 @@ def altaHabitacion():
             opcion = input(f"Entrada inválida. Ingrese True o False para {texto}: ")
         return opcion == "True"
 
-    # Capacidad
     while True:
         try:
             capacidad = int(input("Ingrese capacidad de personas: "))
@@ -434,7 +427,6 @@ def altaHabitacion():
         except ValueError:
             print("Error. Ingrese números enteros.")
 
-    # Costo por día
     while True:
         try:
             costoPorDia = int(input("Ingrese costo por día: "))
@@ -530,7 +522,6 @@ def modificarHabitacion():
 
     habitacion = habitaciones[nroHabitacion]
 
-    # Estado de disponibilidad
     disponible = input("¿Está disponible? [True/False] (ENTER para mantener actual): ")
     if disponible == "":
         disponible = habitacion.get("disponible", True)
@@ -540,7 +531,6 @@ def modificarHabitacion():
         print("Entrada inválida. Se mantendrá el valor anterior.")
         disponible = habitacion.get("disponible", True)
 
-    # Capacidad
     nueva_capacidad = input(f"Capacidad actual: {habitacion['capacidad']} - Nueva capacidad (ENTER para mantener): ")
     if nueva_capacidad == "":
         capacidad = habitacion["capacidad"]
@@ -549,7 +539,6 @@ def modificarHabitacion():
             nueva_capacidad = input("Capacidad inválida. Ingrese un número entero mayor a 0: ")
         capacidad = int(nueva_capacidad)
 
-    # Costo por día
     nuevo_costo = input(f"Costo actual: ${habitacion['costoPorDia']} - Nuevo costo (ENTER para mantener): ")
     if nuevo_costo == "":
         costoPorDia = habitacion["costoPorDia"]
@@ -627,7 +616,7 @@ def agendarReserva():
             datosHab["servicios"].get("frigobar") == frigo and
             datosHab["servicios"].get("balcon") == balcon
         ):
-            # Fecha ingreso
+
             while True:
                 fechaEntradaStr = input("Fecha de ingreso (DD/MM/AAAA): ")
                 try:
@@ -639,7 +628,7 @@ def agendarReserva():
                 except ValueError:
                     print("Formato de fecha inválido.")
 
-            # Fecha salida
+
             while True:
                 fechaSalidaStr = input("Fecha de salida (DD/MM/AAAA): ")
                 try:
@@ -722,7 +711,7 @@ def reporteReservasPorAño():
         except ValueError:
             print("Entrada inválida. Ingrese un año como número (ej. 2025).")
 
-    # Inicializa el resumen con 12 meses por cada habitación (del 1 al 10)
+
     resumen = {i: [0]*12 for i in range(1, 11)}
 
     for datos in reservas.values():
