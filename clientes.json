@@ -97,5 +97,15 @@
             "movil": "11 503241234",
             "alterno": "11 41231233"
         }
+    },
+    "14884981": {
+        "activo": true,
+        "nombre": "Rodolfo",
+        "edad": 60,
+        "email": "rodol@yahoo.com",
+        "telefonos": {
+            "movil": "1133088042",
+            "alterno": ""
+        }
     }
 }
