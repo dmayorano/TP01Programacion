@@ -1,8 +1,8 @@
 """
 -----------------------------------------------------------------------------------------------
-Título: TP Programacion 1 primer entrega
-Fecha: 03/06/2025
-Autor: Agustin Avella, Bryan Charra, Damian Mayorano
+Título: TP Programacion 1 Entrega Final
+Fecha: 07/07/2025
+Autor: Agustin Avella
 
 Descripción: 
 Este es un proyecto desarrollado para la materia Programación I (3.4.071) de la Universidad Argentina de la Empresa (UADE).
@@ -22,15 +22,12 @@ Diseño de datos basado en entidades maestras (Cliente y Habitación) y una enti
 Proyecto orientado al aprendizaje de conceptos fundamentales de desarrollo de software.
 
 Pendientes:
-- Funcion informes por año (cantidad)
-- Funcion informes por año (pesos)
 -----------------------------------------------------------------------------------------------
 """
 
 #----------------------------------------------------------------------------------------------
 # MÓDULOS
 #----------------------------------------------------------------------------------------------
-import time
 from datetime import datetime
 
 
@@ -44,9 +41,6 @@ def habitacionesMasRentables(reservas):
 
     Args:
         reservas (dict): Diccionario de reservas del hotel.
-
-    Returns:
-        None
     """
     habitaciones = {}
 
@@ -80,9 +74,6 @@ def resumenMontoPorAñoYMes(reservas):
 
     Args:
         reservas (dict): Diccionario de reservas del hotel.
-
-    Returns:
-        None
     """
     resumen = {}
 
@@ -121,16 +112,13 @@ def resumenMontoPorAñoYMes(reservas):
         print(linea)
 
 
-def informeOperacionesMes(reservas, clientes):
+def informeIngresosPorFechaEntradaDelMes(reservas, clientes):
     """
     Muestra un informe de las operaciones del mes actual.
 
     Args:
         reservas (dict): Diccionario de reservas del hotel.
         clientes (dict): Diccionario de clientes del hotel.
-
-    Returns:
-        None
     """
     
     fechaActual = datetime.now()
@@ -138,7 +126,7 @@ def informeOperacionesMes(reservas, clientes):
     añoActual = fechaActual.year
 
     
-    print(f"{'Fecha/Hora':<20} {'Cliente':<20} {'Nro. Habitación':<15} {'Cant. Personas':<15} {'Método de Pago':<15} {'Total':<10}")
+    print(f"{'Fecha ingreso':<20} {'Cliente':<20} {'Nro. Habitación':<15} {'Cant. Personas':<15} {'Método de Pago':<15} {'Total':<10}")
     print("-" * 100)
 
     
@@ -158,9 +146,9 @@ def altaCliente(_clientes):
     if dni in _clientes:
         print("El cliente ya existe.")
     else:
-        nombre = input("Ingresa tu nombre: ")
+        nombre = input("Ingresa tu nombre y apellido: ")
         while nombre.isdigit():
-            nombre = input("El nombre no puede ser un numero: ")
+            nombre = input("El nombre y apellido no puede ser un numero: ")
         while True:
             edadInput = input("Ingrese su edad: ")
             try:
@@ -174,7 +162,7 @@ def altaCliente(_clientes):
 
 
         telefono = input("Ingrese su numero de telefono: ")
-        while (len(telefono) < 10 or telefono.isdigit()==False):
+        while (len(telefono) < 10 or len(telefono) > 15 or telefono.isdigit()==False):
             telefono = input("Ingrese un numero de telefono válido (por lo menos 10 digitos): ")
 
         alterno = input("Ingresa un segundo numero de telefono. Si no tiene otro simplemente deje el campo vacio: ")
@@ -263,18 +251,24 @@ def modificarCliente(_clientes):
         if cambioedad == "":
             edad = _clientes[dni]['edad']
         else:
-            edad = cambioedad        
+            while not (cambioedad.isdigit() and 0 <= int(cambioedad)):
+                cambioedad = input("Edad inválida. Ingrese una edad mayor a 0: ")
+            edad = int(cambioedad)       
 
         cambiomovil = input(f"¿Numero de télefono 1 correcto?, {_clientes[dni]['telefonos']['movil']}: ")
         if cambiomovil == "":
             movil = _clientes[dni]['telefonos']['movil']
         else:
+            while not (cambiomovil.isdigit() and len(cambiomovil) >= 10 and len(cambiomovil) <= 15):
+                cambiomovil = input("Número inválido. Vuelva a ingresarlo: ")
             movil = cambiomovil
 
         cambioalterno = input(f"¿Numero de télefono 2 correcto?, {_clientes[dni]['telefonos']['alterno']}: ")
         if cambioalterno == "":
             alterno = _clientes[dni]['telefonos']['alterno']
         else:
+            while not (cambioalterno.isdigit() and len(cambioalterno) >= 10 and len(cambioalterno) <= 15):
+                cambioalterno = input("Número inválido. Vuelva a ingresarlo: ")
             alterno = cambioalterno
 
         clienteModificado = {
@@ -315,7 +309,7 @@ def altaHabitacion(_habitaciones):
         try:
             capacidad = int(input("Ingrese capacidad de personas: "))
             if capacidad <= 0:
-                capacidad = input("La capacidad de la habitacion debe ser mayor a 0: ")
+                print("La capacidad debe ser mayor a 0.")
             else:
                 break
         except ValueError:
@@ -403,6 +397,10 @@ def modificarHabitacion(_habitaciones):
         disponible = input("Disponible[True], No disponible[False]: ")
         while disponible not in ("True", "False"):
             disponible = input("Entrada inválida. Ingrese 'True' o 'False' para disponibilidad: ")
+        if disponible == "True":
+            disponible = True
+        else:
+            disponible = False
 
         print("==============")
         print("Si no desea cambiar un valor solo oprima enter para saltear al siguiente dato.")
@@ -414,8 +412,8 @@ def modificarHabitacion(_habitaciones):
                 if cambiocapacidad == "":
                     capacidad = _habitaciones[nroHabitacion]['capacidad']
                     break
-                if not cambiocapacidad.isdigit() and int(cambiocapacidad) > 0:
-                    cambiocapacidad = input("Capacidad inválida. Ingrese un numero entero positivo.")
+                if not cambiocapacidad.isdigit() or int(cambiocapacidad) <= 0:
+                    print("Capacidad inválida.")
                 else:
                     capacidad = cambiocapacidad
                     break
@@ -508,13 +506,16 @@ def agendarReserva(_clientes, _habitaciones, _reservas):
                 frigo == habitacionDatos.get('servicios', {}).get('frigobar') and
                 balcon == habitacionDatos.get('servicios', {}).get('balcon')
             ):
-                obj = time.localtime()
-                idReserva = time.asctime(obj)
+                idReserva = datetime.now().strftime("%Y.%m.%d %H.%M.%S")
 
                 while True:
                     fechaEntrada = input("Fecha de ingreso (DD/MM/AAAA): ")
                     try:
                         fechaEntrada = datetime.strptime(fechaEntrada, "%d/%m/%Y")
+                        if fechaEntrada < datetime.now():
+                            print("=============================")
+                            print("La fecha de entrada no puede ser anterior a hoy.")
+                            return
                         break
                     except ValueError:
                         print("Fecha inválida. Intente nuevamente.")
@@ -522,20 +523,23 @@ def agendarReserva(_clientes, _habitaciones, _reservas):
                 while True:
                     fechaSalida = input("Fecha de salida (DD/MM/AAAA): ")
                     try:
-                        fechaSalidaValida = datetime.strptime(fechaSalida, "%d/%m/%Y")
+                        fechaSalida = datetime.strptime(fechaSalida, "%d/%m/%Y")
+                        if fechaSalida <= fechaEntrada:
+                            print("=============================")
+                            print("La fecha de salida debe ser posterior a la de entrada.")
+                            return
                         break
                     except ValueError:
                         print("Fecha inválida. Intente nuevamente.")
                 metodoPago = input("Ingrese metodo de pago: [1] Efectivo / [2] Tarjeta: ")
                 while (metodoPago != "1" and metodoPago != "2"):
-                    metodoPago = input("Ingrese metodo de pago: [1] Efectivo / [2] Tarjeta: ")
+                    metodoPago = input("Error. Ingrese metodo de pago: [1] Efectivo / [2] Tarjeta: ")
+                if metodoPago == "1":
+                    metodoPago = "Efectivo"
+                else:
+                    metodoPago = "Tarjeta"
                 
-                fechaEntradaDt = fechaEntrada
-                fechaSalidaDt = fechaSalidaValida
-                if fechaSalidaDt <= fechaEntradaDt:
-                    print("La fecha de salida debe ser posterior a la de entrada.")
-                    return
-                dias = (fechaSalidaDt - fechaEntradaDt).days
+                dias = (fechaSalida - fechaEntrada).days
                 totalPagar = dias * habitacionDatos.get('costoPorDia')
 
                 nuevaReserva = {
@@ -546,7 +550,7 @@ def agendarReserva(_clientes, _habitaciones, _reservas):
                     "activo": True,
                     "cantidadPersonas": capacidad,
                     "fechaDeEntrada": fechaEntrada.strftime("%d/%m/%Y"),
-                    "fechaDeSalida": fechaSalidaValida.strftime("%d/%m/%Y"),
+                    "fechaDeSalida": fechaSalida.strftime("%d/%m/%Y"),
                     "metodoDePago": metodoPago,
                     "totalPagar": totalPagar
                 }
@@ -556,6 +560,7 @@ def agendarReserva(_clientes, _habitaciones, _reservas):
                 return
         print("No hay habitacion para esa cantidad de personas y servicios seleccionados.")
     else:
+        print("==========================")
         print("Usted es un cliente inactivo o no registrado por lo tanto no puede realizar reservas.")
 
 
@@ -581,19 +586,37 @@ def reporteReservasPorAño(reservas):
     """
     Genera un reporte resumen de la cantidad de reservas por habitación para un año dado.
     """
-    año = int(input("Ingrese año: "))
+    while True:
+        try:
+            año = int(input("Ingrese año: "))
+            break
+        except ValueError:
+            print("No ingreso una fecha o ingreso un dato que no es digito. Vuelva a introducir la fecha.")
+
     resumen = {i: [0]*12 for i in range(1, 11)}
 
     for datos in reservas.values():
         if datos["activo"]:
             fecha_str = datos["fechaDeEntrada"]
-            fecha = datetime.strptime(fecha_str, "%d/%m/%Y")
+            try:
+                fecha = datetime.strptime(fecha_str, "%d/%m/%Y")
+            except ValueError:
+                print(f"Formato de fecha inválido: {fecha_str}")
+                continue  # Salta esta reserva si tiene mal la fecha
+
             if fecha.year == año:
                 mes = fecha.month
-                habitacion = int(datos["nroHabitacion"])
+                try:
+                    habitacion = int(datos["nroHabitacion"])
+                except ValueError:
+                    print(f"NroHabitacion inválido: {datos['nroHabitacion']}")
+                    continue
+
                 if habitacion not in resumen:
-                    resumen[habitacion] = [0]*12
-                    resumen[habitacion][mes - 1] += 1
+                    resumen[habitacion] = [0] * 12
+                resumen[habitacion][mes - 1] += 1
+
+
 
 
     print(f"{'='*70}")
@@ -820,7 +843,7 @@ habitaciones = {
 }
 reservas = {
     "20/12/2025-1": {
-        "nombre":"Chango",
+        "nombre":"Micaela Robles",
         "dni": "39592834",
         "nroHabitacion": 1,
         "activo": True,
@@ -831,7 +854,7 @@ reservas = {
         "totalPagar": 20000
     },
     "15/10/2025-2": {
-        "nombre":"Guerrero",
+        "nombre":"Martin Gonzales",
         "dni": "431223345",
         "nroHabitacion": 2,
         "activo": True,
@@ -842,7 +865,7 @@ reservas = {
         "totalPagar": 20000
     },
     "20/12/2025-3": {
-        "nombre":"Sarmiento",
+        "nombre":"Fito Parrez",
         "dni": "33451678",
         "nroHabitacion": 3,
         "activo": True,
@@ -853,7 +876,7 @@ reservas = {
         "totalPagar": 60000
     },
     "25/12/2025-4": {
-        "nombre":"Brian",
+        "nombre":"Gonzalo Robledo",
         "dni": "15675431",
         "nroHabitacion": 4,
         "activo": True,
@@ -864,7 +887,7 @@ reservas = {
         "totalPagar": 50000
     },
     "01/01/2026-5": {
-        "nombre":"Javito",
+        "nombre":"Martin Serin",
         "dni": "423411123",
         "nroHabitacion": 5,
         "activo": True,
@@ -886,7 +909,7 @@ reservas = {
         "totalPagar": 50000
     },
     "20/08/2026-7": {
-        "nombre":"Pepe",
+        "nombre":"Marcelo Chavez",
         "dni": "41234124",
         "nroHabitacion": 7,
         "activo": True,
@@ -897,7 +920,7 @@ reservas = {
         "totalPagar": 50000
     },
     "10/09/2026-8": {
-        "nombre":"Marcelo",
+        "nombre":"Fernando Alonso",
         "dni": "45212342",
         "nroHabitacion": 8,
         "activo": True,
@@ -908,7 +931,7 @@ reservas = {
         "totalPagar": 50000
     },
     "05/10/2026-9": {
-        "nombre":"Juan",
+        "nombre":"Martin Gimenez",
         "dni": "2142142",
         "nroHabitacion": 9,
         "activo": True,
@@ -919,7 +942,7 @@ reservas = {
         "totalPagar": 50000
     },
     "15/11/2026-10": {
-        "nombre":"Pepsi",
+        "nombre":"Lionel Messi",
         "dni": "4042132",
         "nroHabitacion": 10,
         "activo": True,
@@ -1092,7 +1115,7 @@ while True:
                     print("MENÚ PRINCIPAL > MENÚ DE INFORMES")
                     print("---------------------------")
                     print("[1] Resumen Anual de reservas por habitación")
-                    print("[2] Informe de operaciones del mes en curso")
+                    print("[2] Informe de ingresos a habitaciones del mes en curso")
                     print("[3] Resumen de monto en pesos por año y mes")
                     print("[4] Habitaciones más rentables")
                     print("---------------------------")
@@ -1114,7 +1137,7 @@ while True:
                     reporteReservasPorAño(reservas)
                     
                 elif opcionSubmenu == "2":   # Opción 2 del submenú
-                    informeOperacionesMes(reservas, clientela)
+                    informeIngresosPorFechaEntradaDelMes(reservas, clientela)
                 
                 elif opcionSubmenu == "3":   # Opción 3 del submenú
                     resumenMontoPorAñoYMes(reservas)
