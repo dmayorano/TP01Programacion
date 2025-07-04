@@ -1,0 +1,112 @@
+{
+    "20/12/2025-1": {
+        "nombre": "Micaela Robles",
+        "dni": "39592834",
+        "nroHabitacion": 1,
+        "activo": true,
+        "cantidadPersonas": 2,
+        "fechaDeEntrada": "02/06/2025",
+        "fechaDeSalida": "06/06/2025",
+        "metodoDePago": "Efectivo",
+        "totalPagar": 20000
+    },
+    "15/10/2025-2": {
+        "nombre": "Martin Gonzales",
+        "dni": "431223345",
+        "nroHabitacion": 2,
+        "activo": true,
+        "cantidadPersonas": 2,
+        "fechaDeEntrada": "02/05/2025",
+        "fechaDeSalida": "06/05/2025",
+        "metodoDePago": "Efectivo",
+        "totalPagar": 20000
+    },
+    "20/12/2025-3": {
+        "nombre": "Fito Parrez",
+        "dni": "33451678",
+        "nroHabitacion": 3,
+        "activo": true,
+        "cantidadPersonas": 2,
+        "fechaDeEntrada": "10/06/2025",
+        "fechaDeSalida": "16/06/2025",
+        "metodoDePago": "Efectivo",
+        "totalPagar": 60000
+    },
+    "25/12/2025-4": {
+        "nombre": "Gonzalo Robledo",
+        "dni": "15675431",
+        "nroHabitacion": 4,
+        "activo": true,
+        "cantidadPersonas": 4,
+        "fechaDeEntrada": "20/06/2025",
+        "fechaDeSalida": "25/06/2025",
+        "metodoDePago": "Tarjeta",
+        "totalPagar": 50000
+    },
+    "01/01/2026-5": {
+        "nombre": "Martin Serin",
+        "dni": "423411123",
+        "nroHabitacion": 5,
+        "activo": true,
+        "cantidadPersonas": 3,
+        "fechaDeEntrada": "01/07/2025",
+        "fechaDeSalida": "05/07/2025",
+        "metodoDePago": "Efectivo",
+        "totalPagar": 40000
+    },
+    "15/06/2026-6": {
+        "nombre": "Cristian",
+        "dni": "11234124",
+        "nroHabitacion": 6,
+        "activo": true,
+        "cantidadPersonas": 2,
+        "fechaDeEntrada": "15/07/2025",
+        "fechaDeSalida": "20/07/2025",
+        "metodoDePago": "Tarjeta",
+        "totalPagar": 50000
+    },
+    "20/08/2026-7": {
+        "nombre": "Marcelo Chavez",
+        "dni": "41234124",
+        "nroHabitacion": 7,
+        "activo": true,
+        "cantidadPersonas": 4,
+        "fechaDeEntrada": "20/08/2025",
+        "fechaDeSalida": "25/08/2025",
+        "metodoDePago": "Efectivo",
+        "totalPagar": 50000
+    },
+    "10/09/2026-8": {
+        "nombre": "Fernando Alonso",
+        "dni": "45212342",
+        "nroHabitacion": 8,
+        "activo": true,
+        "cantidadPersonas": 3,
+        "fechaDeEntrada": "10/09/2025",
+        "fechaDeSalida": "15/09/2025",
+        "metodoDePago": "Tarjeta",
+        "totalPagar": 50000
+    },
+    "05/10/2026-9": {
+        "nombre": "Martin Gimenez",
+        "dni": "2142142",
+        "nroHabitacion": 9,
+        "activo": true,
+        "cantidadPersonas": 2,
+        "fechaDeEntrada": "05/10/2025",
+        "fechaDeSalida": "10/10/2025",
+        "metodoDePago": "Efectivo",
+        "totalPagar": 50000
+    },
+    "15/11/2026-10": {
+        "nombre": "Lionel Messi",
+        "dni": "4042132",
+        "nroHabitacion": 10,
+        "activo": true,
+        "cantidadPersonas": 6,
+        "fechaDeEntrada": "15/11/2025",
+        "fechaDeSalida": "20/11/2025",
+        "metodoDePago": "Tarjeta",
+        "totalPagar": 50000
+    }
+}

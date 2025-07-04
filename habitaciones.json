@@ -1,0 +1,102 @@
+{
+    "1": {
+        "disponible": true,
+        "capacidad": 2,
+        "costoPorDia": 10000,
+        "servicios": {
+            "aire acondicionado": true,
+            "frigobar": true,
+            "balcon": true
+        }
+    },
+    "2": {
+        "disponible": true,
+        "capacidad": 4,
+        "costoPorDia": 10000,
+        "servicios": {
+            "aire acondicionado": true,
+            "frigobar": true,
+            "balcon": true
+        }
+    },
+    "3": {
+        "disponible": true,
+        "capacidad": 2,
+        "costoPorDia": 10000,
+        "servicios": {
+            "aire acondicionado": true,
+            "frigobar": true,
+            "balcon": true
+        }
+    },
+    "4": {
+        "disponible": true,
+        "capacidad": 6,
+        "costoPorDia": 10000,
+        "servicios": {
+            "aire acondicionado": true,
+            "frigobar": false,
+            "balcon": false
+        }
+    },
+    "5": {
+        "disponible": true,
+        "capacidad": 4,
+        "costoPorDia": 10000,
+        "servicios": {
+            "aire acondicionado": true,
+            "frigobar": true,
+            "balcon": true
+        }
+    },
+    "6": {
+        "disponible": true,
+        "capacidad": 2,
+        "costoPorDia": 10000,
+        "servicios": {
+            "aire acondicionado": true,
+            "frigobar": true,
+            "balcon": true
+        }
+    },
+    "7": {
+        "disponible": true,
+        "capacidad": 3,
+        "costoPorDia": 10000,
+        "servicios": {
+            "aire acondicionado": true,
+            "frigobar": true,
+            "balcon": true
+        }
+    },
+    "8": {
+        "disponible": true,
+        "capacidad": 4,
+        "costoPorDia": 10000,
+        "servicios": {
+            "aire acondicionado": true,
+            "frigobar": true,
+            "balcon": true
+        }
+    },
+    "9": {
+        "disponible": true,
+        "capacidad": 2,
+        "costoPorDia": 10000,
+        "servicios": {
+            "aire acondicionado": true,
+            "frigobar": false,
+            "balcon": true
+        }
+    },
+    "10": {
+        "disponible": true,
+        "capacidad": 6,
+        "costoPorDia": 10000,
+        "servicios": {
+            "aire acondicionado": true,
+            "frigobar": true,
+            "balcon": false
+        }
+    }
+}

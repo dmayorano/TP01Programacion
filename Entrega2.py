@@ -29,12 +29,24 @@ Pendientes:
 # MÓDULOS
 #----------------------------------------------------------------------------------------------
 from datetime import datetime
-
+import json
+import os
 
 
 #----------------------------------------------------------------------------------------------
 # FUNCIONES
 #----------------------------------------------------------------------------------------------
+def cargar_datos(nombre_archivo):
+    if os.path.exists(nombre_archivo):
+        with open(nombre_archivo, "r", encoding="utf-8") as archivo:
+            return json.load(archivo)
+    else:
+        return {}
+
+def guardar_datos(nombre_archivo, datos):
+    with open(nombre_archivo, "w", encoding="utf-8") as archivo:
+        json.dump(datos, archivo, indent=4, ensure_ascii=False)
+
 def habitacionesMasRentables(reservas):
     """
     Muestra las habitaciones más rentables del hotel, ordenadas por ingresos.
@@ -68,142 +80,203 @@ def habitacionesMasRentables(reservas):
         print(f"{habitacion:<15} | {ingresos:,.2f}")
 
 
-def resumenMontoPorAñoYMes(reservas):
+def resumenMontoPorAñoYMes():
     """
-    Muestra un resumen de los montos en pesos por año y mes.
+    Muestra un resumen de los montos en pesos por año y mes,
+    cargando los datos desde reservas.json.
+    """
+    reservas = cargar_datos("reservas.json")
 
-    Args:
-        reservas (dict): Diccionario de reservas del hotel.
-    """
+    if not reservas:
+        print("No hay reservas registradas.")
+        return
+
     resumen = {}
 
     for datos in reservas.values():
-        if datos["activo"]:
-            fechaStr = datos["fechaDeEntrada"]
-            fecha = datetime.strptime(fechaStr, "%d/%m/%Y")
+        if datos.get("activo"):
+            try:
+                fecha = datetime.strptime(datos["fechaDeEntrada"], "%d/%m/%Y")
+            except ValueError:
+                print(f"Fecha inválida en reserva: {datos}")
+                continue
+
             año = fecha.year
             mes = fecha.month
-            totalPagar = datos["totalPagar"]
+            totalPagar = datos.get("totalPagar", 0)
 
             if año not in resumen:
                 resumen[año] = [0] * 12
 
             resumen[año][mes - 1] += totalPagar
 
-    print(f"{'='*70}")
-    print(f"Resumen de monto en pesos por año y mes")
-    print(f"{'='*70}")
+    print("=" * 70)
+    print("Resumen de monto en pesos por año y mes")
+    print("=" * 70)
     for año, meses in resumen.items():
         print(f"Año {año}")
         print("Mes | Monto")
         for i, monto in enumerate(meses):
             if monto > 0:
-                print(f"{['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'][i]} | {monto:,.2f}")
+                nombre_mes = ["Ene", "Feb", "Mar", "Abr", "May", "Jun", 
+                              "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"][i]
+                print(f"{nombre_mes} | ${monto:,.2f}")
         print()
 
-    print(f"{'='*70}")
-    print(f"Resumen de monto en pesos por año y mes (matriz)")
-    print(f"{'='*70}")
-    print("Año | Ene       Feb       Mar       Abr       May       Jun       Jul       Ago       Sep       Oct       Nov       Dic")
+    print("=" * 70)
+    print("Resumen de monto en pesos por año y mes (matriz)")
+    print("=" * 70)
+    print("Año | " + " ".join([f"{mes:<10}" for mes in ["Ene", "Feb", "Mar", "Abr", "May", "Jun", 
+                                                       "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"]]))
     for año, meses in resumen.items():
-        linea = f"{año:<4} | "
-        for monto in meses:
-            linea += f"{monto:>10,.2f} "
+        linea = f"{año:<4} | " + " ".join(f"${monto:>9,.2f}" for monto in meses)
         print(linea)
 
 
-def informeIngresosPorFechaEntradaDelMes(reservas, clientes):
+def informeIngresosPorFechaEntradaDelMes():
     """
-    Muestra un informe de las operaciones del mes actual.
+    Muestra un informe de las reservas que tienen fecha de ingreso en el mes actual,
+    cargando los datos desde reservas.json y clientes.json.
+    """
+    reservas = cargar_datos("reservas.json")
+    clientes = cargar_datos("clientes.json")
 
-    Args:
-        reservas (dict): Diccionario de reservas del hotel.
-        clientes (dict): Diccionario de clientes del hotel.
-    """
-    
+    if not reservas:
+        print("No hay reservas registradas.")
+        return
+
     fechaActual = datetime.now()
     mesActual = fechaActual.month
     añoActual = fechaActual.year
 
-    
+    print("=" * 100)
     print(f"{'Fecha ingreso':<20} {'Cliente':<20} {'Nro. Habitación':<15} {'Cant. Personas':<15} {'Método de Pago':<15} {'Total':<10}")
     print("-" * 100)
 
-    
-    for idReserva, reserva in reservas.items():
-        fechaEntrada = datetime.strptime(reserva["fechaDeEntrada"], "%d/%m/%Y")
-        if fechaEntrada.month == mesActual and fechaEntrada.year == añoActual:
-            cliente = clientes.get(reserva["dni"], {}).get("nombre", "No disponible")
-            print(f"{reserva['fechaDeEntrada']:<20} {cliente:<20} {reserva['nroHabitacion']:<15} {reserva['cantidadPersonas']:<15} {reserva['metodoDePago']:<15} ${reserva['totalPagar']:<10,.2f}")
+    reservasEncontradas = False
 
-def altaCliente(_clientes):
+    for reserva in reservas.values():
+        try:
+            fechaEntrada = datetime.strptime(reserva["fechaDeEntrada"], "%d/%m/%Y")
+        except ValueError:
+            print(f"Fecha inválida en reserva: {reserva}")
+            continue
+
+        if reserva.get("activo") and fechaEntrada.month == mesActual and fechaEntrada.year == añoActual:
+            dni = reserva.get("dni")
+            cliente = clientes.get(dni, {}).get("nombre", "No disponible")
+            print(f"{reserva['fechaDeEntrada']:<20} {cliente:<20} {reserva['nroHabitacion']:<15} "
+                  f"{reserva['cantidadPersonas']:<15} {reserva['metodoDePago']:<15} ${reserva['totalPagar']:<10,.2f}")
+            reservasEncontradas = True
+
+    if not reservasEncontradas:
+        print("No se encontraron ingresos para el mes actual.")
+
+def altaCliente():
     """
     Solicita los datos de un nuevo cliente y lo registra si el DNI no existe.
+    Usa archivo JSON, validaciones y control de excepciones.
     """
-    dni = input("Ingresa tu DNI: ")
-    while not (dni.isdigit() and len(dni) == 8):
-        dni = input("DNI inválido. Ingrese un DNI de 8 dígitos: ")
-    if dni in _clientes:
+    import re
+
+    def validar_email(email):
+        patron = r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
+        return re.match(patron, email) is not None
+
+    clientes = cargar_datos("clientes.json")
+
+    while True:
+        try:
+            dni = input("Ingresa tu DNI: ")
+            if not (dni.isdigit() and len(dni) == 8):
+                raise ValueError("DNI inválido. Debe tener 8 dígitos numéricos.")
+            break
+        except ValueError as e:
+            print(e)
+
+    if dni in clientes:
         print("El cliente ya existe.")
-    else:
-        nombre = input("Ingresa tu nombre y apellido: ")
-        while nombre.isdigit():
-            nombre = input("El nombre y apellido no puede ser un numero: ")
-        while True:
-            edadInput = input("Ingrese su edad: ")
-            try:
-                edad = int(edadInput)
-                if edad < 0:
-                    print("La edad no puede ser negativa.")
-                else:
-                    break
-            except ValueError:
-                print("Edad inválida. Ingrese un número entero.")
-
-
-        telefono = input("Ingrese su numero de telefono: ")
-        while (len(telefono) < 10 or len(telefono) > 15 or telefono.isdigit()==False):
-            telefono = input("Ingrese un numero de telefono válido (por lo menos 10 digitos): ")
-
-        alterno = input("Ingresa un segundo numero de telefono. Si no tiene otro simplemente deje el campo vacio: ")
-        if alterno == "":
-            print("-----")
-        else:
-            while (len(alterno) < 10 or alterno.isdigit()==False):
-                alterno = input("Ingresa un segundo numero de telefono válido (por lo menos 10 digitos): ")
-
-        nuevoCliente = {
-            "activo": True,
-            "nombre": nombre,
-            "edad": edad,
-            "telefonos": {
-                "movil": telefono,
-                "alterno": alterno,
-            }
-        }
-        _clientes[dni] = nuevoCliente
-        print("==============================")
-        print("Cliente agregado con exito.")
         return
 
+    while True:
+        nombre = input("Ingresa tu nombre y apellido: ")
+        if not nombre.replace(" ", "").isalpha():
+            print("El nombre no puede contener números ni símbolos.")
+        else:
+            break
 
-def inactivarCliente(_clientes):
+    while True:
+        try:
+            edad = int(input("Ingrese su edad: "))
+            if edad < 0:
+                print("La edad no puede ser negativa.")
+            else:
+                break
+        except ValueError:
+            print("Edad inválida. Ingrese un número entero.")
+
+    while True:
+        email = input("Ingrese su correo electrónico: ")
+        if validar_email(email):
+            break
+        else:
+            print("Email inválido. Intente nuevamente.")
+
+    while True:
+        telefono = input("Ingrese su número de teléfono (10-15 dígitos): ")
+        if telefono.isdigit() and 10 <= len(telefono) <= 15:
+            break
+        else:
+            print("Número inválido. Intente nuevamente.")
+
+    alterno = input("Ingrese un teléfono alternativo (opcional): ")
+    if alterno != "":
+        while not (alterno.isdigit() and 10 <= len(alterno) <= 15):
+            alterno = input("Número alternativo inválido. Intente nuevamente o deje vacío: ")
+
+    nuevoCliente = {
+        "activo": True,
+        "nombre": nombre,
+        "edad": edad,
+        "email": email,
+        "telefonos": {
+            "movil": telefono,
+            "alterno": alterno
+        }
+    }
+
+    clientes[dni] = nuevoCliente
+    guardar_datos("clientes.json", clientes)
+
+    print("==============================")
+    print("Cliente agregado con éxito.")
+
+
+def inactivarCliente():
     """
-    Inactiva un cliente existente dado su DNI. Si no existe, muestra mensaje de que no existe tal dni.
+    Inactiva un cliente en el archivo clientes.json dado su DNI.
     """
-    dni = input("DNI del cliente a inactivar: ")
-    while not (dni.isdigit() and len(dni) == 8):
-        dni = input("DNI inválido. Ingrese un DNI de 8 dígitos: ")
+    clientes = cargar_datos("clientes.json")
 
-    print()
+    while True:
+        try:
+            dni = input("DNI del cliente a inactivar: ")
+            if not dni.isdigit() or len(dni) != 8:
+                raise ValueError("DNI inválido. Debe tener 8 dígitos numéricos.")
+            break
+        except ValueError as ve:
+            print(ve)
 
-    if dni in _clientes:
-        _clientes[dni]["activo"] = False
-        print(f"El cliente {dni} fue dado de baja.")
+    if dni in clientes:
+        if not clientes[dni]["activo"]:
+            print(f"El cliente {dni} ya estaba inactivo.")
+        else:
+            clientes[dni]["activo"] = False
+            guardar_datos("clientes.json", clientes)
+            print(f"Cliente {dni} inactivado con éxito.")
     else:
-        print(f"El DNI {dni} es inexistente.")
+        print("No existe un cliente con ese DNI.")
 
-    return _clientes
 
 
 def listarClientesActivos(_clientes):
@@ -223,88 +296,118 @@ def listarClientesActivos(_clientes):
     return
 
 
-def modificarCliente(_clientes):
+def modificarCliente():
     """
-    Permite modificar los datos de un cliente existente, incluyendo nombre, teléfonos y estado.
+    Permite modificar los datos de un cliente existente (nombre, edad, email, teléfonos, estado).
+    Lee y guarda en clientes.json. Aplica validaciones y control de errores.
     """
-    dni = input("Ingresa tu DNI a Modificar: ")
+    import re
+
+    def validar_email(email):
+        patron = r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
+        return re.match(patron, email) is not None
+
+    clientes = cargar_datos("clientes.json")
+
+    dni = input("Ingrese el DNI del cliente a modificar: ")
     while not (dni.isdigit() and len(dni) == 8):
-        dni = input("DNI inválido. Ingrese un DNI de 8 dígitos: ")
-    if dni in _clientes:
-        activo = input("Activo[1], Baja[2]: ")
-        while activo != "1" and activo != "2":
-            activo = input("Error. Introduzca 1 para verdadero o 2 para falso: ")
-        if activo == "1":
-            activo = True
-        else:
-            activo = False
+        dni = input("DNI inválido. Ingrese un número de 8 dígitos: ")
 
-        print("Si no desea cambiar un valor solo oprima enter para saltear al siguiente dato.")
+    if dni not in clientes:
+        print("El cliente no existe.")
+        return
 
-        cambionombre = input(f"¿Nombre correcto?, {_clientes[dni]['nombre']}: ")
-        if cambionombre == "":
-            nombre = _clientes[dni]['nombre']
-        else:
-            nombre = cambionombre
-        
-        cambioedad = input(f"¿Edad correcta?, {_clientes[dni]['edad']}: ")
-        if cambioedad == "":
-            edad = _clientes[dni]['edad']
-        else:
-            while not (cambioedad.isdigit() and 0 <= int(cambioedad)):
-                cambioedad = input("Edad inválida. Ingrese una edad mayor a 0: ")
-            edad = int(cambioedad)       
+    cliente = clientes[dni]
+    print("Si desea mantener un dato actual, presione ENTER.\n")
 
-        cambiomovil = input(f"¿Numero de télefono 1 correcto?, {_clientes[dni]['telefonos']['movil']}: ")
-        if cambiomovil == "":
-            movil = _clientes[dni]['telefonos']['movil']
-        else:
-            while not (cambiomovil.isdigit() and len(cambiomovil) >= 10 and len(cambiomovil) <= 15):
-                cambiomovil = input("Número inválido. Vuelva a ingresarlo: ")
-            movil = cambiomovil
+    # Estado
+    estado = input(f"¿Activo? Actual: {cliente['activo']} (1=Sí / 2=No): ")
+    if estado == "1":
+        activo = True
+    elif estado == "2":
+        activo = False
+    else:
+        activo = cliente['activo']
 
-        cambioalterno = input(f"¿Numero de télefono 2 correcto?, {_clientes[dni]['telefonos']['alterno']}: ")
-        if cambioalterno == "":
-            alterno = _clientes[dni]['telefonos']['alterno']
-        else:
-            while not (cambioalterno.isdigit() and len(cambioalterno) >= 10 and len(cambioalterno) <= 15):
-                cambioalterno = input("Número inválido. Vuelva a ingresarlo: ")
-            alterno = cambioalterno
+    # Nombre
+    nombre = input(f"Nombre actual: {cliente['nombre']}: ")
+    if nombre.strip() == "":
+        nombre = cliente['nombre']
+    else:
+        while not nombre.replace(" ", "").isalpha():
+            nombre = input("Nombre inválido. Ingrese solo letras y espacios: ")
 
-        clienteModificado = {
-            "activo": activo,
-            "nombre": nombre,
-            "edad": edad,
-            "telefonos": {
-                "movil": movil,
-                "alterno": alterno
-            }
+    # Edad
+    edad_input = input(f"Edad actual: {cliente['edad']}: ")
+    if edad_input.strip() == "":
+        edad = cliente['edad']
+    else:
+        while not edad_input.isdigit() or int(edad_input) < 0:
+            edad_input = input("Edad inválida. Ingrese un número positivo: ")
+        edad = int(edad_input)
+
+    # Email
+    email = input(f"Email actual: {cliente.get('email', 'No registrado')}: ")
+    if email.strip() == "":
+        email = cliente.get('email', '')
+    else:
+        while not validar_email(email):
+            email = input("Email inválido. Ingrese nuevamente: ")
+
+    # Teléfono móvil
+    movil = input(f"Teléfono actual: {cliente['telefonos']['movil']}: ")
+    if movil.strip() == "":
+        movil = cliente['telefonos']['movil']
+    else:
+        while not (movil.isdigit() and 10 <= len(movil) <= 15):
+            movil = input("Número inválido. Ingrese entre 10 y 15 dígitos: ")
+
+    # Teléfono alterno
+    alterno = input(f"Tel. alternativo actual: {cliente['telefonos']['alterno']}: ")
+    if alterno.strip() == "":
+        alterno = cliente['telefonos']['alterno']
+    else:
+        while not (alterno.isdigit() and 10 <= len(alterno) <= 15):
+            alterno = input("Número alternativo inválido. Ingrese entre 10 y 15 dígitos: ")
+
+    cliente_actualizado = {
+        "activo": activo,
+        "nombre": nombre,
+        "edad": edad,
+        "email": email,
+        "telefonos": {
+            "movil": movil,
+            "alterno": alterno
         }
-        _clientes[dni] = clienteModificado
-        print("Cliente modificado con exito.")
+    }
+
+    clientes[dni] = cliente_actualizado
+    guardar_datos("clientes.json", clientes)
+
+    print("Cliente modificado con éxito.")
 
 
-def altaHabitacion(_habitaciones):
+def altaHabitacion():
     """
-    Registra una nueva habitación con sus características si no existe previamente.
+    Registra una nueva habitación en habitaciones.json si no existe previamente.
     """
-    nroHabitacion = input("Ingrese numero de la habitacion: ")
+    habitaciones = cargar_datos("habitaciones.json")
+
+    nroHabitacion = input("Ingrese número de la habitación: ")
     while not (nroHabitacion.isdigit() and int(nroHabitacion) >= 0):
-        nroHabitacion = input("Numero inválido. Ingrese un numero de habitacion que no sea negativo o letras: ")
-    
-    if nroHabitacion in _habitaciones:
-        print()
-        print("La habitacion ya existe.")
+        nroHabitacion = input("Número inválido. Ingrese un número positivo: ")
+
+    if nroHabitacion in habitaciones:
+        print("La habitación ya existe.")
         return
 
     def validar_servicio(texto):
         opcion = input(f"{texto} [True/False]: ")
-        while opcion != "True" and opcion != "False":
-            opcion = input(f"Entrada inválida. Ingresa True o False para {texto}: ")
-        if opcion == "True":
-            return True
-        else:
-            return False
+        while opcion not in ["True", "False"]:
+            opcion = input(f"Entrada inválida. Ingrese True o False para {texto}: ")
+        return opcion == "True"
+
+    # Capacidad
     while True:
         try:
             capacidad = int(input("Ingrese capacidad de personas: "))
@@ -313,319 +416,327 @@ def altaHabitacion(_habitaciones):
             else:
                 break
         except ValueError:
-            print("Error. Ingrese digitos númericos, no letras ni simbolos.")
-        except TypeError:
-            print("Error. Ingrese digitos númericos, no letras ni simbolos. ")
+            print("Error. Ingrese números enteros.")
 
+    # Costo por día
     while True:
         try:
-            costoPorDia = int(input("Ingrese su costo por dia: "))
+            costoPorDia = int(input("Ingrese costo por día: "))
             if costoPorDia <= 0:
-                costoPorDia = input("El costo por dia debe ser mayor a 0: ")
+                print("El costo debe ser mayor a 0.")
             else:
                 break
         except ValueError:
-            print("Error. Ingrese digitos númericos, no letras ni simbolos.")
+            print("Error. Ingrese números enteros.")
 
-    aireCondicionado = validar_servicio("Aire acondicionado")
-    frigobar = validar_servicio("Frigobar")
-    balcon = validar_servicio("Balcon")
+    aire = validar_servicio("¿Tiene aire acondicionado?")
+    frigo = validar_servicio("¿Tiene frigobar?")
+    balcon = validar_servicio("¿Tiene balcón?")
 
     nuevaHabitacion = {
         "disponible": True,
-        "capacidad": int(capacidad),
+        "capacidad": capacidad,
         "costoPorDia": costoPorDia,
         "servicios": {
-            "aire acondicionado": aireCondicionado,
-            "frigobar": frigobar,
+            "aire acondicionado": aire,
+            "frigobar": frigo,
             "balcon": balcon
         }
     }
-    _habitaciones[nroHabitacion] = nuevaHabitacion
-    print()
-    print("Habitacion agregada con exito.")
-    return
+
+    habitaciones[nroHabitacion] = nuevaHabitacion
+    guardar_datos("habitaciones.json", habitaciones)
+
+    print("Habitación agregada con éxito.")
 
 
-def inactivarHabitacion(_habitaciones):
+
+def inactivarHabitacion():
     """
-    Marca una habitación como no disponible (inhabilitada) si existe en el sistema.
+    Marca una habitación como no disponible en habitaciones.json.
     """
-    nroHabitacion = input("Numero de habitacion a inhabilitar: ")
+    habitaciones = cargar_datos("habitaciones.json")
+
+    nroHabitacion = input("Ingrese número de habitación a inhabilitar: ")
     while not (nroHabitacion.isdigit() and int(nroHabitacion) >= 0):
-        nroHabitacion = input("Numero inválido. Ingrese un numero de habitacion que no sea negativo o letras: ")
-    print("======================================")
+        nroHabitacion = input("Número inválido. Ingrese un número válido y positivo: ")
 
-    if nroHabitacion in _habitaciones:
-        _habitaciones[nroHabitacion]["disponible"] = False
-        print(f"La habitacion {nroHabitacion} fue inhabilitada.")
+    if nroHabitacion in habitaciones:
+        habitaciones[nroHabitacion]["disponible"] = False
+        guardar_datos("habitaciones.json", habitaciones)
+        print(f"La habitación {nroHabitacion} fue inhabilitada.")
     else:
-        print(f"El numero de habitacion {nroHabitacion} no existe.")
-
-    return _habitaciones
+        print(f"La habitación {nroHabitacion} no existe.")
 
 
-def listarHabitacionesActivas(_habitaciones):
+
+def listarHabitacionesActivas():
     """
-    Muestra en pantalla todas las habitaciones disponibles y sus servicios asociados.
+    Muestra en pantalla todas las habitaciones disponibles cargadas desde habitaciones.json.
     """
-    for nroHabitacion, otrosDatos in _habitaciones.items():
-        if otrosDatos['disponible']:
-            print(f"Habitacion: {nroHabitacion}")
-            print(f"Capacidad: {otrosDatos.get('capacidad', 'No disponible')}")
-            print(f"Costo por dia: {otrosDatos.get('costoPorDia', 'No disponible')}")
+    habitaciones = cargar_datos("habitaciones.json")
+
+    if not habitaciones:
+        print("No hay habitaciones registradas.")
+        return
+
+    alguna_activa = False
+
+    for nroHabitacion, datos in habitaciones.items():
+        if datos.get('disponible', False):
+            alguna_activa = True
+            print(f"Habitación: {nroHabitacion}")
+            print(f"Capacidad: {datos.get('capacidad', 'No disponible')}")
+            print(f"Costo por día: ${datos.get('costoPorDia', 'No disponible')}")
             print("Servicios:")
-            for servicios, nombreServicio in otrosDatos.get("servicios", {}).items():
-                print(f"\t{servicios}: {nombreServicio}")
-            print("========================================")
-    return
+            for servicio, disponible in datos.get("servicios", {}).items():
+                print(f"  - {servicio.capitalize()}: {'Sí' if disponible else 'No'}")
+            print("=" * 40)
+
+    if not alguna_activa:
+        print("No hay habitaciones activas disponibles.")
 
 
-def modificarHabitacion(_habitaciones):
+
+def modificarHabitacion():
     """
-    Permite modificar los atributos de una habitación existente, incluyendo servicios y costo.
+    Permite modificar una habitación existente cargando y guardando en habitaciones.json.
     """
-    nroHabitacion = input("Ingresa numero de habitacion a modificar: ")
+    habitaciones = cargar_datos("habitaciones.json")
 
+    nroHabitacion = input("Ingrese número de habitación a modificar: ")
     while not (nroHabitacion.isdigit() and int(nroHabitacion) >= 0):
-        nroHabitacion = input("Numero inválido. Ingrese un numero de habitacion que no sea negativo o letras: ")
+        nroHabitacion = input("Número inválido. Ingrese un número válido y positivo: ")
 
-    if nroHabitacion not in _habitaciones:
+    if nroHabitacion not in habitaciones:
         print("La habitación no existe.")
         return
+
+    habitacion = habitaciones[nroHabitacion]
+
+    # Estado de disponibilidad
+    disponible = input("¿Está disponible? [True/False] (ENTER para mantener actual): ")
+    if disponible == "":
+        disponible = habitacion.get("disponible", True)
+    elif disponible in ["True", "False"]:
+        disponible = disponible == "True"
     else:
-        disponible = input("Disponible[True], No disponible[False]: ")
-        while disponible not in ("True", "False"):
-            disponible = input("Entrada inválida. Ingrese 'True' o 'False' para disponibilidad: ")
-        if disponible == "True":
-            disponible = True
-        else:
-            disponible = False
+        print("Entrada inválida. Se mantendrá el valor anterior.")
+        disponible = habitacion.get("disponible", True)
 
-        print("==============")
-        print("Si no desea cambiar un valor solo oprima enter para saltear al siguiente dato.")
-        print("==============")
+    # Capacidad
+    nueva_capacidad = input(f"Capacidad actual: {habitacion['capacidad']} - Nueva capacidad (ENTER para mantener): ")
+    if nueva_capacidad == "":
+        capacidad = habitacion["capacidad"]
+    else:
+        while not nueva_capacidad.isdigit() or int(nueva_capacidad) <= 0:
+            nueva_capacidad = input("Capacidad inválida. Ingrese un número entero mayor a 0: ")
+        capacidad = int(nueva_capacidad)
 
-        while True:
-            try:
-                cambiocapacidad = input(f"¿Capacidad correcta?, {_habitaciones[nroHabitacion]['capacidad']}: ")
-                if cambiocapacidad == "":
-                    capacidad = _habitaciones[nroHabitacion]['capacidad']
-                    break
-                if not cambiocapacidad.isdigit() or int(cambiocapacidad) <= 0:
-                    print("Capacidad inválida.")
-                else:
-                    capacidad = cambiocapacidad
-                    break
-            except ValueError:
-                print("Entrada inválida. Ingrese numeros.")
+    # Costo por día
+    nuevo_costo = input(f"Costo actual: ${habitacion['costoPorDia']} - Nuevo costo (ENTER para mantener): ")
+    if nuevo_costo == "":
+        costoPorDia = habitacion["costoPorDia"]
+    else:
+        while not nuevo_costo.isdigit() or int(nuevo_costo) <= 0:
+            nuevo_costo = input("Costo inválido. Ingrese un número mayor a 0: ")
+        costoPorDia = int(nuevo_costo)
 
-        while True:
-            try:
-                cambiocostoPorDia = input(f"¿Costo por dia correcto?, {_habitaciones[nroHabitacion]['costoPorDia']}: ")
-                if cambiocostoPorDia == "":
-                    costoPorDia = _habitaciones[nroHabitacion]['costoPorDia']
-                    break
-                else:
-                    if not cambiocostoPorDia.isdigit() and int(cambiocostoPorDia) > 0:
-                        cambiocostoPorDia = input("Costo inválido. Ingrese un numero entero positivo.")
-                    else:
-                        costoPorDia = cambiocostoPorDia
-                        break
-            except ValueError:
-                print("Entrada invalida. Ingrese numeros.")
+    def modificar_servicio(nombre, valor_actual):
+        nuevo = input(f"{nombre.capitalize()} actual: {valor_actual} - ¿Nuevo valor? [True/False] (ENTER para mantener): ")
+        if nuevo == "":
+            return valor_actual
+        while nuevo not in ["True", "False"]:
+            nuevo = input("Entrada inválida. Ingrese True o False o ENTER para mantener: ")
+        return nuevo == "True"
 
-        def validar_servicio(texto):
-            opcion = input(f"{texto} [True/False]: ")
-            while opcion != "True" and opcion != "False":
-                opcion = input(f"Entrada inválida. Ingresa True o False para {texto}: ")
-            if opcion == "True":
-                return True
-            else:
-                return False
-        
-        aire = validar_servicio("Aire acondicionado")
-        frigo = validar_servicio("Frigobar")
-        balcon = validar_servicio("Balcón")
+    aire = modificar_servicio("aire acondicionado", habitacion["servicios"].get("aire acondicionado", False))
+    frigo = modificar_servicio("frigobar", habitacion["servicios"].get("frigobar", False))
+    balcon = modificar_servicio("balcon", habitacion["servicios"].get("balcon", False))
 
-        habitacionModificada = {
-            "disponible": disponible,
-            "capacidad": int(capacidad),
-            "costoPorDia": int(costoPorDia),
-            "servicios": {
-                "aire acondicionado": aire,
-                "frigobar": frigo,
-                "balcon": balcon
-            }
+    habitaciones[nroHabitacion] = {
+        "disponible": disponible,
+        "capacidad": capacidad,
+        "costoPorDia": costoPorDia,
+        "servicios": {
+            "aire acondicionado": aire,
+            "frigobar": frigo,
+            "balcon": balcon
         }
-        _habitaciones[nroHabitacion] = habitacionModificada
-        print("Habitación modificada con éxito.")
+    }
+
+    guardar_datos("habitaciones.json", habitaciones)
+    print("Habitación modificada con éxito.")
 
 
-def agendarReserva(_clientes, _habitaciones, _reservas):
+def agendarReserva():
     """
-    Agenda una reserva para un cliente activo si hay una habitación que cumple con los requisitos.
-    Calcula el total a pagar y guarda los datos en el sistema.
+    Agenda una reserva si el cliente está activo y hay una habitación disponible.
+    Guarda todo en reservas.json y actualiza habitaciones.json.
     """
-    dni = input("Ingrese su dni: ")
+    clientes = cargar_datos("clientes.json")
+    habitaciones = cargar_datos("habitaciones.json")
+    reservas = cargar_datos("reservas.json")
 
+    dni = input("Ingrese su DNI: ")
     while not (dni.isdigit() and len(dni) == 8):
-        dni = input("DNI inválido. Ingrese un DNI de 8 dígitos: ")
+        dni = input("DNI inválido. Ingrese 8 dígitos numéricos: ")
 
-    if dni in _clientes and _clientes[dni]['activo']:
+    if dni not in clientes or not clientes[dni]["activo"]:
+        print("El cliente no está activo o no está registrado.")
+        return
 
-        while True:
-            capacidad_input = input("Ingrese cantidad de personas: ")
-            if capacidad_input.isdigit() and int(capacidad_input) > 0:
-                capacidad = int(capacidad_input)
-                break
-            else:
-                print("Por favor, ingrese un número válido mayor que cero.")
-        
-        def pedir_confirmacion(texto):
-            """
-            Funcion para simplificar un paso dentro de otra funcion, lo que realiza es la validacion de los servicios.
-            """
-            opcion = input(f"{texto} [True/False]: ")
-            while opcion != "True" and opcion != "False":
-                opcion = input(f"Entrada inválida. Ingresa True o False para {texto}: ")
-            if opcion == "True":
-                return True
-            else:
-                return False
+    while True:
+        capacidad_input = input("Ingrese cantidad de personas: ")
+        if capacidad_input.isdigit() and int(capacidad_input) > 0:
+            capacidad = int(capacidad_input)
+            break
+        print("Ingrese un número válido mayor que cero.")
 
-        aireAcondicionado = pedir_confirmacion("Aire acondicionado")
-        frigo = pedir_confirmacion("Frigobar")
-        balcon = pedir_confirmacion("Balcon")
+    def pedir_servicio(nombre):
+        valor = input(f"{nombre} [True/False]: ")
+        while valor not in ["True", "False"]:
+            valor = input(f"Entrada inválida. Ingrese 'True' o 'False' para {nombre}: ")
+        return valor == "True"
 
-        for nroHabitacion, habitacionDatos in _habitaciones.items():
-            if (
-                habitacionDatos.get('disponible') and
-                capacidad == habitacionDatos.get('capacidad') and
-                aireAcondicionado == habitacionDatos.get('servicios', {}).get('aire acondicionado') and
-                frigo == habitacionDatos.get('servicios', {}).get('frigobar') and
-                balcon == habitacionDatos.get('servicios', {}).get('balcon')
-            ):
-                idReserva = datetime.now().strftime("%Y.%m.%d %H.%M.%S")
+    aire = pedir_servicio("Aire acondicionado")
+    frigo = pedir_servicio("Frigobar")
+    balcon = pedir_servicio("Balcón")
 
-                while True:
-                    fechaEntrada = input("Fecha de ingreso (DD/MM/AAAA): ")
-                    try:
-                        fechaEntrada = datetime.strptime(fechaEntrada, "%d/%m/%Y")
-                        if fechaEntrada < datetime.now():
-                            print("=============================")
-                            print("La fecha de entrada no puede ser anterior a hoy.")
-                            return
-                        break
-                    except ValueError:
-                        print("Fecha inválida. Intente nuevamente.")
+    for nroHabitacion, datosHab in habitaciones.items():
+        if (
+            datosHab.get("disponible") and
+            datosHab.get("capacidad") == capacidad and
+            datosHab["servicios"].get("aire acondicionado") == aire and
+            datosHab["servicios"].get("frigobar") == frigo and
+            datosHab["servicios"].get("balcon") == balcon
+        ):
+            # Fecha ingreso
+            while True:
+                fechaEntradaStr = input("Fecha de ingreso (DD/MM/AAAA): ")
+                try:
+                    fechaEntrada = datetime.strptime(fechaEntradaStr, "%d/%m/%Y")
+                    if fechaEntrada < datetime.now():
+                        print("La fecha de entrada no puede ser anterior a hoy.")
+                        continue
+                    break
+                except ValueError:
+                    print("Formato de fecha inválido.")
 
-                while True:
-                    fechaSalida = input("Fecha de salida (DD/MM/AAAA): ")
-                    try:
-                        fechaSalida = datetime.strptime(fechaSalida, "%d/%m/%Y")
-                        if fechaSalida <= fechaEntrada:
-                            print("=============================")
-                            print("La fecha de salida debe ser posterior a la de entrada.")
-                            return
-                        break
-                    except ValueError:
-                        print("Fecha inválida. Intente nuevamente.")
-                metodoPago = input("Ingrese metodo de pago: [1] Efectivo / [2] Tarjeta: ")
-                while (metodoPago != "1" and metodoPago != "2"):
-                    metodoPago = input("Error. Ingrese metodo de pago: [1] Efectivo / [2] Tarjeta: ")
-                if metodoPago == "1":
-                    metodoPago = "Efectivo"
-                else:
-                    metodoPago = "Tarjeta"
-                
-                dias = (fechaSalida - fechaEntrada).days
-                totalPagar = dias * habitacionDatos.get('costoPorDia')
+            # Fecha salida
+            while True:
+                fechaSalidaStr = input("Fecha de salida (DD/MM/AAAA): ")
+                try:
+                    fechaSalida = datetime.strptime(fechaSalidaStr, "%d/%m/%Y")
+                    if fechaSalida <= fechaEntrada:
+                        print("La salida debe ser posterior al ingreso.")
+                        continue
+                    break
+                except ValueError:
+                    print("Formato de fecha inválido.")
 
-                nuevaReserva = {
-                    
-                    "dni": dni,
-                    "nombre": _clientes[dni].get('nombre', 'No disponible'),
-                    "nroHabitacion": nroHabitacion,
-                    "activo": True,
-                    "cantidadPersonas": capacidad,
-                    "fechaDeEntrada": fechaEntrada.strftime("%d/%m/%Y"),
-                    "fechaDeSalida": fechaSalida.strftime("%d/%m/%Y"),
-                    "metodoDePago": metodoPago,
-                    "totalPagar": totalPagar
-                }
-                _reservas[idReserva] = nuevaReserva
-                _habitaciones[nroHabitacion]['disponible'] = False
-                print("Reserva realizada con exito. Total a pagar: $", totalPagar)
-                return
-        print("No hay habitacion para esa cantidad de personas y servicios seleccionados.")
-    else:
-        print("==========================")
-        print("Usted es un cliente inactivo o no registrado por lo tanto no puede realizar reservas.")
+            metodo = input("Método de pago [1] Efectivo / [2] Tarjeta: ")
+            while metodo not in ["1", "2"]:
+                metodo = input("Opción inválida. Elija [1] o [2]: ")
+            metodo = "Efectivo" if metodo == "1" else "Tarjeta"
 
+            dias = (fechaSalida - fechaEntrada).days
+            total = dias * datosHab["costoPorDia"]
 
-def listarReservasActivas(_reservas):
+            idReserva = datetime.now().strftime("%Y.%m.%d %H.%M.%S")
+
+            nuevaReserva = {
+                "dni": dni,
+                "nombre": clientes[dni]["nombre"],
+                "nroHabitacion": nroHabitacion,
+                "activo": True,
+                "cantidadPersonas": capacidad,
+                "fechaDeEntrada": fechaEntrada.strftime("%d/%m/%Y"),
+                "fechaDeSalida": fechaSalida.strftime("%d/%m/%Y"),
+                "metodoDePago": metodo,
+                "totalPagar": total
+            }
+
+            reservas[idReserva] = nuevaReserva
+            habitaciones[nroHabitacion]["disponible"] = False
+
+            guardar_datos("reservas.json", reservas)
+            guardar_datos("habitaciones.json", habitaciones)
+
+            print(f"Reserva realizada con éxito. Total a pagar: ${total:,.2f}")
+            return
+
+    print("No hay habitaciones disponibles con esas características.")
+
+def listarReservasActivas():
     """
-    Muestra todas las reservas que están activas en el sistema con sus detalles.
+    Muestra todas las reservas activas desde reservas.json con sus detalles.
     """
-    for idReserva, otrosDatos in _reservas.items():
-        if otrosDatos['activo']:
-            print(f"nombre: {otrosDatos.get('nombre', 'No disponible')}")
-            print(f"dni: {otrosDatos.get('dni', 'No disponible')}")
-            print(f"nroHabitacion: {otrosDatos.get('nroHabitacion', 'No disponible')}")
-            print(f"cantidadPersonas: {otrosDatos.get('cantidadPersonas', 'No disponible')}")
-            print(f"fechaDeEntrada: {otrosDatos.get('fechaDeEntrada', 'No disponible')}")
-            print(f"fechaDeSalida: {otrosDatos.get('fechaDeSalida', 'No disponible')}")
-            print(f"metodoDePago: {otrosDatos.get('metodoDePago', 'No disponible')}")
-            print(f"Total a pagar: $ {otrosDatos.get('totalPagar', 'No disponible')}")
-            print("========================================")
-    return
+    reservas = cargar_datos("reservas.json")
+    if not reservas:
+        print("No hay reservas registradas.")
+        return
+
+    print(f"{'ID Reserva':<22} {'Nombre':<20} {'DNI':<10} {'Habitación':<10} {'Personas':<10} {'Ingreso':<12} {'Salida':<12} {'Pago':<10} {'Total':<10}")
+    print("-" * 120)
+
+    for idReserva, datos in reservas.items():
+        if datos.get("activo", False):
+            print(f"{idReserva:<22} {datos['nombre']:<20} {datos['dni']:<10} {datos['nroHabitacion']:<10} "
+                  f"{datos['cantidadPersonas']:<10} {datos['fechaDeEntrada']:<12} {datos['fechaDeSalida']:<12} "
+                  f"{datos['metodoDePago']:<10} ${datos['totalPagar']:,.2f}")
 
 
-def reporteReservasPorAño(reservas):
+
+def reporteReservasPorAño():
     """
-    Genera un reporte resumen de la cantidad de reservas por habitación para un año dado.
+    Genera un reporte resumen de la cantidad de reservas por habitación para un año dado,
+    cargando los datos desde reservas.json.
     """
+    reservas = cargar_datos("reservas.json")
+
+    if not reservas:
+        print("No hay reservas registradas.")
+        return
+
     while True:
         try:
-            año = int(input("Ingrese año: "))
+            año = int(input("Ingrese el año para el reporte: "))
             break
         except ValueError:
-            print("No ingreso una fecha o ingreso un dato que no es digito. Vuelva a introducir la fecha.")
+            print("Entrada inválida. Ingrese un año como número (ej. 2025).")
 
+    # Inicializa el resumen con 12 meses por cada habitación (del 1 al 10)
     resumen = {i: [0]*12 for i in range(1, 11)}
 
     for datos in reservas.values():
-        if datos["activo"]:
-            fecha_str = datos["fechaDeEntrada"]
+        if datos.get("activo"):
             try:
-                fecha = datetime.strptime(fecha_str, "%d/%m/%Y")
+                fecha = datetime.strptime(datos["fechaDeEntrada"], "%d/%m/%Y")
             except ValueError:
-                print(f"Formato de fecha inválido: {fecha_str}")
-                continue  # Salta esta reserva si tiene mal la fecha
+                print(f"Fecha inválida en reserva: {datos}")
+                continue
 
             if fecha.year == año:
                 mes = fecha.month
                 try:
                     habitacion = int(datos["nroHabitacion"])
                 except ValueError:
-                    print(f"NroHabitacion inválido: {datos['nroHabitacion']}")
+                    print(f"Número de habitación inválido: {datos['nroHabitacion']}")
                     continue
 
                 if habitacion not in resumen:
-                    resumen[habitacion] = [0] * 12
+                    resumen[habitacion] = [0]*12
                 resumen[habitacion][mes - 1] += 1
 
-
-
-
-    print(f"{'='*70}")
+    print("=" * 70)
     print(f"Resumen de cantidad de reservas por habitación - Año {año}")
-    print(f"{'='*70}")
+    print("=" * 70)
     print("Habitación | Ene Feb Mar Abr May Jun Jul Ago Sep Oct Nov Dic")
     for hab, meses in resumen.items():
         linea = f"{hab:<10} | " + " ".join(f"{m:<3}" for m in meses)
         print(linea)
+
 
 #----------------------------------------------------------------------------------------------
 # CUERPO PRINCIPAL
@@ -636,6 +747,7 @@ def reporteReservasPorAño(reservas):
 
 
 # Diccionario de datos de clientes: KEY=Documento del cliente, VALUE=Otros datos del cliente
+"""
 clientela = {
     "39592834": {
         "activo": True,
@@ -953,6 +1065,7 @@ reservas = {
         "totalPagar": 50000
     }
 }
+"""
 # Diccionario de datos de ventas: KEY=Código de venta, VALUE=Otros datos de la venta
         
 #-------------------------------------------------
@@ -1099,9 +1212,9 @@ while True:
                     break # No sale del programa, sino que vuelve al menú anterior
                 
                 elif opcionSubmenu == "1":   # Opción 1 del submenú
-                    agendarReserva(clientela, habitaciones, reservas)
+                    agendarReserva()
                 elif opcionSubmenu == "2":
-                    listarReservasActivas(reservas)
+                    listarReservasActivas()
 
                 input("\nPresione ENTER para volver al menú.") # Pausa entre opciones
                 print("\n\n")
@@ -1134,16 +1247,16 @@ while True:
                     break # No sale del programa, sino que vuelve al menú anterior
                 
                 elif opcionSubmenu == "1":   # Opción 1 del submenú
-                    reporteReservasPorAño(reservas)
+                    reporteReservasPorAño()
                     
                 elif opcionSubmenu == "2":   # Opción 2 del submenú
-                    informeIngresosPorFechaEntradaDelMes(reservas, clientela)
+                    informeIngresosPorFechaEntradaDelMes()
                 
                 elif opcionSubmenu == "3":   # Opción 3 del submenú
-                    resumenMontoPorAñoYMes(reservas)
+                    resumenMontoPorAñoYMes()
 
                 elif opcionSubmenu == "4":   # Opción 4 del submenú
-                    habitacionesMasRentables(reservas)
+                    habitacionesMasRentables()
 
                 input("\nPresione ENTER para volver al menú.") # Pausa entre opciones
                 print("\n\n")
