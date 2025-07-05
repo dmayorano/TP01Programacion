@@ -37,6 +37,9 @@ import os
 # FUNCIONES
 #----------------------------------------------------------------------------------------------
 def cargar_datos(nombre_archivo):
+    """
+    Carga los datos en un archivo JSON.
+    """
     if os.path.exists(nombre_archivo):
         with open(nombre_archivo, "r", encoding="utf-8") as archivo:
             return json.load(archivo)
@@ -44,6 +47,9 @@ def cargar_datos(nombre_archivo):
         return {}
 
 def guardar_datos(nombre_archivo, datos):
+    """
+    Guarda los datos en un archivo JSON.
+    """
     with open(nombre_archivo, "w", encoding="utf-8") as archivo:
         json.dump(datos, archivo, indent=4, ensure_ascii=False)
         
