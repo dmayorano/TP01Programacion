@@ -36,23 +36,34 @@ import os
 #----------------------------------------------------------------------------------------------
 # FUNCIONES
 #----------------------------------------------------------------------------------------------
+from datetime import datetime
+import json
+import os
+
 def cargar_datos(nombre_archivo):
     """
-    Carga los datos en un archivo JSON.
+    Carga los datos desde un archivo JSON. Devuelve un diccionario vacío si hay error.
     """
     if os.path.exists(nombre_archivo):
-        with open(nombre_archivo, "r", encoding="utf-8") as archivo:
-            return json.load(archivo)
+        try:
+            with open(nombre_archivo, "r", encoding="utf-8") as archivo:
+                return json.load(archivo)
+        except (json.JSONDecodeError, IOError) as e:
+            print(f"Error al cargar {nombre_archivo}: {e}")
+            return {}
     else:
         return {}
 
 def guardar_datos(nombre_archivo, datos):
     """
-    Guarda los datos en un archivo JSON.
+    Guarda los datos en un archivo JSON. Captura errores de escritura.
     """
-    with open(nombre_archivo, "w", encoding="utf-8") as archivo:
-        json.dump(datos, archivo, indent=4, ensure_ascii=False)
-        
+    try:
+        with open(nombre_archivo, "w", encoding="utf-8") as archivo:
+            json.dump(datos, archivo, indent=4, ensure_ascii=False)
+    except IOError as e:
+        print(f"Error al guardar {nombre_archivo}: {e}")
+    
 
 def habitacionesMasRentables():
     """
