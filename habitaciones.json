@@ -1,6 +1,6 @@
 {
     "1": {
-        "disponible": true,
+        "disponible": false,
         "capacidad": 2,
         "costoPorDia": 10000,
         "servicios": {
@@ -20,7 +20,7 @@
         }
     },
     "3": {
-        "disponible": true,
+        "disponible": false,
         "capacidad": 2,
         "costoPorDia": 10000,
         "servicios": {
@@ -50,7 +50,7 @@
         }
     },
     "6": {
-        "disponible": true,
+        "disponible": false,
         "capacidad": 2,
         "costoPorDia": 10000,
         "servicios": {

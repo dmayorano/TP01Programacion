@@ -108,5 +108,38 @@
         "fechaDeSalida": "20/11/2025",
         "metodoDePago": "Tarjeta",
         "totalPagar": 50000
+    },
+    "2025.07.05 14.45.30": {
+        "dni": "12345678",
+        "nombre": "Franco Lizarraga",
+        "nroHabitacion": "1",
+        "activo": true,
+        "cantidadPersonas": 2,
+        "fechaDeEntrada": "22/07/2025",
+        "fechaDeSalida": "20/08/2025",
+        "metodoDePago": "Efectivo",
+        "totalPagar": 290000
+    },
+    "2025.07.05 14.46.10": {
+        "dni": "43404740",
+        "nombre": "Agustin Avella",
+        "nroHabitacion": "3",
+        "activo": true,
+        "cantidadPersonas": 2,
+        "fechaDeEntrada": "22/07/2025",
+        "fechaDeSalida": "25/07/2025",
+        "metodoDePago": "Efectivo",
+        "totalPagar": 30000
+    },
+    "2025.07.05 14.46.35": {
+        "dni": "14884981",
+        "nombre": "Rodolfo",
+        "nroHabitacion": "6",
+        "activo": true,
+        "cantidadPersonas": 2,
+        "fechaDeEntrada": "28/07/2025",
+        "fechaDeSalida": "30/07/2025",
+        "metodoDePago": "Efectivo",
+        "totalPagar": 20000
     }
 }

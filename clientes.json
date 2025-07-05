@@ -107,5 +107,15 @@
             "movil": "1133088042",
             "alterno": ""
         }
+    },
+    "12345678": {
+        "activo": true,
+        "nombre": "Franco Lizarraga",
+        "edad": 22,
+        "email": "franquito@gmail.com.ar",
+        "telefonos": {
+            "movil": "1120038592",
+            "alterno": "1124188932"
+        }
     }
 }
