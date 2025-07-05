@@ -118,20 +118,21 @@ def resumenMontoPorAñoYMes():
 
     for datos in reservas.values():
         if datos.get("activo"):
+            fecha = None
             try:
                 fecha = datetime.strptime(datos["fechaDeEntrada"], "%d/%m/%Y")
             except ValueError:
                 print(f"Fecha inválida en reserva: {datos}")
-                continue
 
-            año = fecha.year
-            mes = fecha.month
-            totalPagar = datos.get("totalPagar", 0)
+            if fecha is not None:
+                año = fecha.year
+                mes = fecha.month
+                totalPagar = datos.get("totalPagar", 0)
 
-            if año not in resumen:
-                resumen[año] = [0] * 12
+                if año not in resumen:
+                    resumen[año] = [0] * 12
 
-            resumen[año][mes - 1] += totalPagar
+                resumen[año][mes - 1] += totalPagar
 
     print("=" * 70)
     print("Resumen de monto en pesos por año y mes")
@@ -154,6 +155,7 @@ def resumenMontoPorAñoYMes():
     for año, meses in resumen.items():
         linea = f"{año:<4} | " + " ".join(f"${monto:>9,.2f}" for monto in meses)
         print(linea)
+
 
 
 def informeIngresosPorFechaEntradaDelMes():
@@ -179,13 +181,13 @@ def informeIngresosPorFechaEntradaDelMes():
     reservasEncontradas = False
 
     for reserva in reservas.values():
+        fechaEntrada = None
         try:
             fechaEntrada = datetime.strptime(reserva["fechaDeEntrada"], "%d/%m/%Y")
         except ValueError:
             print(f"Fecha inválida en reserva: {reserva}")
-            continue
 
-        if reserva.get("activo") and fechaEntrada.month == mesActual and fechaEntrada.year == añoActual:
+        if fechaEntrada and reserva.get("activo") and fechaEntrada.month == mesActual and fechaEntrada.year == añoActual:
             dni = reserva.get("dni")
             cliente = clientes.get(dni, {}).get("nombre", "No disponible")
             print(f"{reserva['fechaDeEntrada']:<20} {cliente:<20} {reserva['nroHabitacion']:<15} "
@@ -194,6 +196,7 @@ def informeIngresosPorFechaEntradaDelMes():
 
     if not reservasEncontradas:
         print("No se encontraron ingresos para el mes actual.")
+
 
 def altaCliente():
     """
@@ -636,26 +639,25 @@ def agendarReserva():
             datosHab["servicios"].get("balcon") == balcon
         ):
 
-            while True:
+            fechaEntrada = None
+            while fechaEntrada is None:
                 fechaEntradaStr = input("Fecha de ingreso (DD/MM/AAAA): ")
                 try:
                     fechaEntrada = datetime.strptime(fechaEntradaStr, "%d/%m/%Y")
                     if fechaEntrada < datetime.now():
                         print("La fecha de entrada no puede ser anterior a hoy.")
-                        continue
-                    break
+                        fechaEntrada = None 
                 except ValueError:
                     print("Formato de fecha inválido.")
 
-
-            while True:
+            fechaSalida = None
+            while fechaSalida is None:
                 fechaSalidaStr = input("Fecha de salida (DD/MM/AAAA): ")
                 try:
                     fechaSalida = datetime.strptime(fechaSalidaStr, "%d/%m/%Y")
                     if fechaSalida <= fechaEntrada:
                         print("La salida debe ser posterior al ingreso.")
-                        continue
-                    break
+                        fechaSalida = None 
                 except ValueError:
                     print("Formato de fecha inválido.")
 
@@ -691,6 +693,7 @@ def agendarReserva():
             return
 
     print("No hay habitaciones disponibles con esas características.")
+
 
 def listarReservasActivas():
     """
@@ -730,28 +733,25 @@ def reporteReservasPorAño():
         except ValueError:
             print("Entrada inválida. Ingrese un año como número (ej. 2025).")
 
-
-    resumen = {i: [0]*12 for i in range(1, 11)}
+    resumen = {i: [0] * 12 for i in range(1, 11)}
 
     for datos in reservas.values():
         if datos.get("activo"):
+            fecha = None
             try:
                 fecha = datetime.strptime(datos["fechaDeEntrada"], "%d/%m/%Y")
             except ValueError:
                 print(f"Fecha inválida en reserva: {datos}")
-                continue
 
-            if fecha.year == año:
-                mes = fecha.month
+            if fecha and fecha.year == año:
                 try:
                     habitacion = int(datos["nroHabitacion"])
+                    mes = fecha.month
+                    if habitacion not in resumen:
+                        resumen[habitacion] = [0] * 12
+                    resumen[habitacion][mes - 1] += 1
                 except ValueError:
-                    print(f"Número de habitación inválido: {datos['nroHabitacion']}")
-                    continue
-
-                if habitacion not in resumen:
-                    resumen[habitacion] = [0]*12
-                resumen[habitacion][mes - 1] += 1
+                    print(f"Número de habitación inválido: {datos.get('nroHabitacion')}")
 
     print("=" * 70)
     print(f"Resumen de cantidad de reservas por habitación - Año {año}")
