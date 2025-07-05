@@ -89,7 +89,10 @@ def habitacionesMasRentables():
         print("No hay ingresos activos para mostrar.")
         return
 
-    ordenadas = sorted(ingresos_por_habitacion.items(), key=lambda x: x[1], reverse=True)
+    def obtener_ingreso(tupla):
+        return tupla[1]
+
+    ordenadas = sorted(ingresos_por_habitacion.items(), key=obtener_ingreso, reverse=True)
 
     print("=" * 50)
     print("Habitaciones Más Rentables")
@@ -97,6 +100,7 @@ def habitacionesMasRentables():
     print("Nro. Habitación | Ingresos")
     for nro, ingreso in ordenadas:
         print(f"{str(nro):<15} | ${ingreso:,.2f}")
+
 
 
 def resumenMontoPorAñoYMes():
